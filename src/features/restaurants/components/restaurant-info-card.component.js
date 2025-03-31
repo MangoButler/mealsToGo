@@ -2,42 +2,61 @@ import { View, StyleSheet } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import styled from "styled-components/native";
 import React from "react";
+import { theme } from "../../../infrastructure/theme";
 
 const Title = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-  padding-left: 16px;
-  margin-bottom: 10px;
+  font-family: ${(props) => props.theme.fonts.heading};
+  font-size: ${(props) => props.theme.fontSizes.body};
+  /* font-weight: ${(props) => props.theme.fontWeights.bold}; */
+
+  color: ${(props) => props.theme.colors.ui.primary};
 `;
 const Description = styled.Text`
-  font-size: 12px;
-  padding-left: 16px;
-  margin-bottom: 5px;
+  font-family: ${(props) => props.theme.fonts.body};
+  font-size: ${(props) => props.theme.fontSizes.body};
+  /* padding-left: ${(props) => props.theme.space[3]};
+  margin-bottom: ${(props) => props.theme.space[1]}; */
 `;
 
 const HighlightSmall = styled(Description)`
-  font-size: 9px;
-  font-weight: bold;
+  font-size: ${(props) => props.theme.fontSizes.caption};
+  font-weight: ${(props) => props.theme.fontWeights.bold};
   font-style: italic;
-  color: grey;
+  color: ${(props) => props.theme.colors.ui.secondary};
 `;
 
 const RestaurantCard = styled(Card)`
-  margin: 20px;
+  margin: ${(props) => props.theme.space[3]};
   align-content: space-between;
 `;
 
 const RestaurantCardCover = styled(Card.Cover)`
-  margin: auto 20px auto 20px;
+  margin: auto ${(props) => props.theme.space[3]};
   object-fit: contain;
 `;
 
 const RestaurantCardContent = styled(Card.Content)`
-  margin-top: 10px;
+  margin-top: ${(props) => props.theme.space[2]};
 `;
 
 const RestaurantCardActions = styled(Card.Actions)`
-  margin-bottom: 10px;
+  margin-bottom: ${(props) => props.theme.space[2]};
+`;
+
+const RestaurantActionsButton = styled(Button)`
+  background-color: ${(props) => props.theme.colors.ui.primary};
+  color: ${(props) => props.theme.colors.ui.quaternary};
+`;
+
+const RestaurantActionsButtonOutline = styled(RestaurantActionsButton)`
+  background-color: ${(props) => props.theme.colors.ui.quaternary};
+  color: ${(props) => props.theme.colors.ui.primary} !important;
+  border-color: ${(props) => props.theme.colors.ui.primary};
+`;
+
+const Info = styled.View`
+  padding-left: ${(props) => props.theme.space[3]};
+  margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
 const LeftContent = (props) => <Avatar.Icon {...props} />;
@@ -70,8 +89,10 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
       />
       <RestaurantCardCover key={name} source={{ uri: photos[0] }} />
       <RestaurantCardContent>
-        <Title>{name}</Title>
-        <Description>{description}</Description>
+        <Info>
+          <Title>{name}</Title>
+          <Description>{description}</Description>
+        </Info>
         {isClosedTemporarely && (
           <HighlightSmall>Temporarely closed</HighlightSmall>
         )}
@@ -79,8 +100,10 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
         {rating && <HighlightSmall>{`Rating: ${rating}`}</HighlightSmall>}
       </RestaurantCardContent>
       <RestaurantCardActions>
-        <Button>Check Menu</Button>
-        <Button>Reserve</Button>
+        <RestaurantActionsButtonOutline textColor={theme.colors.ui.primary}>
+          Check Menu
+        </RestaurantActionsButtonOutline>
+        <RestaurantActionsButton>Reserve</RestaurantActionsButton>
       </RestaurantCardActions>
     </RestaurantCard>
   );
@@ -89,9 +112,12 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
 const styles = StyleSheet.create({
   icon: {
     padding: 10,
+    backgroundColor: theme.colors.ui.primary,
+    color: theme.colors.ui.quaternary,
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: theme.fonts.heading,
   },
 });

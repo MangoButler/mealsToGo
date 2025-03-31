@@ -16,24 +16,28 @@ const SafeArea = styled(SafeAreaView)`
   ${StatusBar.currentHeight && `margin-top: ${StatusBar.currentHeight}px`};
 `;
 
+const SearchContainer = styled.View`
+  padding: ${(props) => props.theme.space[3]};
+`;
+
 const ListContainer = styled.View`
   flex: 1;
 `;
 
 const TextBox = styled.Text`
-  padding: 10px 20px 0px 20px;
-  color: grey;
-  font-size: 18px;
+  padding: ${(props) => props.theme.space[3]};
+  color: ${(props) => props.theme.colors.brand.muted};
+  font-size: ${(props) => props.theme.fontSizes.title};
 `;
 
 export default function RestaurantsScreen() {
   const [searchItems, setSearchItems] = useState("");
   return (
     <SafeArea>
-      <View>
+      <SearchContainer>
         <Search setSearchItems={setSearchItems} />
         {searchItems && <TextBox>{searchItems}</TextBox>}
-      </View>
+      </SearchContainer>
       <ListContainer>
         <RestaurantInfoCard />
       </ListContainer>
