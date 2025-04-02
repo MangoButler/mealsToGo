@@ -1,13 +1,15 @@
 export const fonts = {
   body: "Rubik_400Regular",
-  heading: "Poppins_400Regular",
+  heading: "Rubik_700Bold",
+  highlight: "Poppins_300Light_Italic",
+  info: "Poppins_700Bold",
   monospace: "Inconsolata_400Regular",
 };
 
 export const fontWeights = {
-  regular: 400,
-  medium: 500,
-  bold: 700,
+  regular: "400px",
+  medium: "500px",
+  bold: "700px",
 };
 
 export const fontSizes = {

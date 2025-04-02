@@ -9,7 +9,7 @@ export const colors = {
   ui: {
     primary: "#3B1C32",
     secondary: "#B96D40",
-    tertiary: "#F1F1F1",
+    tertiary: "#F8EDEB",
     quaternary: "#FFFFFF",
     disabled: "#D8CBC7",
     error: "#CC3F0C",
@@ -17,7 +17,7 @@ export const colors = {
   },
   bg: {
     primary: "#FFFFFF",
-    secondary: "#FFFCF2",
+    secondary: "#F6F2F0",
     tertiary: "#CCC5B9",
   },
   text: {
@@ -27,5 +27,6 @@ export const colors = {
     inverse: "#FFFFFF",
     error: "#D0421B",
     success: "#138000",
+    highlight: "#B96D40",
   },
 };

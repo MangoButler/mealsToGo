@@ -1,13 +1,6 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
-import Search from "../../../components/Search";
+import { SafeAreaView, StatusBar } from "react-native";
+import Search from "../../../components/Search.js";
 import RestaurantInfoCard from "../components/restaurant-info-card.component";
 import styled from "styled-components/native";
 
