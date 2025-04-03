@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Button, Card, Icon } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 
 export const Title = styled.Text`
   font-family: ${(props) => props.theme.fonts.heading};
