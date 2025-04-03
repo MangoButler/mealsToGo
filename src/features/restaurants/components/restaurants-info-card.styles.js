@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Button, Card } from "react-native-paper";
+import { Button, Card, Icon } from "react-native-paper";
 
 export const Title = styled.Text`
   font-family: ${(props) => props.theme.fonts.heading};
@@ -21,19 +21,14 @@ export const Address = styled.Text`
   margin-bottom: ${(props) => props.theme.space[1]};
 `;
 
-export const RatingContainer = styled.View`
+export const IconContainer = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
 `;
 
-export const Row = styled.View`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: ${(props) => props.theme.space[1]};
-  margin-bottom: ${(props) => props.theme.space[2]};
+export const CategoryIconContainer = styled(IconContainer)`
+  gap: ${(props) => props.theme.space[1]};
 `;
 
 export const InfoButton = styled(Button)`
@@ -48,7 +43,11 @@ export const HighlightSmall = styled(Description)`
 `;
 
 export const RestaurantCard = styled(Card)`
-  margin: ${(props) => props.theme.space[3]};
+  margin-bottom: ${(props) => props.theme.space[3]};
+  margin-right: ${(props) => props.theme.space[3]};
+  margin-left: ${(props) => props.theme.space[3]};
+  /* margin-top: ${(props) => props.theme.space[2]}; */
+
   align-content: space-between;
   border-radius: 12px;
   background-color: ${(props) => props.theme.colors.bg.secondary};
@@ -81,7 +80,11 @@ export const Info = styled.View`
   margin: ${(props) => props.theme.space[2]} 0;
 `;
 
-export const Icon = styled(Button)`
-  border-radius: 100%;
-  font-size: ${(props) => props.theme.fontSizes.title};
-`;
+// export const Row = styled.View`
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: space-between;
+//   margin-top: ${(props) => props.theme.space[1]};
+//   margin-bottom: ${(props) => props.theme.space[2]};
+// `;

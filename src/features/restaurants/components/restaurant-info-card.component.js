@@ -6,7 +6,6 @@ import star from "../../../../assets/star";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import {
-  Icon,
   RestaurantCard,
   RestaurantActionsButton,
   RestaurantActionsButtonOutline,
@@ -14,23 +13,25 @@ import {
   RestaurantCardContent,
   RestaurantCardCover,
   Info,
-  Row,
-  RatingContainer,
+  IconContainer,
+  CategoryIconContainer,
   InfoButton,
 } from "./restaurants-info-card.styles";
+import { Icon } from "react-native-paper";
+import Row from "../../../components/spacer/row.component";
 
 export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
-    icon = "food",
+    icons = ["food", "food-takeout-box", "food-variant"],
     photos = [
       "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-restaurant-presents.jpg?w=900&h=500&s=1",
     ],
     address = "100 some street",
-    isOpenNow = false,
+    isOpenNow = true,
     rating = 3,
-    isClosedTemporarely = true,
+    isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
   } = restaurant;
 
@@ -41,7 +42,7 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
       <RestaurantCardCover key={name} source={{ uri: photos[0] }} />
       <RestaurantCardContent>
         <Info>
-          <Row>
+          <Row topMargin="small" bottomMargin="small">
             <View>
               <Spacer size={"small"} position={"bottom"}>
                 <Text theme={theme} variant={"label"}>
@@ -52,15 +53,26 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
                 {address}
               </Text>
             </View>
-            <Icon icon={icon} textColor={theme.colors.ui.primary} />
+            <Spacer position={"right"} size={"small"}>
+              <CategoryIconContainer>
+                {icons.map((icon, i) => (
+                  <Icon
+                    source={icon}
+                    key={i}
+                    size={20}
+                    color={theme.colors.ui.primary}
+                  />
+                ))}
+              </CategoryIconContainer>
+            </Spacer>
           </Row>
-          <Row>
+          <Row topMargin="none" bottomMargin="medium">
             {ratingArray.length ? (
-              <RatingContainer>
+              <IconContainer>
                 {ratingArray.map((_, i) => (
                   <SvgXml xml={star} width={20} height={20} key={i} />
                 ))}
-              </RatingContainer>
+              </IconContainer>
             ) : (
               <Text variant={"caption"} theme={theme}>
                 No ratings yet

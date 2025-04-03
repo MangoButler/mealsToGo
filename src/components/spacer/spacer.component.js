@@ -23,10 +23,6 @@ const getVariant = (position, size, theme) => {
   return `${positions[position]}: ${theme.space[sizes[size]]}`;
 };
 
-// export const Spacer = styled.View`
-//   ${({ position, size }) => getVariant(position, size)}
-// `;
-
 export const Spacer = ({ position, size, children }) => {
   const theme = useTheme();
   const variant = getVariant(position, size, theme);
