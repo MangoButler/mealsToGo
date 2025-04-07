@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FlatList } from "react-native";
 import Search from "../../../components/Search.js";
 import RestaurantInfoCard from "../components/restaurant-info-card.component";
 import styled from "styled-components/native";
 import { SafeArea } from "../../../components/utility/safe-area.component.js";
+import { PlacesContext } from "../../../services/places/places.context.js";
+import LoadingSpinner from "../../../components/utility/loading-spinner.component.js";
 
 const SearchContainer = styled.View`
   padding: ${(props) => props.theme.space[3]};
@@ -25,25 +27,29 @@ const TextBox = styled.Text`
 `;
 
 export default function RestaurantsScreen() {
+  const { places, isLoading, error } = useContext(PlacesContext);
   const [searchItems, setSearchItems] = useState("");
+
   return (
     <SafeArea>
       <SearchContainer>
         <Search setSearchItems={setSearchItems} />
         {searchItems && <TextBox>{searchItems}</TextBox>}
       </SearchContainer>
-      <RestaurantsList
-        data={[
-          { name: 1 },
-          { name: 2 },
-          { name: 3 },
-          { name: 4 },
-          { name: 5 },
-          { name: 6 },
-        ]}
-        renderItem={() => <RestaurantInfoCard />}
-        keyExtractor={(item) => item.name}
-      />
+      {error ? (
+        <TextBox>Not found</TextBox>
+      ) : isLoading ? (
+        <LoadingSpinner />
+      ) : (
+        <RestaurantsList
+          data={places}
+          renderItem={({ item }) => {
+            return <RestaurantInfoCard restaurant={item} />;
+          }}
+          keyExtractor={(item) => item.name}
+          initialNumToRender={5}
+        />
+      )}
     </SafeArea>
   );
 }

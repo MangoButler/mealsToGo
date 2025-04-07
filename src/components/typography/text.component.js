@@ -11,11 +11,11 @@ const defaultTextStyles = (theme) => `
 
 const body = (theme) => `
     font-size: ${theme.fontSizes.body};
-    
 `;
 const label = (theme) => `
     font-size: ${theme.fontSizes.title};
     font-family: ${theme.fonts.heading};
+    
 `;
 const caption = (theme) => `
     font-size: ${theme.fontSizes.caption};

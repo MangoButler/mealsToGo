@@ -19,34 +19,38 @@ import MapScreen from "./src/features/restaurants/screens/map.screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeArea } from "./src/components/utility/safe-area.component";
 import { Ionicons } from "@expo/vector-icons";
+import ProfileScreen from "./src/features/restaurants/screens/profile.screen";
+import { PlacesContextProvider } from "./src/services/places/places.context";
 
 const Tab = createBottomTabNavigator();
 
+const TAB_ICON = {
+  // Restaurants: "restaurant",
+  Home: "home",
+  Map: "map",
+  Settings: "settings-sharp",
+  Profile: "person",
+  Locations: "location-sharp",
+};
+
+const createScreenOptions = ({ route }) => {
+  const iconName = TAB_ICON[route.name];
+  return {
+    tabBarIcon: ({ focused, size, color }) => (
+      <Ionicons
+        name={focused ? iconName : `${iconName.split("-")[0]}-outline`}
+        size={size}
+        color={color}
+      />
+    ),
+    tabBarActiveTintColor: theme.colors.ui.primary,
+    tabBarInactiveTintColor: theme.colors.ui.disabled,
+  };
+};
+
 function Navigation() {
-  const theme = useTheme();
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Settings") {
-            iconName = focused ? "settings-sharp" : "settings-outline";
-          } else if (route.name === "Map") {
-            iconName = focused ? "map" : "map-outline";
-          } else if (route.name === "Restaurants") {
-            iconName = focused ? "restaurant" : "restaurant-outline";
-          }
-
-          // You can return any component that you like here!
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: theme.colors.ui.primary,
-        tabBarInactiveTintColor: theme.colors.ui.disabled,
-      })}
-    >
+    <Tab.Navigator screenOptions={createScreenOptions}>
       <Tab.Screen
         options={{ headerShown: false }}
         name="Home"
@@ -54,13 +58,18 @@ function Navigation() {
       />
       <Tab.Screen
         options={{ headerShown: false }}
-        name="Restaurants"
+        name="Locations"
         component={RestaurantsScreen}
       />
       <Tab.Screen
         options={{ headerShown: false }}
         name="Map"
         component={MapScreen}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="Profile"
+        component={ProfileScreen}
       />
       <Tab.Screen
         options={{ headerShown: false }}
@@ -87,13 +96,15 @@ export default function App() {
   if (!inconsolataLoaded || !rubikLoaded || !poppinsLoaded)
     return <AppLoading />;
   return (
-    <NavigationContainer>
-      <ThemeProvider theme={theme}>
-        <SafeArea>
-          <Navigation />
-          <ExpoStatusBar style="auto" />
-        </SafeArea>
-      </ThemeProvider>
-    </NavigationContainer>
+    <ThemeProvider theme={theme}>
+      <PlacesContextProvider>
+        <NavigationContainer>
+          <SafeArea>
+            <Navigation />
+            <ExpoStatusBar style="auto" />
+          </SafeArea>
+        </NavigationContainer>
+      </PlacesContextProvider>
+    </ThemeProvider>
   );
 }

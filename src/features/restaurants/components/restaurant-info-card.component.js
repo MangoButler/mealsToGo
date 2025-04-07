@@ -16,11 +16,12 @@ import {
   IconContainer,
   CategoryIconContainer,
   InfoButton,
+  InfoContainer,
 } from "./restaurants-info-card.styles";
 import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
 
-export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
+export default function RestaurantInfoCard({ restaurant = {} }) {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
@@ -43,7 +44,7 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
       <RestaurantCardContent>
         <Info>
           <Row topMargin="small" bottomMargin="small">
-            <View>
+            <InfoContainer>
               <Spacer size={"small"} position={"bottom"}>
                 <Text theme={theme} variant={"label"}>
                   {name}
@@ -52,7 +53,7 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
               <Text theme={theme} variant={"hint"}>
                 {address}
               </Text>
-            </View>
+            </InfoContainer>
             <Spacer position={"right"} size={"small"}>
               <CategoryIconContainer>
                 {icons.map((icon, i) => (
@@ -86,12 +87,16 @@ export default function RestaurantInfoRestaurantCard({ restaurant = {} }) {
               }
               mode="outlined"
               compact
-              icon={isOpenNow ? "door-sliding-open" : "door-sliding-lock"}
+              icon={
+                isOpenNow && !isClosedTemporarely
+                  ? "door-sliding-open"
+                  : "door-sliding-lock"
+              }
             >
-              {isOpenNow
-                ? "Open Now"
-                : isClosedTemporarely
-                  ? "Temporarely Closed"
+              {isClosedTemporarely
+                ? "Temporarely Closed"
+                : isOpenNow
+                  ? "Open Now"
                   : "Closed"}
             </InfoButton>
           </Row>

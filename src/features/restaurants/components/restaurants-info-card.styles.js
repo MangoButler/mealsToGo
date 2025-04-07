@@ -21,6 +21,9 @@ export const Address = styled.Text`
   margin-bottom: ${(props) => props.theme.space[1]};
 `;
 
+export const InfoContainer = styled.View`
+  flex-shrink: 0.7;
+`;
 export const IconContainer = styled.View`
   display: flex;
   flex-direction: row;
