@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import { useTheme } from "styled-components/native";
 import React from "react";
 import { SvgXml } from "react-native-svg";
@@ -21,7 +20,7 @@ import {
 import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
 
-export default function RestaurantInfoCard({ restaurant = {} }) {
+const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
@@ -127,4 +126,8 @@ export default function RestaurantInfoCard({ restaurant = {} }) {
       </RestaurantCardActions>
     </RestaurantCard>
   );
-}
+};
+
+const RestaurantInfoCard = React.memo(RestaurantInfoCardComponent);
+RestaurantInfoCard.displayName = "RestaurantInfoCard";
+export default RestaurantInfoCard;

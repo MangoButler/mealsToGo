@@ -26,6 +26,10 @@ const TextBox = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.title};
 `;
 
+const renderRestaurantItem = ({ item }) => {
+  return <RestaurantInfoCard restaurant={item} />;
+};
+
 export default function RestaurantsScreen() {
   const { places, isLoading, error } = useContext(PlacesContext);
   const [searchItems, setSearchItems] = useState("");
@@ -43,11 +47,13 @@ export default function RestaurantsScreen() {
       ) : (
         <RestaurantsList
           data={places}
-          renderItem={({ item }) => {
-            return <RestaurantInfoCard restaurant={item} />;
-          }}
+          renderItem={renderRestaurantItem}
           keyExtractor={(item) => item.name}
           initialNumToRender={5}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          updateCellsBatchingPeriod={50}
+          removeClippedSubviews={true}
         />
       )}
     </SafeArea>

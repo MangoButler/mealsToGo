@@ -1,8 +1,14 @@
-import { SafeAreaView, StatusBar } from "react-native";
-import styled from "styled-components/native";
+import React from "react";
+import { SafeAreaView, StatusBar, Platform } from "react-native";
+import styled, { useTheme } from "styled-components/native";
 
-export const SafeArea = styled(SafeAreaView)`
+const StyledSafeArea = styled(SafeAreaView)`
   flex: 1;
-  ${StatusBar.currentHeight && `padding-top: ${StatusBar.currentHeight}px`};
   background-color: ${(props) => props.theme.colors.bg.primary};
+  padding-top: ${(props) =>
+    Platform.OS === "android" ? `${StatusBar.currentHeight / 2}px` : "0px"};
 `;
+
+export const SafeArea = ({ children }) => {
+  return <StyledSafeArea>{children}</StyledSafeArea>;
+};
