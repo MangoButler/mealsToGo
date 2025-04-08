@@ -1,6 +1,6 @@
 import React from "react";
 import { SafeAreaView, StatusBar, Platform } from "react-native";
-import styled, { useTheme } from "styled-components/native";
+import styled from "styled-components/native";
 
 const StyledSafeArea = styled(SafeAreaView)`
   flex: 1;

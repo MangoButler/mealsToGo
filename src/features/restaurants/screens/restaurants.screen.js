@@ -1,15 +1,11 @@
 import React, { useState, useContext } from "react";
 import { FlatList } from "react-native";
-import Search from "../../../components/Search.js";
+import Search from "../components/search.component.js";
 import RestaurantInfoCard from "../components/restaurant-info-card.component";
 import styled from "styled-components/native";
 import { SafeArea } from "../../../components/utility/safe-area.component.js";
 import { PlacesContext } from "../../../services/places/places.context.js";
 import LoadingSpinner from "../../../components/utility/loading-spinner.component.js";
-
-const SearchContainer = styled.View`
-  padding: ${(props) => props.theme.space[3]};
-`;
 
 const RestaurantsList = styled(FlatList).attrs({
   contentContainerStyle: {
@@ -32,18 +28,14 @@ const renderRestaurantItem = ({ item }) => {
 
 export default function RestaurantsScreen() {
   const { places, isLoading, error } = useContext(PlacesContext);
-  const [searchItems, setSearchItems] = useState("");
 
   return (
     <SafeArea>
-      <SearchContainer>
-        <Search setSearchItems={setSearchItems} />
-        {searchItems && <TextBox>{searchItems}</TextBox>}
-      </SearchContainer>
-      {error ? (
-        <TextBox>Not found</TextBox>
-      ) : isLoading ? (
+      <Search />
+      {isLoading ? (
         <LoadingSpinner />
+      ) : error ? (
+        <TextBox>Not found</TextBox>
       ) : (
         <RestaurantsList
           data={places}

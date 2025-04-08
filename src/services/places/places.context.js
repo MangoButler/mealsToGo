@@ -1,4 +1,11 @@
-import React, { useState, useEffect, createContext, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  createContext,
+  useMemo,
+  useContext,
+} from "react";
+import { LocationContext } from "../location/location.context";
 
 import { placeRequest, placeTransform } from "./places.service";
 
@@ -8,15 +15,18 @@ export const PlacesContextProvider = ({ children }) => {
   const [places, setPlaces] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { location } = useContext(LocationContext);
 
-  const retrieveplaces = () => {
+  const retrieveplaces = (loc) => {
     setIsLoading(true);
+    setPlaces([]);
     setTimeout(() => {
-      placeRequest()
+      placeRequest(loc)
         .then(placeTransform)
         .then((results) => {
           setPlaces(results);
           setIsLoading(false);
+          setError(null);
         })
         .catch((error) => {
           setError(error);
@@ -26,8 +36,9 @@ export const PlacesContextProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    retrieveplaces();
-  }, []);
+    const locationString = location ? `${location.lat},${location.lng}` : "";
+    retrieveplaces(locationString);
+  }, [location]);
 
   return (
     <PlacesContext.Provider value={{ places, isLoading, error }}>

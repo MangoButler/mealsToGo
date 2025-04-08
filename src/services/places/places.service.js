@@ -1,7 +1,7 @@
 import camelize from "camelize";
 import { mockImages, mocks } from "./mock";
 
-export const placeRequest = async (place = "37.7749295,-122.4194155") => {
+export const placeRequest = (place) => {
   return new Promise((resolve, reject) => {
     const mock = mocks[place];
     if (!mock) reject("Cannot find this place");
@@ -16,6 +16,7 @@ export const placeTransform = ({ results = [] }) => {
       ...place,
       isClosedTemporarely: place.business_status === "CLOSED_TEMPORARILY",
       isOpenNow: place.opening_hours && place.opening_hours.open_now,
+      address: place.vicinity,
     };
   });
 

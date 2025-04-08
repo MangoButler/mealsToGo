@@ -21,6 +21,7 @@ import { SafeArea } from "./src/components/utility/safe-area.component";
 import { Ionicons } from "@expo/vector-icons";
 import ProfileScreen from "./src/features/restaurants/screens/profile.screen";
 import { PlacesContextProvider } from "./src/services/places/places.context";
+import { LocationContextProvider } from "./src/services/location/location.context";
 
 const Tab = createBottomTabNavigator();
 
@@ -97,14 +98,16 @@ export default function App() {
     return <AppLoading />;
   return (
     <ThemeProvider theme={theme}>
-      <PlacesContextProvider>
-        <NavigationContainer>
-          <SafeArea>
-            <Navigation />
-            <ExpoStatusBar style="auto" />
-          </SafeArea>
-        </NavigationContainer>
-      </PlacesContextProvider>
+      <LocationContextProvider>
+        <PlacesContextProvider>
+          <NavigationContainer>
+            <SafeArea>
+              <Navigation />
+              <ExpoStatusBar style="auto" />
+            </SafeArea>
+          </NavigationContainer>
+        </PlacesContextProvider>
+      </LocationContextProvider>
     </ThemeProvider>
   );
 }
