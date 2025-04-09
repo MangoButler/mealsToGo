@@ -1,6 +1,6 @@
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import RestaurantsScreen from "./src/features/restaurants/screens/restaurants.screen";
-import { ThemeProvider, useTheme } from "styled-components/native";
+import { ThemeProvider } from "styled-components/native";
 import { theme } from "./src/infrastructure/theme";
 import AppLoading from "expo-app-loading";
 import {

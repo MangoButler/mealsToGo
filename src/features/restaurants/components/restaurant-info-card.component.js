@@ -24,6 +24,7 @@ const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
+    placeId = "1",
     icons = ["food", "food-takeout-box", "food-variant"],
     photos = [
       "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-restaurant-presents.jpg?w=900&h=500&s=1",
@@ -58,7 +59,7 @@ const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
                 {icons.map((icon, i) => (
                   <Icon
                     source={icon}
-                    key={i}
+                    key={`icon-${placeId}-${i}`}
                     size={20}
                     color={theme.colors.ui.primary}
                   />
@@ -70,7 +71,12 @@ const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
             {ratingArray.length ? (
               <IconContainer>
                 {ratingArray.map((_, i) => (
-                  <SvgXml xml={star} width={20} height={20} key={i} />
+                  <SvgXml
+                    xml={star}
+                    width={20}
+                    height={20}
+                    key={`star-${placeId}-${i}`}
+                  />
                 ))}
               </IconContainer>
             ) : (

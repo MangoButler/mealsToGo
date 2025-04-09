@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { FlatList } from "react-native";
 import Search from "../components/search.component.js";
 import RestaurantInfoCard from "../components/restaurant-info-card.component";
