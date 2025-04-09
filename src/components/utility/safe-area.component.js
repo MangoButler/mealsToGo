@@ -6,7 +6,7 @@ const StyledSafeArea = styled(SafeAreaView)`
   flex: 1;
   background-color: ${(props) => props.theme.colors.bg.primary};
   padding-top: ${(props) =>
-    Platform.OS === "android" ? `${StatusBar.currentHeight / 2}px` : "0px"};
+    Platform.OS === "android" ? `${StatusBar.currentHeight}px` : "0px"};
 `;
 
 export const SafeArea = ({ children }) => {

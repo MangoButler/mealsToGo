@@ -19,8 +19,13 @@ import {
 } from "./restaurants-info-card.styles";
 import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
+import { Pressable } from "react-native-gesture-handler";
+import { TouchableOpacity } from "react-native";
 
-const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
+const RestaurantInfoCardComponent = ({
+  restaurant = {},
+  onDetailClick = () => {},
+}) => {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
@@ -40,7 +45,9 @@ const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
 
   return (
     <RestaurantCard elevation={5}>
-      <RestaurantCardCover key={name} source={{ uri: photos[0] }} />
+      <TouchableOpacity onPress={onDetailClick}>
+        <RestaurantCardCover key={name} source={{ uri: photos[0] }} />
+      </TouchableOpacity>
       <RestaurantCardContent>
         <Info>
           <Row topMargin="small" bottomMargin="small">
@@ -118,7 +125,10 @@ const RestaurantInfoCardComponent = ({ restaurant = {} }) => {
         )}
       </RestaurantCardContent>
       <RestaurantCardActions>
-        <RestaurantActionsButtonOutline textColor={theme.colors.ui.primary}>
+        <RestaurantActionsButtonOutline
+          onPress={onDetailClick}
+          textColor={theme.colors.ui.primary}
+        >
           Check Menu
         </RestaurantActionsButtonOutline>
         <RestaurantActionsButton

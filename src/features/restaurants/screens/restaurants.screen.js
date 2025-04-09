@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext } from "react";
 import { FlatList } from "react-native";
 import Search from "../components/search.component.js";
 import RestaurantInfoCard from "../components/restaurant-info-card.component";
@@ -22,12 +22,18 @@ const TextBox = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.title};
 `;
 
-const renderRestaurantItem = ({ item }) => {
-  return <RestaurantInfoCard restaurant={item} />;
-};
-
-export default function RestaurantsScreen() {
+export default function RestaurantsScreen({ navigation }) {
   const { places, isLoading, error } = useContext(PlacesContext);
+
+  const onDetailClick = useCallback(() => {
+    navigation.navigate("PlaceDetail");
+  }, [navigation]);
+
+  const renderRestaurantItem = ({ item }) => {
+    return (
+      <RestaurantInfoCard restaurant={item} onDetailClick={onDetailClick} />
+    );
+  };
 
   return (
     <SafeArea>

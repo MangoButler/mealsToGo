@@ -12,7 +12,8 @@ const StyledSearchbar = styled(Searchbar)`
 `;
 
 const SearchContainer = styled.View`
-  padding: ${(props) => props.theme.space[3]};
+  padding: 0 ${(props) => props.theme.space[3]};
+  padding-bottom: ${(props) => props.theme.space[3]};
 `;
 
 const Search = () => {
