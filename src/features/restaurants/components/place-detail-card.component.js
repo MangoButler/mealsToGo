@@ -17,14 +17,12 @@ import {
   InfoButton,
   InfoContainer,
 } from "./restaurants-info-card.styles";
+import { DetailCard, DetailCardCover } from "./place-detail-card.styles";
 import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
-import { TouchableOpacity } from "react-native";
+import AccordeonList from "../../../components/utility/accordion-list.component";
 
-const RestaurantInfoCardComponent = ({
-  restaurant = {},
-  onDetailClick = () => {},
-}) => {
+const PlaceDetailCardComponent = ({ place = {} }) => {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
@@ -38,15 +36,14 @@ const RestaurantInfoCardComponent = ({
     rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
-  } = restaurant;
+  } = place;
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
   return (
-    <RestaurantCard elevation={5}>
-      <TouchableOpacity onPress={onDetailClick}>
-        <RestaurantCardCover key={name} source={{ uri: photos[0] }} />
-      </TouchableOpacity>
+    <DetailCard elevation={0}>
+      <DetailCardCover key={name} source={{ uri: photos[0] }} />
+
       <RestaurantCardContent>
         <Info>
           <Row topMargin="small" bottomMargin="small">
@@ -60,18 +57,6 @@ const RestaurantInfoCardComponent = ({
                 {address}
               </Text>
             </InfoContainer>
-            <Spacer position={"right"} size={"small"}>
-              <CategoryIconContainer>
-                {icons.map((icon, i) => (
-                  <Icon
-                    source={icon}
-                    key={`icon-${placeId}-${i}`}
-                    size={20}
-                    color={theme.colors.ui.primary}
-                  />
-                ))}
-              </CategoryIconContainer>
-            </Spacer>
           </Row>
           <Row topMargin="none" bottomMargin="medium">
             {ratingArray.length ? (
@@ -117,17 +102,13 @@ const RestaurantInfoCardComponent = ({
             </Text>
           </Spacer>
         </Info>
-        {isClosedTemporarely && (
-          <Text variant={"caption"} theme={theme}>
-            Temporarely Closed
-          </Text>
-        )}
+        {/* Details Drawers */}
+        <Spacer position={"top"} size={"medium"}>
+          <AccordeonList />
+        </Spacer>
       </RestaurantCardContent>
       <RestaurantCardActions>
-        <RestaurantActionsButtonOutline
-          onPress={onDetailClick}
-          textColor={theme.colors.ui.primary}
-        >
+        <RestaurantActionsButtonOutline textColor={theme.colors.ui.primary}>
           Check Menu
         </RestaurantActionsButtonOutline>
         <RestaurantActionsButton
@@ -139,10 +120,10 @@ const RestaurantInfoCardComponent = ({
           Reserve
         </RestaurantActionsButton>
       </RestaurantCardActions>
-    </RestaurantCard>
+    </DetailCard>
   );
 };
 
-const RestaurantInfoCard = React.memo(RestaurantInfoCardComponent);
-RestaurantInfoCard.displayName = "RestaurantInfoCard";
-export default RestaurantInfoCard;
+const PlaceDetailCard = React.memo(PlaceDetailCardComponent);
+PlaceDetailCard.displayName = "PlaceDetailCard";
+export default PlaceDetailCard;

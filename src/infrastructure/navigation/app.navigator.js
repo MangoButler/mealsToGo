@@ -1,4 +1,3 @@
-import RestaurantsScreen from "../../features/restaurants/screens/restaurants.screen";
 import HomeScreen from "../../features/restaurants/screens/home.screen";
 import SettingsScreen from "../../features/restaurants/screens/settings.screen";
 import ProfileScreen from "../../features/restaurants/screens/profile.screen";

@@ -1,11 +1,11 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { FlatList } from "react-native";
-import Search from "../components/search.component.js";
-import RestaurantInfoCard from "../components/restaurant-info-card.component";
+import Search from "../../components/search.component.js";
+import RestaurantInfoCard from "../../components/restaurant-info-card.component.js";
 import styled from "styled-components/native";
-import { SafeArea } from "../../../components/utility/safe-area.component.js";
-import { PlacesContext } from "../../../services/places/places.context.js";
-import LoadingSpinner from "../../../components/utility/loading-spinner.component.js";
+import { SafeArea } from "../../../../components/utility/safe-area.component.js";
+import { PlacesContext } from "../../../../services/places/places.context.js";
+import LoadingSpinner from "../../../../components/utility/loading-spinner.component.js";
 
 const RestaurantsList = styled(FlatList).attrs({
   contentContainerStyle: {
@@ -22,18 +22,32 @@ const TextBox = styled.Text`
   font-size: ${(props) => props.theme.fontSizes.title};
 `;
 
+const createRenderRestaurantItem = ({ onDetailClick }) => {
+  const RenderItem = ({ item }) => (
+    <RestaurantInfoCard
+      restaurant={item}
+      onDetailClick={() => onDetailClick(item)}
+    />
+  );
+
+  RenderItem.displayName = "RenderRestaurantItem";
+  return RenderItem;
+};
+
 export default function RestaurantsScreen({ navigation }) {
   const { places, isLoading, error } = useContext(PlacesContext);
 
-  const onDetailClick = useCallback(() => {
-    navigation.navigate("PlaceDetail");
-  }, [navigation]);
+  const onDetailClick = useCallback(
+    (item) => {
+      navigation.navigate("PlaceDetail", { item });
+    },
+    [navigation]
+  );
 
-  const renderRestaurantItem = ({ item }) => {
-    return (
-      <RestaurantInfoCard restaurant={item} onDetailClick={onDetailClick} />
-    );
-  };
+  const renderItem = useMemo(
+    () => createRenderRestaurantItem({ onDetailClick }),
+    [onDetailClick]
+  );
 
   return (
     <SafeArea>
@@ -45,7 +59,7 @@ export default function RestaurantsScreen({ navigation }) {
       ) : (
         <RestaurantsList
           data={places}
-          renderItem={renderRestaurantItem}
+          renderItem={renderItem}
           keyExtractor={(item) => item.name}
           initialNumToRender={5}
           maxToRenderPerBatch={10}
