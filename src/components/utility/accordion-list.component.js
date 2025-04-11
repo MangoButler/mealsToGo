@@ -13,10 +13,16 @@ const Accordion = styled(List.Accordion)`
 const AccordionList = ({
   title = "Amenities",
   icon = "details",
-  items = [{ title: "Drinks", icon: "food" }],
+  items = ["food"],
 }) => {
   const [expanded, setExpanded] = React.useState(false);
   const theme = useTheme();
+  const iconsWithTitles =
+    typeof items[0] === "string"
+      ? items.map((item) => {
+          return { title: item, icon: item };
+        })
+      : items;
 
   const handlePress = () => setExpanded(!expanded);
 
@@ -40,7 +46,7 @@ const AccordionList = ({
       onPress={handlePress}
       rippleColor={theme.colors.bg.secondary}
     >
-      {items.map((item, i) => (
+      {iconsWithTitles.map((item, i) => (
         <List.Item
           title={item.title}
           titleStyle={{
@@ -48,7 +54,7 @@ const AccordionList = ({
             fontFamily: theme.fonts.info,
             fontSize: parseInt(theme.fontSizes.caption),
           }}
-          key={`accordion-${item.title}`}
+          key={`accordion-${item}-${i}`}
           left={(props) => (
             <List.Icon
               {...props}

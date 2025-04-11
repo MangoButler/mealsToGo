@@ -6,6 +6,7 @@ import styled from "styled-components/native";
 import { SafeArea } from "../../../../components/utility/safe-area.component.js";
 import { PlacesContext } from "../../../../services/places/places.context.js";
 import LoadingSpinner from "../../../../components/utility/loading-spinner.component.js";
+import { View } from "react-native-web";
 
 const RestaurantsList = styled(FlatList).attrs({
   contentContainerStyle: {
@@ -50,7 +51,7 @@ export default function RestaurantsScreen({ navigation }) {
   );
 
   return (
-    <SafeArea>
+    <>
       <Search />
       {isLoading ? (
         <LoadingSpinner />
@@ -68,6 +69,6 @@ export default function RestaurantsScreen({ navigation }) {
           removeClippedSubviews={true}
         />
       )}
-    </SafeArea>
+    </>
   );
 }

@@ -1,5 +1,4 @@
-import { useContext, useState, useEffect } from "react";
-import * as React from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Searchbar } from "react-native-paper";
 import styled from "styled-components/native";
 import { LocationContext } from "../../../services/location/location.context";
@@ -12,8 +11,11 @@ const StyledSearchbar = styled(Searchbar)`
 `;
 
 const SearchContainer = styled.View`
-  background-color: ${(props) => props.theme.colors.bg.primary};
-  padding: ${(props) => props.theme.space[3]};
+  position: absolute;
+  z-index: 999;
+  top: ${(props) => props.theme.space[3]};
+  padding: 0 ${(props) => props.theme.space[3]};
+  width: 100%;
 `;
 
 const Search = () => {
@@ -33,7 +35,7 @@ const Search = () => {
     <SearchContainer>
       <StyledSearchbar
         placeholder="Search for a location"
-        icon={"search-web"}
+        icon={"map-search-outline"}
         onChangeText={setSearchKeyword}
         value={searchKeyword}
         onSubmitEditing={onExecuteSearch}

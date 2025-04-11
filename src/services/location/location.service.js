@@ -13,6 +13,7 @@ export const locationTransform = (result) => {
   const formattedResult = camelize(result);
   const { geometry = {} } = formattedResult.results[0];
   const { lat, lng } = geometry.location;
+  const viewport = geometry.viewport;
 
-  return { lat, lng };
+  return { lat, lng, viewport };
 };
