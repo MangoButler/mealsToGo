@@ -14,6 +14,27 @@ const Map = styled(MapView)`
   width: 100%;
 `;
 
+const ModalOverlay = styled.TouchableOpacity`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+`;
+
+const ModalContainer = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContentWrapper = styled.View`
+  padding: ${(props) => props.theme.space[3]};
+
+  max-height: 70%;
+`;
+
 const MapScreen = ({ navigation }) => {
   const theme = useTheme();
   const { places, isLoading, error } = useContext(PlacesContext);
@@ -40,28 +61,12 @@ const MapScreen = ({ navigation }) => {
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "flex-end",
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          }}
-        >
-          <TouchableOpacity
-            style={{ flex: 1 }}
+        <ModalContainer>
+          <ModalOverlay
             onPress={() => setModalVisible(false)}
             activeOpacity={1}
           />
-          <View
-            style={{
-              // backgroundColor: "#fff",
-              padding: 16,
-              borderTopLeftRadius: 16,
-              borderTopRightRadius: 16,
-              maxHeight: "70%",
-              marginBottom: 20,
-            }}
-          >
+          <ModalContentWrapper>
             {selectedPlace && (
               <RestaurantInfoCard
                 restaurant={selectedPlace}
@@ -71,8 +76,8 @@ const MapScreen = ({ navigation }) => {
                 }}
               />
             )}
-          </View>
-        </View>
+          </ModalContentWrapper>
+        </ModalContainer>
       </Modal>
       <Search />
       <Map
