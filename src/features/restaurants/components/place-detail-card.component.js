@@ -18,6 +18,7 @@ import { DetailCard, DetailCardCover } from "./place-detail-card.styles";
 import Row from "../../../components/spacer/row.component";
 import AccordeonList from "../../../components/utility/accordion-list.component";
 import { ScrollView } from "react-native";
+import MiniMap from "../../../components/utility/mini-map.component";
 
 const PlaceDetailCardComponent = ({ place = {} }) => {
   const theme = useTheme();
@@ -33,6 +34,7 @@ const PlaceDetailCardComponent = ({ place = {} }) => {
     rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
+    geometry,
   } = place;
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
@@ -100,8 +102,12 @@ const PlaceDetailCardComponent = ({ place = {} }) => {
               </Text>
             </Spacer>
           </Info>
-          {/* Details Drawers */}
+
           <Spacer position={"top"} size={"medium"}>
+            <AccordeonList title="Location" icon="map-marker">
+              <MiniMap geometry={geometry} />
+            </AccordeonList>
+
             <AccordeonList items={icons} icon="details" title="Features" />
             <AccordeonList
               icon="subway"
