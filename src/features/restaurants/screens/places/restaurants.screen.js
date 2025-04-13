@@ -7,6 +7,7 @@ import { SafeArea } from "../../../../components/utility/safe-area.component.js"
 import { PlacesContext } from "../../../../services/places/places.context.js";
 import LoadingSpinner from "../../../../components/utility/loading-spinner.component.js";
 import { View } from "react-native-web";
+import NotFound from "../../../../components/utility/not-found.component.js";
 
 const RestaurantsList = styled(FlatList).attrs({
   contentContainerStyle: {
@@ -56,7 +57,7 @@ export default function RestaurantsScreen({ navigation }) {
       {isLoading ? (
         <LoadingSpinner />
       ) : error ? (
-        <TextBox>Not found</TextBox>
+        <NotFound />
       ) : (
         <RestaurantsList
           data={places}

@@ -8,6 +8,8 @@ import RestaurantInfoCard from "../../restaurants/components/restaurant-info-car
 import { Image } from "react-native";
 import { Text } from "../../../components/typography/text.component";
 import { Modal, View, TouchableOpacity } from "react-native";
+import NotFound from "../../../components/utility/not-found.component";
+import LoadingSpinner from "../../../components/utility/loading-spinner.component";
 
 const Map = styled(MapView)`
   height: 100%;
@@ -31,28 +33,53 @@ const ModalContainer = styled.View`
 
 const ModalContentWrapper = styled.View`
   padding: ${(props) => props.theme.space[3]};
-
   max-height: 70%;
+  width: 100%;
 `;
 
 const MapScreen = ({ navigation }) => {
-  const theme = useTheme();
   const { places, isLoading, error } = useContext(PlacesContext);
-  const { location } = useContext(LocationContext);
+  const {
+    location,
+    isLoading: locationLoading,
+    error: locationError,
+  } = useContext(LocationContext);
 
   const [latDelta, setLatDelta] = useState(0);
-  const { viewport, lat, lng } = location;
-
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const northeastLat = viewport.northeast.lat;
-    const southwestLat = viewport.southwest.lat;
+  const { viewport, lat, lng } = location || {
+    viewport: null,
+    lat: null,
+    lng: null,
+  };
 
-    setLatDelta(northeastLat - southwestLat);
+  useEffect(() => {
+    if (viewport) {
+      const northeastLat = viewport.northeast.lat;
+      const southwestLat = viewport.southwest.lat;
+
+      setLatDelta(northeastLat - southwestLat);
+    }
   }, [location, viewport]);
 
+  if (isLoading || locationLoading) {
+    return (
+      <>
+        <Search />
+        <LoadingSpinner />
+      </>
+    );
+  }
+  if (error || locationError) {
+    return (
+      <>
+        <Search />
+        <NotFound />
+      </>
+    );
+  }
   return (
     <>
       <Modal
@@ -98,9 +125,6 @@ const MapScreen = ({ navigation }) => {
                 setModalVisible(true);
               }}
               coordinate={{ latitude: lat, longitude: lng }}
-              // title={place.name}
-              // description={"Description here"}
-              // onCalloutPress={() => navigation.navigate("Places")}
             />
           );
         })}
