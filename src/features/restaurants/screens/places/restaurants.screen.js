@@ -3,10 +3,9 @@ import { FlatList } from "react-native";
 import Search from "../../components/search.component.js";
 import RestaurantInfoCard from "../../components/restaurant-info-card.component.js";
 import styled from "styled-components/native";
-import { SafeArea } from "../../../../components/utility/safe-area.component.js";
 import { PlacesContext } from "../../../../services/places/places.context.js";
 import LoadingSpinner from "../../../../components/utility/loading-spinner.component.js";
-import { View } from "react-native-web";
+
 import NotFound from "../../../../components/utility/not-found.component.js";
 
 const RestaurantsList = styled(FlatList).attrs({
@@ -18,11 +17,11 @@ const RestaurantsList = styled(FlatList).attrs({
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
-const TextBox = styled.Text`
-  padding: ${(props) => props.theme.space[3]};
-  color: ${(props) => props.theme.colors.brand.muted};
-  font-size: ${(props) => props.theme.fontSizes.title};
-`;
+// const TextBox = styled.Text`
+//   padding: ${(props) => props.theme.space[3]};
+//   color: ${(props) => props.theme.colors.brand.muted};
+//   font-size: ${(props) => props.theme.fontSizes.title};
+// `;
 
 const createRenderRestaurantItem = ({ onDetailClick }) => {
   const RenderItem = ({ item }) => (

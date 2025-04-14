@@ -20,7 +20,7 @@ import AccordeonList from "../../../components/utility/accordion-list.component"
 import { ScrollView } from "react-native";
 import MiniMap from "../../../components/utility/mini-map.component";
 
-const PlaceDetailCardComponent = ({ place = {} }) => {
+const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
   const {
     name = "Test Restaurant",
@@ -38,7 +38,12 @@ const PlaceDetailCardComponent = ({ place = {} }) => {
   } = place;
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
-
+  const onPresshandler = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Overview" }],
+    });
+  };
   return (
     <ScrollView>
       <DetailCard elevation={0}>
@@ -120,8 +125,14 @@ const PlaceDetailCardComponent = ({ place = {} }) => {
           </Spacer>
         </RestaurantCardContent>
         <RestaurantCardActions>
-          <RestaurantActionsButtonOutline textColor={theme.colors.ui.primary}>
+          {/* <RestaurantActionsButtonOutline textColor={theme.colors.ui.primary}>
             Check Menu
+          </RestaurantActionsButtonOutline> */}
+          <RestaurantActionsButtonOutline
+            onPress={onPresshandler}
+            textColor={theme.colors.ui.primary}
+          >
+            Go Back
           </RestaurantActionsButtonOutline>
           <RestaurantActionsButton
             disabled={!isOpenNow}

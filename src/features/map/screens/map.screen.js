@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import MapView, { Callout, Marker } from "react-native-maps";
-import styled, { useTheme } from "styled-components/native";
+import MapView, { Marker } from "react-native-maps";
+import styled from "styled-components/native";
 import Search from "../components/search.component";
 import { PlacesContext } from "../../../services/places/places.context";
 import { LocationContext } from "../../../services/location/location.context";
 import RestaurantInfoCard from "../../restaurants/components/restaurant-info-card.component";
-import { Image } from "react-native";
-import { Text } from "../../../components/typography/text.component";
-import { Modal, View, TouchableOpacity } from "react-native";
+import { Modal } from "react-native";
 import NotFound from "../../../components/utility/not-found.component";
 import LoadingSpinner from "../../../components/utility/loading-spinner.component";
 
@@ -99,7 +97,10 @@ const MapScreen = ({ navigation }) => {
                 restaurant={selectedPlace}
                 onDetailClick={() => {
                   setModalVisible(false);
-                  navigation.navigate("Places", { place: selectedPlace });
+                  navigation.navigate("Places", {
+                    screen: "PlaceDetail",
+                    params: { item: selectedPlace },
+                  });
                 }}
               />
             )}

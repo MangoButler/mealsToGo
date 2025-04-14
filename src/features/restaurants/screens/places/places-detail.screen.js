@@ -1,9 +1,10 @@
 import React from "react";
 import PlaceDetailCard from "../../components/place-detail-card.component";
 
-const PlacesDetailScreen = ({ route }) => {
+const PlacesDetailScreen = ({ navigation, route }) => {
   const { item } = route.params;
-  return <PlaceDetailCard place={item} />;
+
+  return <PlaceDetailCard place={item} navigation={navigation} />;
 };
 
 export default PlacesDetailScreen;
