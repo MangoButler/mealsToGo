@@ -11,6 +11,7 @@ import { Spacer } from "../../../components/spacer/spacer.component";
 import FeaturesSelector from "../../../components/form/features-selector.component";
 import AccordionList from "../../../components/utility/accordion-list.component";
 import { ScrollView } from "react-native";
+import LocationPicker from "../../../components/form/location-picker.component";
 
 const { height } = Dimensions.get("window");
 
@@ -25,6 +26,7 @@ const CreatePlaceForm = () => {
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const [location, setLocation] = useState(null);
 
   const theme = useTheme();
 
@@ -34,6 +36,7 @@ const CreatePlaceForm = () => {
       description,
       image,
       features: selectedFeatures,
+      location,
     };
 
     console.log("New Place:", newPlace);
@@ -63,11 +66,25 @@ const CreatePlaceForm = () => {
         />
 
         <ImageUpload onImageUpload={(img) => setImage(img)} />
+
         <Spacer position="bottom" size="large">
-          <AccordionList title="Select Features">
+          <AccordionList
+            title="Select Features"
+            icon={selectedFeatures.length ? "check-circle-outline" : "details"}
+          >
             <FeaturesSelector
               onSelectionChange={(features) => setSelectedFeatures(features)}
               preSelected={selectedFeatures}
+            />
+          </AccordionList>
+
+          <AccordionList
+            title="Set Location"
+            icon={location ? "map-check-outline" : "map-outline"}
+          >
+            <LocationPicker
+              onLocationSelected={(location) => setLocation(location)}
+              preSelected={location}
             />
           </AccordionList>
         </Spacer>
