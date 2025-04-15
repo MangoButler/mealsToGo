@@ -5,49 +5,46 @@ import star from "../../../../assets/star";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import {
-  RestaurantCard,
-  RestaurantActionsButton,
-  RestaurantActionsButtonOutline,
-  RestaurantCardActions,
-  RestaurantCardContent,
-  RestaurantCardCover,
+  PlaceCard,
+  PlaceActionsButton,
+  PlaceActionsButtonOutline,
+  PlaceCardActions,
+  PlaceCardContent,
+  PlaceCardCover,
   Info,
   IconContainer,
   CategoryIconContainer,
   InfoButton,
   InfoContainer,
-} from "./restaurants-info-card.styles";
+} from "./places-info-card.styles";
 import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
 import { TouchableOpacity } from "react-native";
 
-const RestaurantInfoCardComponent = ({
-  restaurant = {},
-  onDetailClick = () => {},
-}) => {
+const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
   const theme = useTheme();
   const {
-    name = "Test Restaurant",
+    name = "Test Place",
     placeId = "1",
     icons = ["food", "food-takeout-box", "food-variant"],
     photos = [
-      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-restaurant-presents.jpg?w=900&h=500&s=1",
+      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-Place-presents.jpg?w=900&h=500&s=1",
     ],
     address = "100 some street",
     isOpenNow = true,
     rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
-  } = restaurant;
+  } = place;
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
   return (
-    <RestaurantCard elevation={5}>
+    <PlaceCard elevation={5}>
       <TouchableOpacity onPress={onDetailClick}>
-        <RestaurantCardCover key={name} source={{ uri: photos[0] }} />
+        <PlaceCardCover key={name} source={{ uri: photos[0] }} />
       </TouchableOpacity>
-      <RestaurantCardContent>
+      <PlaceCardContent>
         <Info>
           <Row topMargin="small" bottomMargin="small">
             <InfoContainer>
@@ -122,27 +119,27 @@ const RestaurantInfoCardComponent = ({
             Temporarely Closed
           </Text>
         )}
-      </RestaurantCardContent>
-      <RestaurantCardActions>
-        <RestaurantActionsButtonOutline
+      </PlaceCardContent>
+      <PlaceCardActions>
+        <PlaceActionsButtonOutline
           onPress={onDetailClick}
           textColor={theme.colors.ui.primary}
         >
           Check Menu
-        </RestaurantActionsButtonOutline>
-        <RestaurantActionsButton
+        </PlaceActionsButtonOutline>
+        <PlaceActionsButton
           disabled={!isOpenNow}
           buttonColor={
             isOpenNow ? theme.colors.ui.primary : theme.colors.ui.disabled
           }
         >
           Reserve
-        </RestaurantActionsButton>
-      </RestaurantCardActions>
-    </RestaurantCard>
+        </PlaceActionsButton>
+      </PlaceCardActions>
+    </PlaceCard>
   );
 };
 
-const RestaurantInfoCard = React.memo(RestaurantInfoCardComponent);
-RestaurantInfoCard.displayName = "RestaurantInfoCard";
-export default RestaurantInfoCard;
+const PlaceInfoCard = React.memo(PlaceInfoCardComponent);
+PlaceInfoCard.displayName = "PlaceInfoCard";
+export default PlaceInfoCard;

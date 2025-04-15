@@ -1,11 +1,11 @@
 import React from "react";
-import { Text } from "react-native-paper";
 import {
   createStackNavigator,
   TransitionPresets,
 } from "@react-navigation/stack";
-import RestaurantsScreen from "../../features/restaurants/screens/places/restaurants.screen";
-import PlacesDetailScreen from "../../features/restaurants/screens/places/places-detail.screen";
+import PlacesScreen from "../../features/places/screens/places/places.screen";
+import PlacesDetailScreen from "../../features/places/screens/places/places-detail.screen";
+import NewPlaceScreen from "../../features/places/screens/places/new-place.screen";
 
 const PlacesStack = createStackNavigator();
 
@@ -17,8 +17,9 @@ const PlacesNavigator = () => {
         headerShown: false,
       }}
     >
-      <PlacesStack.Screen name="Overview" component={RestaurantsScreen} />
+      <PlacesStack.Screen name="Overview" component={PlacesScreen} />
       <PlacesStack.Screen name="PlaceDetail" component={PlacesDetailScreen} />
+      <PlacesStack.Screen name="NewPlace" component={NewPlaceScreen} />
     </PlacesStack.Navigator>
   );
 };

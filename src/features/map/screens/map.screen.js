@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 import Search from "../components/search.component";
 import { PlacesContext } from "../../../services/places/places.context";
 import { LocationContext } from "../../../services/location/location.context";
-import RestaurantInfoCard from "../../restaurants/components/restaurant-info-card.component";
+import PlaceInfoCard from "../../places/components/places-info-card.component";
 import { Modal } from "react-native";
 import NotFound from "../../../components/utility/not-found.component";
 import LoadingSpinner from "../../../components/utility/loading-spinner.component";
@@ -93,8 +93,8 @@ const MapScreen = ({ navigation }) => {
           />
           <ModalContentWrapper>
             {selectedPlace && (
-              <RestaurantInfoCard
-                restaurant={selectedPlace}
+              <PlaceInfoCard
+                place={selectedPlace}
                 onDetailClick={() => {
                   setModalVisible(false);
                   navigation.navigate("Places", {

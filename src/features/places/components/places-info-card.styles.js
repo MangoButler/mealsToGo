@@ -45,7 +45,7 @@ export const HighlightSmall = styled(Description)`
   color: ${(props) => props.theme.colors.ui.secondary};
 `;
 
-export const RestaurantCard = styled(Card)`
+export const PlaceCard = styled(Card)`
   margin-bottom: ${(props) => props.theme.space[3]};
   margin-right: ${(props) => props.theme.space[3]};
   margin-left: ${(props) => props.theme.space[3]};
@@ -56,26 +56,26 @@ export const RestaurantCard = styled(Card)`
   background-color: ${(props) => props.theme.colors.bg.secondary};
 `;
 
-export const RestaurantCardCover = styled(Card.Cover)`
+export const PlaceCardCover = styled(Card.Cover)`
   object-fit: contain;
   border-radius: 12px 12px 0 0;
 `;
 
-export const RestaurantCardContent = styled(Card.Content)`
+export const PlaceCardContent = styled(Card.Content)`
   margin-top: ${(props) => props.theme.space[2]};
   padding-left: ${(props) => props.theme.space[3]};
   margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
-export const RestaurantCardActions = styled(Card.Actions)`
+export const PlaceCardActions = styled(Card.Actions)`
   margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
-export const RestaurantActionsButton = styled(InfoButton)`
+export const PlaceActionsButton = styled(InfoButton)`
   border: none;
 `;
 
-export const RestaurantActionsButtonOutline = styled(InfoButton)`
+export const PlaceActionsButtonOutline = styled(InfoButton)`
   border-color: ${(props) => props.theme.colors.ui.primary};
 `;
 

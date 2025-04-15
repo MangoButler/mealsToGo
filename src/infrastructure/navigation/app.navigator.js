@@ -1,6 +1,6 @@
-import HomeScreen from "../../features/restaurants/screens/home.screen";
-import SettingsScreen from "../../features/restaurants/screens/settings.screen";
-import ProfileScreen from "../../features/restaurants/screens/profile.screen";
+import HomeScreen from "../../features/places/screens/home.screen";
+import SettingsScreen from "../../features/places/screens/settings.screen";
+import ProfileScreen from "../../features/places/screens/profile.screen";
 import MapScreen from "../../features/map/screens/map.screen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";

@@ -1,14 +1,15 @@
 import React, { useCallback, useContext, useMemo } from "react";
 import { FlatList } from "react-native";
 import Search from "../../components/search.component.js";
-import RestaurantInfoCard from "../../components/restaurant-info-card.component.js";
+import PlaceInfoCard from "../../components/places-info-card.component.js";
 import styled from "styled-components/native";
 import { PlacesContext } from "../../../../services/places/places.context.js";
 import LoadingSpinner from "../../../../components/utility/loading-spinner.component.js";
 
 import NotFound from "../../../../components/utility/not-found.component.js";
+import ActionButton from "../../../../components/utility/action-button.component.js";
 
-const RestaurantsList = styled(FlatList).attrs({
+const PlacesList = styled(FlatList).attrs({
   contentContainerStyle: {
     padding: 0,
   },
@@ -23,19 +24,16 @@ const RestaurantsList = styled(FlatList).attrs({
 //   font-size: ${(props) => props.theme.fontSizes.title};
 // `;
 
-const createRenderRestaurantItem = ({ onDetailClick }) => {
+const createRenderPlaceItem = ({ onDetailClick }) => {
   const RenderItem = ({ item }) => (
-    <RestaurantInfoCard
-      restaurant={item}
-      onDetailClick={() => onDetailClick(item)}
-    />
+    <PlaceInfoCard place={item} onDetailClick={() => onDetailClick(item)} />
   );
 
-  RenderItem.displayName = "RenderRestaurantItem";
+  RenderItem.displayName = "RenderPlaceItem";
   return RenderItem;
 };
 
-export default function RestaurantsScreen({ navigation }) {
+export default function PlacesScreen({ navigation }) {
   const { places, isLoading, error } = useContext(PlacesContext);
 
   const onDetailClick = useCallback(
@@ -45,20 +43,28 @@ export default function RestaurantsScreen({ navigation }) {
     [navigation]
   );
 
+  const onFloatingButtonClick = () => {
+    navigation.navigate("NewPlace");
+  };
+
   const renderItem = useMemo(
-    () => createRenderRestaurantItem({ onDetailClick }),
+    () => createRenderPlaceItem({ onDetailClick }),
     [onDetailClick]
   );
 
   return (
     <>
+      <ActionButton
+        icon={"map-marker-plus-outline"}
+        onPress={onFloatingButtonClick}
+      />
       <Search />
       {isLoading ? (
         <LoadingSpinner />
       ) : error ? (
         <NotFound />
       ) : (
-        <RestaurantsList
+        <PlacesList
           data={places}
           renderItem={renderItem}
           keyExtractor={(item) => item.name}

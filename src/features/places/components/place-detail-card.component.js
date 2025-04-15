@@ -5,15 +5,15 @@ import star from "../../../../assets/star";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import {
-  RestaurantActionsButton,
-  RestaurantActionsButtonOutline,
-  RestaurantCardActions,
-  RestaurantCardContent,
+  PlaceActionsButton,
+  PlaceActionsButtonOutline,
+  PlaceCardActions,
+  PlaceCardContent,
   Info,
   IconContainer,
   InfoButton,
   InfoContainer,
-} from "./restaurants-info-card.styles";
+} from "./places-info-card.styles";
 import { DetailCard, DetailCardCover } from "./place-detail-card.styles";
 import Row from "../../../components/spacer/row.component";
 import AccordeonList from "../../../components/utility/accordion-list.component";
@@ -23,11 +23,11 @@ import MiniMap from "../../../components/utility/mini-map.component";
 const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
   const {
-    name = "Test Restaurant",
+    name = "Test Place",
     placeId = "1",
     icons = ["food", "food-takeout-box", "food-variant"],
     photos = [
-      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-restaurant-presents.jpg?w=900&h=500&s=1",
+      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-Place-presents.jpg?w=900&h=500&s=1",
     ],
     address = "100 some street",
     isOpenNow = true,
@@ -49,7 +49,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
       <DetailCard elevation={0}>
         <DetailCardCover key={name} source={{ uri: photos[0] }} />
 
-        <RestaurantCardContent>
+        <PlaceCardContent>
           <Info>
             <Row topMargin="small" bottomMargin="small">
               <InfoContainer>
@@ -123,26 +123,23 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               ]}
             />
           </Spacer>
-        </RestaurantCardContent>
-        <RestaurantCardActions>
-          {/* <RestaurantActionsButtonOutline textColor={theme.colors.ui.primary}>
-            Check Menu
-          </RestaurantActionsButtonOutline> */}
-          <RestaurantActionsButtonOutline
+        </PlaceCardContent>
+        <PlaceCardActions>
+          <PlaceActionsButtonOutline
             onPress={onPresshandler}
             textColor={theme.colors.ui.primary}
           >
             Go Back
-          </RestaurantActionsButtonOutline>
-          <RestaurantActionsButton
+          </PlaceActionsButtonOutline>
+          <PlaceActionsButton
             disabled={!isOpenNow}
             buttonColor={
               isOpenNow ? theme.colors.ui.primary : theme.colors.ui.disabled
             }
           >
             Reserve
-          </RestaurantActionsButton>
-        </RestaurantCardActions>
+          </PlaceActionsButton>
+        </PlaceCardActions>
       </DetailCard>
     </ScrollView>
   );
