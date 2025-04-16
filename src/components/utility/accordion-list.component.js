@@ -1,12 +1,13 @@
 import * as React from "react";
 import { List } from "react-native-paper";
 import styled, { useTheme } from "styled-components";
+import { Spacer } from "../spacer/spacer.component";
 
 const Accordion = styled(List.Accordion)`
   font-family: ${(props) => props.theme.fonts.info};
   font-size: ${(props) => props.theme.fontSizes.caption};
   color: ${(props) => props.theme.colors.text.secondary};
-  margin-bottom: ${(props) => props.theme.space[1]};
+  /* margin-bottom: ${(props) => props.theme.space[1]}; */
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 

@@ -11,19 +11,16 @@ const OptionGrid = styled(View)`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 90%;
 `;
 
 const OptionItem = styled.TouchableOpacity`
-  width: 40%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: ${(props) => props.theme.space[2]};
-  margin: ${(props) => props.theme.space[1]} ${(props) => props.theme.space[0]};
+  flex-basis: 48%;
+  margin-bottom: ${(props) => props.theme.space[2]};
   border-radius: ${(props) => props.theme.space[1]};
   background-color: ${(props) => props.theme.colors.bg.secondary};
+  flex-direction: row;
+  align-items: center;
+  padding: ${(props) => props.theme.space[2]};
 `;
 
 const OptionLabel = styled(Text)`
@@ -33,16 +30,18 @@ const OptionLabel = styled(Text)`
 `;
 
 const FEATURES = [
-  { label: "Conbini", value: "Conbini", icon: "store-24-hour" },
+  { label: "Conbini", value: "conbini", icon: "store-24-hour" },
   {
     label: "Supermarket",
-    value: "Supermarket",
+    value: "supermarket",
     icon: "store",
   },
-  { label: "Toilet", value: "Toilet", icon: "toilet" },
-  { label: "Raincover", value: "Raincover", icon: "weather-rainy" },
-  { label: "Benches", value: "Benches", icon: "seat" },
-  { label: "Sakura spot", value: "Sakura spot", icon: "flower" },
+  { label: "Toilet", value: "toilet", icon: "toilet" },
+  { label: "Raincover", value: "raincover", icon: "weather-rainy" },
+  { label: "Benches", value: "benches", icon: "seat" },
+  { label: "Table", value: "table", icon: "table-picnic" },
+  { label: "Take-Away", value: "take-away", icon: "food-takeout-box" },
+  { label: "Sakura spot", value: "sakura-spot", icon: "flower" },
 ];
 
 const FeaturesSelector = ({ onSelectionChange, preSelected }) => {
@@ -76,7 +75,7 @@ const FeaturesSelector = ({ onSelectionChange, preSelected }) => {
                 : theme.colors.text.disabled
             }
           />
-          <OptionLabel theme={theme} variant="body">
+          <OptionLabel theme={theme} variant="hint">
             {feature.label}
           </OptionLabel>
           <View style={{ marginLeft: "auto" }}>

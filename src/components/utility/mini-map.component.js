@@ -35,6 +35,7 @@ const OverlayText = styled.Text`
 const MapContainer = styled.View`
   height: ${screenHeight * 0.33}px;
   width: 100%;
+  border-radius: ${(props) => props.theme.sizes[2]};
 `;
 
 const MiniMap = ({ geometry }) => {

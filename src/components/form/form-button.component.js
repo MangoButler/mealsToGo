@@ -13,8 +13,10 @@ const FormButton = ({
   children,
   onPress = () => {},
   disabled = false,
+  ...props
 }) => {
   const theme = useTheme();
+
   return (
     <FormActionButton
       icon={icon}
@@ -25,6 +27,7 @@ const FormButton = ({
       }
       textColor={theme.colors.text.inverse}
       mode="contained"
+      {...props}
     >
       {children}
     </FormActionButton>

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
-import { TextInput } from "react-native-paper";
-import * as ImagePicker from "expo-image-picker";
+import { View, ScrollView } from "react-native";
 import styled, { useTheme } from "styled-components/native";
+
 import FormButton from "../../../components/form/form-button.component";
 import { Text } from "../../../components/typography/text.component";
 import FormTextInput from "../../../components/form/form-text-input.component";
@@ -10,27 +9,43 @@ import ImageUpload from "../../../components/form/image-upload.component";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import FeaturesSelector from "../../../components/form/features-selector.component";
 import AccordionList from "../../../components/utility/accordion-list.component";
-import { ScrollView } from "react-native";
 import LocationPicker from "../../../components/form/location-picker.component";
-
-const { height } = Dimensions.get("window");
-
+import { validateFormTextInput } from "../../../utils/validation";
 const Container = styled(View)`
   flex: 1;
   padding: ${(props) => props.theme.space[4]};
   background-color: ${(props) => props.theme.colors.bg.secondary};
 `;
 
-const CreatePlaceForm = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [selectedFeatures, setSelectedFeatures] = useState([]);
-  const [location, setLocation] = useState(null);
+const PlaceForm = ({ place = null, onSubmit }) => {
+  const [title, setTitle] = useState(place ? place.title : "");
+  const [description, setDescription] = useState(
+    place ? place.description : "Another wonderful spot, overlooked by most!"
+  );
+  const [image, setImage] = useState(place ? place.image : null);
+  const [selectedFeatures, setSelectedFeatures] = useState(
+    place ? place.features : []
+  );
+  const [location, setLocation] = useState(place ? place.location : null);
+
+  const [titleError, setTitleError] = useState(null);
+  const [descriptionError, setDescriptionError] = useState(null);
 
   const theme = useTheme();
 
   const handleSubmit = () => {
+    const titleErr = validateFormTextInput("Title", title);
+    const descriptionErr = description
+      ? validateFormTextInput("Description", description)
+      : null;
+
+    setTitleError(titleErr);
+    setDescriptionError(descriptionErr);
+
+    if (titleErr || descriptionErr) {
+      return;
+    }
+
     const newPlace = {
       title,
       description,
@@ -38,9 +53,9 @@ const CreatePlaceForm = () => {
       features: selectedFeatures,
       location,
     };
+    onSubmit(newPlace);
 
-    console.log("New Place:", newPlace);
-    // You can add form validation and submission logic here
+    // Add actual submission logic here
   };
 
   return (
@@ -48,21 +63,18 @@ const CreatePlaceForm = () => {
       <Container>
         <Spacer position="bottom" size="large">
           <Text variant={"label"} theme={theme}>
-            Share Your favorite drinking spot!
+            Share Your Favorite Drinking Spot!
           </Text>
         </Spacer>
 
         <FormTextInput
           value={title}
-          label={"Title"}
-          onChangeText={(text) => setTitle(text)}
-        />
-
-        <FormTextInput
-          value={description}
-          label="Description"
-          multiline
-          onChangeText={(text) => setDescription(text)}
+          label="Title"
+          onChangeText={(text) => {
+            setTitle(text);
+            if (titleError) setTitleError(null);
+          }}
+          error={titleError}
         />
 
         <ImageUpload onImageUpload={(img) => setImage(img)} />
@@ -89,10 +101,22 @@ const CreatePlaceForm = () => {
           </AccordionList>
         </Spacer>
 
-        <FormButton onPress={handleSubmit}>Submit</FormButton>
+        <FormTextInput
+          value={description}
+          label="Description (optional)"
+          multiline
+          onChangeText={(text) => {
+            setDescription(text);
+            if (descriptionError) setDescriptionError(null);
+          }}
+          error={descriptionError}
+        />
+        <Spacer position="top" size="medium">
+          <FormButton onPress={handleSubmit}>Submit</FormButton>
+        </Spacer>
       </Container>
     </ScrollView>
   );
 };
 
-export default CreatePlaceForm;
+export default PlaceForm;

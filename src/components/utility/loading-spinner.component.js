@@ -13,11 +13,11 @@ const Spinner = styled(ActivityIndicator)`
   margin: -25px;
 `;
 
-const LoadingSpinner = ({ size = "large" }) => {
+const LoadingSpinner = ({ size = 50 }) => {
   const theme = useTheme();
   return (
     <LoadingContainer>
-      <Spinner animating={true} color={theme.colors.ui.primary} size={50} />
+      <Spinner animating={true} color={theme.colors.ui.primary} size={size} />
     </LoadingContainer>
   );
 };

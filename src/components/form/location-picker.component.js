@@ -17,26 +17,29 @@ const LocationPicker = ({ onLocationSelected, preSelected }) => {
   const theme = useTheme();
   const [location, setLocation] = useState(preSelected || null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getLocation = async () => {
     try {
+      setErrorMsg(null);
+      setIsLoading(true);
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        setErrorMsg("Permission to access location required.");
         return;
       }
 
       const loc = await Location.getCurrentPositionAsync({});
-      //   const coords = {
-      //     lat: loc.coords.latitude,
-      //     lng: loc.coords.longitude,
-      //   };
       const geometry = transformLocationToGeometry(loc);
       setLocation(geometry);
-      onLocationSelected(geometry); // pass it to parent
+      onLocationSelected(geometry);
+      setIsLoading(false);
     } catch (error) {
-      setErrorMsg("Something went wrong while fetching location");
+      setErrorMsg(
+        "Something went wrong while fetching location. Please try again."
+      );
       console.error(error);
+      setIsLoading(false);
     }
   };
 
@@ -45,13 +48,14 @@ const LocationPicker = ({ onLocationSelected, preSelected }) => {
       <FormButton
         onPress={getLocation}
         icon={location ? "map-marker-check" : "map-marker"}
+        loading={isLoading}
       >
         Use Current Location
       </FormButton>
       {location && (
         <Spacer position="bottom" size="medium">
           <MiniMap geometry={location} />
-          <Spacer position="top" size="small">
+          <Spacer position="top" size="medium">
             <Text variant="caption" theme={theme}>
               📍 Location: {location.location.lat.toFixed(4)},{" "}
               {location.location.lng.toFixed(4)}

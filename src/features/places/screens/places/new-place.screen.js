@@ -1,8 +1,14 @@
 import React from "react";
-import CreatePlaceForm from "../../components/create-place-form.component";
+import PlaceForm from "../../components/place-form.component";
 
 const NewPlaceScreen = () => {
-  return <CreatePlaceForm />;
+  return (
+    <PlaceForm
+      onSubmit={(newPlace) => {
+        console.log(newPlace);
+      }}
+    />
+  );
 };
 
 export default NewPlaceScreen;

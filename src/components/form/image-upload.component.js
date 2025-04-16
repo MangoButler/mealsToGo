@@ -22,23 +22,39 @@ const ImageUpload = ({ onImageUpload }) => {
   const [imageUri, setImageUri] = useState(null);
 
   const handlePickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission required", "Camera roll access is needed.");
-      return;
-    }
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission required",
+          "Camera roll access is needed to upload an image."
+        );
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
+      if (result.canceled) {
+        return;
+      }
+
+      const uri = result.assets?.[0]?.uri;
+      if (!uri) {
+        Alert.alert("Error", "Failed to get image URI.");
+        return;
+      }
+
       setImageUri(uri);
       if (onImageUpload) onImageUpload(uri);
+    } catch (error) {
+      console.error("Image picking failed:", error);
+      Alert.alert("Error", "Something went wrong while picking the image.");
     }
   };
 
