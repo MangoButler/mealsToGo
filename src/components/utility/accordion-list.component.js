@@ -1,7 +1,6 @@
 import * as React from "react";
 import { List } from "react-native-paper";
 import styled, { useTheme } from "styled-components";
-import { Spacer } from "../spacer/spacer.component";
 
 const Accordion = styled(List.Accordion)`
   font-family: ${(props) => props.theme.fonts.info};

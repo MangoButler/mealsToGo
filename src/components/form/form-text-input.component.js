@@ -19,6 +19,7 @@ const FormTextInput = ({
   onChangeText,
   error = null,
   multiline = false,
+  ...props
 }) => {
   const theme = useTheme();
 
@@ -35,6 +36,7 @@ const FormTextInput = ({
         activeOutlineColor={theme.colors.ui.primary}
         dense
         multiline={multiline}
+        {...props}
       />
       {error && (
         <Spacer size={"small"} position={"top"}>

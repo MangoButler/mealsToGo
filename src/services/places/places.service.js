@@ -1,5 +1,7 @@
 import camelize from "camelize";
 import { mockImages, mocks } from "./mock";
+import { API_URL } from "./places-api-url";
+import { Alert } from "react-native";
 
 export const placeRequest = (place) => {
   return new Promise((resolve, reject) => {
@@ -21,4 +23,41 @@ export const placeTransform = ({ results = [] }) => {
   });
 
   return camelize(mappedResults);
+};
+
+export const submitPlace = async ({
+  title,
+  description,
+  imageUrl,
+  features,
+  location,
+}) => {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        description,
+        imageUrl,
+        features,
+        location,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to submit place");
+    }
+
+    const data = await response.json();
+    Alert.alert("Success", "Place submitted successfully!");
+    return data;
+  } catch (error) {
+    console.error("Submission error:", error);
+    Alert.alert("Error", error.message);
+    return null;
+  }
 };

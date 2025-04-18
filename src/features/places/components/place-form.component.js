@@ -11,13 +11,14 @@ import FeaturesSelector from "../../../components/form/features-selector.compone
 import AccordionList from "../../../components/utility/accordion-list.component";
 import LocationPicker from "../../../components/form/location-picker.component";
 import { validateFormTextInput } from "../../../utils/validation";
+import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
 const Container = styled(View)`
   flex: 1;
   padding: ${(props) => props.theme.space[4]};
   background-color: ${(props) => props.theme.colors.bg.secondary};
 `;
 
-const PlaceForm = ({ place = null, onSubmit }) => {
+const PlaceForm = ({ place = null, onSubmit, navigation }) => {
   const [title, setTitle] = useState(place ? place.title : "");
   const [description, setDescription] = useState(
     place ? place.description : "Another wonderful spot, overlooked by most!"
@@ -30,8 +31,11 @@ const PlaceForm = ({ place = null, onSubmit }) => {
 
   const [titleError, setTitleError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
-
+  const [formLoading, setFormLoading] = useState(false);
   const theme = useTheme();
+
+  const isSubmitable =
+    title && image && location && !titleError && !descriptionError;
 
   const handleSubmit = () => {
     const titleErr = validateFormTextInput("Title", title);
@@ -45,17 +49,19 @@ const PlaceForm = ({ place = null, onSubmit }) => {
     if (titleErr || descriptionErr) {
       return;
     }
-
+    setFormLoading(true);
     const newPlace = {
       title,
       description,
-      image,
+      imageUrl: image,
       features: selectedFeatures,
       location,
     };
-    onSubmit(newPlace);
-
-    // Add actual submission logic here
+    const result = onSubmit(newPlace);
+    setFormLoading(false);
+    if (result) {
+      returnToPlacesOverview(navigation);
+    }
   };
 
   return (
@@ -77,7 +83,7 @@ const PlaceForm = ({ place = null, onSubmit }) => {
           error={titleError}
         />
 
-        <ImageUpload onImageUpload={(img) => setImage(img)} />
+        <ImageUpload onImageUploadSuccess={(img) => setImage(img)} />
 
         <Spacer position="bottom" size="large">
           <AccordionList
@@ -112,7 +118,13 @@ const PlaceForm = ({ place = null, onSubmit }) => {
           error={descriptionError}
         />
         <Spacer position="top" size="medium">
-          <FormButton onPress={handleSubmit}>Submit</FormButton>
+          <FormButton
+            loading={formLoading}
+            onPress={handleSubmit}
+            disabled={!isSubmitable}
+          >
+            Submit
+          </FormButton>
         </Spacer>
       </Container>
     </ScrollView>
