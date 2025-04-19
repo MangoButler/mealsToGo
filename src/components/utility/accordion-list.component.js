@@ -10,6 +10,19 @@ const Accordion = styled(List.Accordion)`
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
+const ItemGrid = styled.View`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-left: -10%;
+`;
+
+const GridItem = styled(List.Item)`
+  width: 49%;
+  margin-bottom: 12px;
+`;
+
 const AccordionList = ({
   title = "Amenities",
   icon = "details",
@@ -18,12 +31,6 @@ const AccordionList = ({
 }) => {
   const [expanded, setExpanded] = React.useState(false);
   const theme = useTheme();
-  const iconsWithTitles =
-    typeof items[0] === "string"
-      ? items.map((item) => {
-          return { title: item, icon: item };
-        })
-      : items;
 
   const handlePress = () => setExpanded(!expanded);
 
@@ -47,17 +54,19 @@ const AccordionList = ({
       onPress={handlePress}
       rippleColor={theme.colors.bg.secondary}
     >
-      {children
-        ? children
-        : iconsWithTitles.map((item, i) => (
-            <List.Item
-              title={item.title}
+      {children ? (
+        children
+      ) : (
+        <ItemGrid>
+          {items.map((item, i) => (
+            <GridItem
+              title={item.label}
               titleStyle={{
                 color: theme.colors.text.secondary,
                 fontFamily: theme.fonts.info,
                 fontSize: parseInt(theme.fontSizes.caption),
               }}
-              key={`accordion-${item}-${i}`}
+              key={`accordion-${item.value}-${i}`}
               left={(props) => (
                 <List.Icon
                   {...props}
@@ -67,6 +76,8 @@ const AccordionList = ({
               )}
             />
           ))}
+        </ItemGrid>
+      )}
     </Accordion>
   );
 };

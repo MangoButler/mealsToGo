@@ -11,7 +11,7 @@ export const colors = {
     secondary: "#B96D40",
     tertiary: "#F8EDEB",
     quaternary: "#FFFFFF",
-    disabled: "#D8CBC7",
+    disabled: "#e5dee3",
     error: "#CC3F0C",
     success: "#33673B",
   },
@@ -23,7 +23,7 @@ export const colors = {
   text: {
     primary: "#262626",
     secondary: "#757575",
-    disabled: "#9C9C9C",
+    disabled: "#b3acb2",
     inverse: "#FFFFFF",
     error: "#D0421B",
     success: "#138000",

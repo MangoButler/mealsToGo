@@ -5,7 +5,7 @@ import { Text } from "../typography/text.component";
 import { Checkbox } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTheme } from "styled-components/native";
-
+import { FEATURES } from "../../utils/features-list";
 const OptionGrid = styled(View)`
   display: flex;
   flex-direction: row;
@@ -28,21 +28,6 @@ const OptionLabel = styled(Text)`
 
   margin-left: ${(props) => props.theme.space[1]};
 `;
-
-const FEATURES = [
-  { label: "Conbini", value: "conbini", icon: "store-24-hour" },
-  {
-    label: "Supermarket",
-    value: "supermarket",
-    icon: "store",
-  },
-  { label: "Toilet", value: "toilet", icon: "toilet" },
-  { label: "Raincover", value: "raincover", icon: "weather-rainy" },
-  { label: "Benches", value: "benches", icon: "seat" },
-  { label: "Table", value: "table", icon: "table-picnic" },
-  { label: "Take-Away", value: "take-away", icon: "food-takeout-box" },
-  { label: "Sakura spot", value: "sakura-spot", icon: "flower" },
-];
 
 const FeaturesSelector = ({ onSelectionChange, preSelected }) => {
   const [selected, setSelected] = useState(preSelected || []);

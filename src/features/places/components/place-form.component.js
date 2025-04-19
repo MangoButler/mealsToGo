@@ -122,8 +122,17 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
             loading={formLoading}
             onPress={handleSubmit}
             disabled={!isSubmitable}
+            mode="contained"
           >
             Submit
+          </FormButton>
+          <FormButton
+            onPress={navigation.goBack}
+            mode="outlined"
+            buttonColor={theme.colors.bg.secondary}
+            textColor={theme.colors.text.secondary}
+          >
+            Cancel
           </FormButton>
         </Spacer>
       </Container>

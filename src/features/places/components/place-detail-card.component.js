@@ -19,36 +19,55 @@ import Row from "../../../components/spacer/row.component";
 import AccordeonList from "../../../components/utility/accordion-list.component";
 import { ScrollView } from "react-native";
 import MiniMap from "../../../components/utility/mini-map.component";
-import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
+import { getFeaturesObjects } from "../../../utils/features-list";
 
 const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
   const {
-    name = "Test Place",
-    placeId = "1",
-    icons = ["food", "food-takeout-box", "food-variant"],
-    photos = [
-      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-Place-presents.jpg?w=900&h=500&s=1",
+    title = "Test Place",
+    id: placeId = "1",
+    features = [
+      "conbini",
+      "toilet",
+      "benches",
+      "take-away",
+      "sakura-spot",
+      "table",
+      "raincover",
+      "supermarket",
     ],
+    imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
     address = "100 some street",
     isOpenNow = true,
     rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
-    geometry,
+    location = {
+      location: {
+        lat: 37.4220936,
+        lng: -122.083922,
+      },
+      viewport: {
+        northeast: {
+          lat: 37.4234425802915,
+          lng: -122.082573019709,
+        },
+        southwest: {
+          lat: 37.4207446197085,
+          lng: -122.085270980292,
+        },
+      },
+    },
   } = place;
 
+  const featuresObjects = getFeaturesObjects(features);
+
   const ratingArray = Array.from(new Array(Math.floor(rating)));
-  // const onGoBackHandler = () => {
-  //   navigation.reset({
-  //     index: 0,
-  //     routes: [{ name: "Overview" }],
-  //   });
-  // };
+
   return (
     <ScrollView>
       <DetailCard elevation={0}>
-        <DetailCardCover key={name} source={{ uri: photos[0] }} />
+        <DetailCardCover key={title} source={{ uri: imageUrl }} />
 
         <PlaceCardContent>
           <Info>
@@ -56,7 +75,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               <InfoContainer>
                 <Spacer size={"small"} position={"bottom"}>
                   <Text theme={theme} variant={"label"}>
-                    {name}
+                    {title}
                   </Text>
                 </Spacer>
                 <Text theme={theme} variant={"hint"}>
@@ -111,23 +130,27 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
 
           <Spacer position={"top"} size={"medium"}>
             <AccordeonList title="Location" icon="map-marker">
-              <MiniMap geometry={geometry} />
+              <MiniMap geometry={location} />
             </AccordeonList>
 
-            <AccordeonList items={icons} icon="details" title="Features" />
+            <AccordeonList
+              items={featuresObjects}
+              icon="details"
+              title="Features"
+            />
             <AccordeonList
               icon="subway"
               title="Stations Nearby"
               items={[
-                { title: "Shibuya", icon: "train" },
-                { title: "Omote-sando", icon: "train" },
+                { label: "Shibuya", icon: "train" },
+                { label: "Omote-sando", icon: "train" },
               ]}
             />
           </Spacer>
         </PlaceCardContent>
         <PlaceCardActions>
           <PlaceActionsButtonOutline
-            onPress={() => returnToPlacesOverview(navigation)}
+            onPress={navigation.goBack}
             textColor={theme.colors.ui.primary}
           >
             Go Back

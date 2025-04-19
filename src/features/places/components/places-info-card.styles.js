@@ -32,6 +32,7 @@ export const IconContainer = styled.View`
 
 export const CategoryIconContainer = styled(IconContainer)`
   gap: ${(props) => props.theme.space[1]};
+  flex-wrap: wrap;
 `;
 
 export const InfoButton = styled(Button)`

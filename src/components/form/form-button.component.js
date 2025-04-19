@@ -13,20 +13,21 @@ const FormButton = ({
   children,
   onPress = () => {},
   disabled = false,
+  buttonColor = null,
   ...props
 }) => {
   const theme = useTheme();
+  const bgColor =
+    buttonColor ||
+    (!disabled ? theme.colors.ui.primary : theme.colors.ui.disabled);
 
   return (
     <FormActionButton
       icon={icon}
       onPress={onPress}
       disabled={disabled}
-      buttonColor={
-        !disabled ? theme.colors.ui.primary : theme.colors.ui.disabled
-      }
+      buttonColor={bgColor}
       textColor={theme.colors.text.inverse}
-      mode="contained"
       {...props}
     >
       {children}

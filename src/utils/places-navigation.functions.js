@@ -4,3 +4,7 @@ export const returnToPlacesOverview = (navigation) => {
     routes: [{ name: "Overview" }],
   });
 };
+
+export const goBack = (navigation) => {
+  navigation.goBack();
+};

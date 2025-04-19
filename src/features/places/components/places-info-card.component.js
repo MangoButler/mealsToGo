@@ -20,16 +20,24 @@ import {
 import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
 import { TouchableOpacity } from "react-native";
+import { getFeaturesObjects } from "../../../utils/features-list";
 
 const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
   const theme = useTheme();
   const {
-    name = "Test Place",
-    placeId = "1",
-    icons = ["food", "food-takeout-box", "food-variant"],
-    photos = [
-      "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/14/26/75/c4/jakarta-Place-presents.jpg?w=900&h=500&s=1",
+    title = "Test Place",
+    id: placeId = "1",
+    features = [
+      "conbini",
+      "toilet",
+      "benches",
+      "take-away",
+      "sakura-spot",
+      "table",
+      "raincover",
+      "supermarket",
     ],
+    imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
     address = "100 some street",
     isOpenNow = true,
     rating = 3,
@@ -37,12 +45,14 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
     description = "A nice little getaway for any adventurer",
   } = place;
 
+  const featuresObjects = getFeaturesObjects(features);
+
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
   return (
     <PlaceCard elevation={5}>
       <TouchableOpacity onPress={onDetailClick}>
-        <PlaceCardCover key={name} source={{ uri: photos[0] }} />
+        <PlaceCardCover key={title} source={{ uri: imageUrl }} />
       </TouchableOpacity>
       <PlaceCardContent>
         <Info>
@@ -50,7 +60,7 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
             <InfoContainer>
               <Spacer size={"small"} position={"bottom"}>
                 <Text theme={theme} variant={"label"}>
-                  {name}
+                  {title}
                 </Text>
               </Spacer>
               <Text theme={theme} variant={"hint"}>
@@ -59,10 +69,10 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
             </InfoContainer>
             <Spacer position={"right"} size={"small"}>
               <CategoryIconContainer>
-                {icons.map((icon, i) => (
+                {featuresObjects.slice(0, 3).map((feature) => (
                   <Icon
-                    source={icon}
-                    key={`icon-${placeId}-${i}`}
+                    source={feature.icon}
+                    key={`icon-${placeId}-${feature.value}`}
                     size={20}
                     color={theme.colors.ui.primary}
                   />
