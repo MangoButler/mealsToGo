@@ -20,6 +20,7 @@ import AccordeonList from "../../../components/utility/accordion-list.component"
 import { ScrollView } from "react-native";
 import MiniMap from "../../../components/utility/mini-map.component";
 import { getFeaturesObjects } from "../../../utils/features-list";
+import { formatStations } from "../../../utils/station.functions";
 
 const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
@@ -37,7 +38,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
       "supermarket",
     ],
     imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
-    address = "100 some street",
+    area = "100 some street",
     isOpenNow = true,
     rating = 3,
     isClosedTemporarely = false,
@@ -58,10 +59,15 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
         },
       },
     },
+    nearbyStations = [],
+    city = "Others",
   } = place;
 
   const featuresObjects = getFeaturesObjects(features);
-
+  const stationsWithIcon = formatStations(
+    nearbyStations,
+    city === "Jakarta" ? "bus" : "train"
+  );
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
   return (
@@ -79,7 +85,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   </Text>
                 </Spacer>
                 <Text theme={theme} variant={"hint"}>
-                  {address}
+                  {area}
                 </Text>
               </InfoContainer>
             </Row>
@@ -135,17 +141,32 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
 
             <AccordeonList
               items={featuresObjects}
-              icon="details"
               title="Features"
-            />
+              icon="details"
+            >
+              {!features.length && (
+                <Spacer position="vertical" size="large">
+                  <Text variant="captionCentered" theme={theme}>
+                    No special features, but likely a charming view!
+                  </Text>
+                </Spacer>
+              )}
+            </AccordeonList>
+
             <AccordeonList
               icon="subway"
               title="Stations Nearby"
-              items={[
-                { label: "Shibuya", icon: "train" },
-                { label: "Omote-sando", icon: "train" },
-              ]}
-            />
+              items={stationsWithIcon}
+              cols={1}
+            >
+              {!nearbyStations.length && (
+                <Spacer position="vertical" size="large">
+                  <Text variant="captionCentered" theme={theme}>
+                    More than 10 minutes walk to closest station!
+                  </Text>
+                </Spacer>
+              )}
+            </AccordeonList>
           </Spacer>
         </PlaceCardContent>
         <PlaceCardActions>

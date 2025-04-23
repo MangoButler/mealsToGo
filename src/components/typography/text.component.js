@@ -21,6 +21,11 @@ const caption = (theme) => `
     font-size: ${theme.fontSizes.caption};
     color: ${theme.colors.text.highlight};
 `;
+const captionCentered = (theme) => `
+    font-size: ${theme.fontSizes.caption};
+    color: ${theme.colors.text.highlight};
+    text-align: center;
+`;
 const error = (theme) => `
     color: ${theme.colors.text.error};
 `;
@@ -36,6 +41,7 @@ const variants = {
   caption,
   error,
   hint,
+  captionCentered,
 };
 
 export const Text = styled.Text`

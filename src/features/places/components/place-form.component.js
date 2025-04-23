@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { View, ScrollView } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 
@@ -12,6 +12,7 @@ import AccordionList from "../../../components/utility/accordion-list.component"
 import LocationPicker from "../../../components/form/location-picker.component";
 import { validateFormTextInput } from "../../../utils/validation";
 import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
+import { PlacesContext } from "../../../services/places/places.context";
 const Container = styled(View)`
   flex: 1;
   padding: ${(props) => props.theme.space[4]};
@@ -32,6 +33,8 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
   const [titleError, setTitleError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
+
+  const { triggerPlacesRefresh } = useContext(PlacesContext);
   const theme = useTheme();
 
   const isSubmitable =
@@ -60,6 +63,7 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
     const result = onSubmit(newPlace);
     setFormLoading(false);
     if (result) {
+      triggerPlacesRefresh();
       returnToPlacesOverview(navigation);
     }
   };

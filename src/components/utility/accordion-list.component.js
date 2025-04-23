@@ -19,7 +19,7 @@ const ItemGrid = styled.View`
 `;
 
 const GridItem = styled(List.Item)`
-  width: 49%;
+  width: ${({ columns }) => `${100 / columns - 1}%`};
   margin-bottom: 12px;
 `;
 
@@ -27,6 +27,7 @@ const AccordionList = ({
   title = "Amenities",
   icon = "details",
   items = ["food"],
+  cols = 2,
   children,
 }) => {
   const [expanded, setExpanded] = React.useState(false);
@@ -60,13 +61,14 @@ const AccordionList = ({
         <ItemGrid>
           {items.map((item, i) => (
             <GridItem
+              columns={cols}
               title={item.label}
               titleStyle={{
                 color: theme.colors.text.secondary,
                 fontFamily: theme.fonts.info,
                 fontSize: parseInt(theme.fontSizes.caption),
               }}
-              key={`accordion-${item.value}-${i}`}
+              key={`accordion-${item.label}-${i}`}
               left={(props) => (
                 <List.Icon
                   {...props}

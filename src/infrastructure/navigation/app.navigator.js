@@ -7,8 +7,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../theme";
 import PlacesNavigator from "./places.navigation";
+import styled from "styled-components/native";
 
 const Tab = createBottomTabNavigator();
+
+const NavContainer = styled(NavigationContainer)`
+  margin-top: ${(props) => props.theme.space[4]};
+`;
 
 const TAB_ICON = {
   // Restaurants: "restaurant",
@@ -36,7 +41,7 @@ const createScreenOptions = ({ route }) => {
 
 export default function AppNavigator() {
   return (
-    <NavigationContainer>
+    <NavContainer>
       <Tab.Navigator screenOptions={createScreenOptions}>
         <Tab.Screen
           options={{ headerShown: false }}
@@ -64,6 +69,6 @@ export default function AppNavigator() {
           component={SettingsScreen}
         />
       </Tab.Navigator>
-    </NavigationContainer>
+    </NavContainer>
   );
 }

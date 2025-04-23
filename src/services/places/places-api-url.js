@@ -1,5 +1,12 @@
 // export const API_URL = "http://192.168.241.1:3000/api/places";
-export const API_URL = "http://10.0.2.2:3000/api/places";
+
+//Dev
+
+// export const API_URL = "http://10.0.2.2:3000/api/places";
+
+//Production
+
+export const API_URL = "https://cans-and-go-backend.vercel.app/api/places";
 
 export const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/dg5kd3rfa/image/upload";

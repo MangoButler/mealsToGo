@@ -15,6 +15,7 @@ const PlacesList = styled(FlatList).attrs({
   },
 })`
   padding-top: ${(props) => props.theme.space[2]};
+  padding-bottom: ${(props) => props.theme.space[2]};
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
@@ -67,7 +68,7 @@ export default function PlacesScreen({ navigation }) {
         <PlacesList
           data={places}
           renderItem={renderItem}
-          keyExtractor={(item) => item.name}
+          keyExtractor={(item) => item.title}
           initialNumToRender={5}
           maxToRenderPerBatch={10}
           windowSize={10}

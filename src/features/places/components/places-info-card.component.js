@@ -21,6 +21,7 @@ import { Icon } from "react-native-paper";
 import Row from "../../../components/spacer/row.component";
 import { TouchableOpacity } from "react-native";
 import { getFeaturesObjects } from "../../../utils/features-list";
+import { getWalkingTimeInMinutes } from "../../../utils/station.functions";
 
 const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
   const theme = useTheme();
@@ -38,11 +39,13 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
       "supermarket",
     ],
     imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
-    address = "100 some street",
+    area = "100 some street",
     isOpenNow = true,
     rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
+    nearbyStations = [],
+    city = "Others",
   } = place;
 
   const featuresObjects = getFeaturesObjects(features);
@@ -63,8 +66,15 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
                   {title}
                 </Text>
               </Spacer>
-              <Text theme={theme} variant={"hint"}>
-                {address}
+              <Spacer size="small" position="bottom">
+                <Text theme={theme} variant={"hint"}>
+                  {area}, {city}
+                </Text>
+              </Spacer>
+              <Text theme={theme} variant={"caption"}>
+                {nearbyStations && nearbyStations.length
+                  ? `${nearbyStations[0].name} around ${getWalkingTimeInMinutes(nearbyStations[0].distance)} min`
+                  : "More than 10 min to closest station."}
               </Text>
             </InfoContainer>
             <Spacer position={"right"} size={"small"}>
@@ -93,8 +103,8 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
                 ))}
               </IconContainer>
             ) : (
-              <Text variant={"caption"} theme={theme}>
-                No ratings yet
+              <Text variant={"captionCentered"} theme={theme}>
+                No ratings yet...
               </Text>
             )}
             <InfoButton

@@ -11,6 +11,27 @@ export const placeRequest = (place) => {
   });
 };
 
+export const fetchAllPlaces = async () => {
+  // try {
+  const response = await fetch(API_URL);
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw (
+      new Error(errorData.error) ||
+      "Something went wrong, please relod the application"
+    );
+  }
+  const places = await response.json();
+
+  return places;
+  // } catch (error) {
+  //   console.error("Error:", error);
+  //   // Alert.alert("Error", error.message);
+  //   return [];
+  // }
+};
+
 export const placeTransform = ({ results = [] }) => {
   const mappedResults = results.map((place) => {
     place.photos = [mockImages[Math.floor(Math.random() * mockImages.length)]];

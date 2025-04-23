@@ -117,10 +117,10 @@ const MapScreen = ({ navigation }) => {
         }}
       >
         {places.map((place) => {
-          const { lat, lng } = place.geometry.location;
+          const { lat, lng } = place.location.location;
           return (
             <Marker
-              key={`${place.locationId}-${place.name}`}
+              key={`${place.id}-${place.title}`}
               onPress={() => {
                 setSelectedPlace(place);
                 setModalVisible(true);

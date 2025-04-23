@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext, useContext } from "react";
 import { LocationContext } from "../location/location.context";
 
-import { placeRequest, placeTransform } from "./places.service";
+import { fetchAllPlaces, placeRequest, placeTransform } from "./places.service";
 
 export const PlacesContext = createContext();
 
@@ -10,32 +10,52 @@ export const PlacesContextProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { location } = useContext(LocationContext);
+  const [refresh, setRefresh] = useState(false);
 
-  const retrieveplaces = (loc) => {
+  // const retrievePlaces = (loc) => {
+  //   setIsLoading(true);
+  //   setPlaces([]);
+  //   setTimeout(() => {
+  //     placeRequest(loc)
+  //       .then(placeTransform)
+  //       .then((results) => {
+  //         setPlaces(results);
+  //         setIsLoading(false);
+  //         setError(null);
+  //       })
+  //       .catch((error) => {
+  //         setError(error);
+  //         setIsLoading(false);
+  //       });
+  //   }, 2000);
+  // };
+
+  const retrievePlaces = async (loc) => {
     setIsLoading(true);
     setPlaces([]);
-    setTimeout(() => {
-      placeRequest(loc)
-        .then(placeTransform)
-        .then((results) => {
-          setPlaces(results);
-          setIsLoading(false);
-          setError(null);
-        })
-        .catch((error) => {
-          setError(error);
-          setIsLoading(false);
-        });
-    }, 2000);
+    try {
+      const places = await fetchAllPlaces();
+      setPlaces(places);
+      setIsLoading(false);
+    } catch (error) {
+      setError(error);
+      setIsLoading(false);
+    }
+  };
+
+  const triggerPlacesRefresh = () => {
+    setRefresh((prev) => !prev);
   };
 
   useEffect(() => {
     const locationString = location ? `${location.lat},${location.lng}` : "";
-    retrieveplaces(locationString);
-  }, [location]);
+    retrievePlaces(locationString);
+  }, [location, refresh]);
 
   return (
-    <PlacesContext.Provider value={{ places, isLoading, error }}>
+    <PlacesContext.Provider
+      value={{ places, isLoading, error, triggerPlacesRefresh }}
+    >
       {children}
     </PlacesContext.Provider>
   );

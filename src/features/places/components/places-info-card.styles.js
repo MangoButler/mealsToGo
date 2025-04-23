@@ -50,7 +50,7 @@ export const PlaceCard = styled(Card)`
   margin-bottom: ${(props) => props.theme.space[3]};
   margin-right: ${(props) => props.theme.space[3]};
   margin-left: ${(props) => props.theme.space[3]};
-  /* margin-top: ${(props) => props.theme.space[2]}; */
+  /* margin-top: ${(props) => props.theme.space[0]}; */
 
   align-content: space-between;
   border-radius: 12px;
