@@ -8,6 +8,7 @@ import LoadingSpinner from "../../../../components/utility/loading-spinner.compo
 
 import NotFound from "../../../../components/utility/not-found.component.js";
 import ActionButton from "../../../../components/utility/action-button.component.js";
+import ErrorScreen from "../../../../components/utility/error-screen.component.js";
 
 const PlacesList = styled(FlatList).attrs({
   contentContainerStyle: {
@@ -63,8 +64,8 @@ export default function PlacesScreen({ navigation }) {
       {isLoading ? (
         <LoadingSpinner />
       ) : error ? (
-        <NotFound />
-      ) : (
+        <ErrorScreen error={error} />
+      ) : places.length ? (
         <PlacesList
           data={places}
           renderItem={renderItem}
@@ -75,6 +76,8 @@ export default function PlacesScreen({ navigation }) {
           updateCellsBatchingPeriod={50}
           removeClippedSubviews={true}
         />
+      ) : (
+        <NotFound />
       )}
     </>
   );

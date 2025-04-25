@@ -1,6 +1,6 @@
 import camelize from "camelize";
 import { mockImages, mocks } from "./mock";
-import { API_URL } from "./places-api-url";
+import { PLACES_URL } from "./places-api-url";
 import { Alert } from "react-native";
 
 export const placeRequest = (place) => {
@@ -11,11 +11,19 @@ export const placeRequest = (place) => {
   });
 };
 
-export const fetchAllPlaces = async () => {
-  // try {
-  const response = await fetch(API_URL);
+export const fetchPlaces = async (searchTerm) => {
+  //send the url with the query string and then implement the response
+
+  const response = await fetch(
+    searchTerm
+      ? `${PLACES_URL}?query=${encodeURIComponent(searchTerm)}`
+      : PLACES_URL
+  );
 
   if (!response.ok) {
+    if (response.status === 400) {
+      return [];
+    }
     const errorData = await response.json();
     throw (
       new Error(errorData.error) ||
@@ -25,11 +33,6 @@ export const fetchAllPlaces = async () => {
   const places = await response.json();
 
   return places;
-  // } catch (error) {
-  //   console.error("Error:", error);
-  //   // Alert.alert("Error", error.message);
-  //   return [];
-  // }
 };
 
 export const placeTransform = ({ results = [] }) => {
@@ -54,7 +57,7 @@ export const submitPlace = async ({
   location,
 }) => {
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(PLACES_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

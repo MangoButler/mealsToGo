@@ -2,7 +2,7 @@ import React from "react";
 import styled, { useTheme } from "styled-components/native";
 import { Text } from "../typography/text.component";
 import { Image } from "react-native";
-import nothingHereImage from "../../../assets/not-found.jpg";
+import errorImage from "../../../assets/int-server-error.jpg";
 
 const Container = styled.View`
   flex: 1;
@@ -15,35 +15,40 @@ const Container = styled.View`
 const Message = styled(Text)`
   margin-top: ${(props) => props.theme.space[3]};
   font-size: ${(props) => props.theme.fontSizes.body};
-  color: ${(props) => props.theme.colors.text.secondary};
+  color: ${(props) => props.theme.colors.text.error};
   font-family: ${(props) => props.theme.fonts.body};
   font-weight: ${(props) => props.theme.fontWeights.medium};
   text-align: center;
 `;
 
-const NotFoundImage = styled(Image)`
+const ServerErrorImage = styled(Image)`
   width: 150px;
   height: 150px;
   opacity: 0.8;
 `;
 
-const NotFound = ({
-  title = "Nothing found here!",
-  message = "Check your spelling or try searching something else",
-  imageSource = nothingHereImage,
+const ErrorScreen = ({
+  title = "An Error Occured",
+
+  imageSource = errorImage,
+  error,
 }) => {
   const theme = useTheme();
   return (
     <Container>
-      <Text theme={theme} variant={"label"}>
+      <Text theme={theme} variant={"errorTitle"}>
         {title}
       </Text>
       {imageSource && (
-        <NotFoundImage source={imageSource} resizeMode="contain" />
+        <ServerErrorImage source={imageSource} resizeMode="contain" />
       )}
-      <Message>{message}</Message>
+      <Message>
+        {error instanceof Error
+          ? error.message
+          : "That kind of sucks...try reloding the app."}
+      </Message>
     </Container>
   );
 };
 
-export default NotFound;
+export default ErrorScreen;

@@ -29,6 +29,11 @@ const captionCentered = (theme) => `
 const error = (theme) => `
     color: ${theme.colors.text.error};
 `;
+const errorTitle = (theme) => `
+    color: ${theme.colors.text.error};
+    font-size: ${theme.fontSizes.title};
+    font-family: ${theme.fonts.heading};
+`;
 const hint = (theme) => `
   font-family: ${theme.fonts.info};
   font-size: ${theme.fontSizes.caption};
@@ -40,6 +45,7 @@ const variants = {
   label,
   caption,
   error,
+  errorTitle,
   hint,
   captionCentered,
 };

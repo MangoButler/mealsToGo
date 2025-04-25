@@ -85,7 +85,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   </Text>
                 </Spacer>
                 <Text theme={theme} variant={"hint"}>
-                  {area}
+                  {area}, {city}
                 </Text>
               </InfoContainer>
             </Row>

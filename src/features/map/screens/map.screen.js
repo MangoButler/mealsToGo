@@ -8,6 +8,7 @@ import PlaceInfoCard from "../../places/components/places-info-card.component";
 import { Modal } from "react-native";
 import NotFound from "../../../components/utility/not-found.component";
 import LoadingSpinner from "../../../components/utility/loading-spinner.component";
+import ErrorScreen from "../../../components/utility/error-screen.component";
 
 const Map = styled(MapView)`
   height: 100%;
@@ -36,11 +37,12 @@ const ModalContentWrapper = styled.View`
 `;
 
 const MapScreen = ({ navigation }) => {
-  const { places, isLoading, error } = useContext(PlacesContext);
+  const { places, isLoading } = useContext(PlacesContext);
   const {
     location,
     isLoading: locationLoading,
     error: locationError,
+    keyword,
   } = useContext(LocationContext);
 
   const [latDelta, setLatDelta] = useState(0);
@@ -60,7 +62,7 @@ const MapScreen = ({ navigation }) => {
 
       setLatDelta(northeastLat - southwestLat);
     }
-  }, [location, viewport]);
+  }, [location, viewport, keyword]);
 
   if (isLoading || locationLoading) {
     return (
@@ -70,11 +72,11 @@ const MapScreen = ({ navigation }) => {
       </>
     );
   }
-  if (error || locationError) {
+  if (locationError || !viewport) {
     return (
       <>
         <Search />
-        <NotFound />
+        {locationError ? <ErrorScreen error={locationError} /> : <NotFound />}
       </>
     );
   }
