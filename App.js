@@ -14,6 +14,7 @@ import { SafeArea } from "./src/components/utility/safe-area.component";
 import { PlacesContextProvider } from "./src/services/places/places.context";
 import { LocationContextProvider } from "./src/services/location/location.context";
 import { Navigation } from "./src/infrastructure/navigation";
+import { Provider as PaperProvider } from "react-native-paper";
 
 export default function App() {
   const [poppinsLoaded] = useFonts({
@@ -35,8 +36,10 @@ export default function App() {
       <LocationContextProvider>
         <PlacesContextProvider>
           <SafeArea>
-            <Navigation />
-            <ExpoStatusBar style="auto" />
+            <PaperProvider>
+              <Navigation />
+              <ExpoStatusBar style="auto" />
+            </PaperProvider>
           </SafeArea>
         </PlacesContextProvider>
       </LocationContextProvider>

@@ -12,10 +12,25 @@ const defaultTextStyles = (theme) => `
 const body = (theme) => `
     font-size: ${theme.fontSizes.body};
 `;
+const centeredInfo = (theme) => `
+    font-size: ${theme.fontSizes.body};
+    text-align: center;
+
+`;
 const label = (theme) => `
     font-size: ${theme.fontSizes.title};
     font-family: ${theme.fonts.heading};
     
+`;
+const labelCentered = (theme) => `
+    font-size: ${theme.fontSizes.title};
+    font-family: ${theme.fonts.heading};
+    text-align: center;
+`;
+const heading = (theme) => `
+    font-size: ${theme.fontSizes.h5};
+    font-family: ${theme.fonts.heading};
+    text-align: center;
 `;
 const caption = (theme) => `
     font-size: ${theme.fontSizes.caption};
@@ -42,12 +57,15 @@ const hint = (theme) => `
 
 const variants = {
   body,
+  heading,
   label,
+  labelCentered,
   caption,
   error,
   errorTitle,
   hint,
   captionCentered,
+  centeredInfo,
 };
 
 export const Text = styled.Text`

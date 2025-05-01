@@ -69,7 +69,7 @@ const MiniMap = ({ geometry }) => {
         zoomEnabled={mapInteractive}
         rotateEnabled={mapInteractive}
         pitchEnabled={mapInteractive}
-        initialRegion={{
+        region={{
           latitude: location.lat,
           longitude: location.lng,
           latitudeDelta: latDelta,

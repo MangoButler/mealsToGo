@@ -19,12 +19,17 @@ const Container = styled(View)`
   background-color: ${(props) => props.theme.colors.bg.secondary};
 `;
 
-const PlaceForm = ({ place = null, onSubmit, navigation }) => {
+const PlaceForm = ({
+  place = null,
+  onSubmit,
+  navigation,
+  formTitle = "Share Your Favorite Drinking Spot!",
+}) => {
   const [title, setTitle] = useState(place ? place.title : "");
   const [description, setDescription] = useState(
     place ? place.description : "Another wonderful spot, overlooked by most!"
   );
-  const [image, setImage] = useState(place ? place.image : null);
+  const [image, setImage] = useState(place ? place.imageUrl : null);
   const [selectedFeatures, setSelectedFeatures] = useState(
     place ? place.features : []
   );
@@ -40,7 +45,7 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
   const isSubmitable =
     title && image && location && !titleError && !descriptionError;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const titleErr = validateFormTextInput("Title", title);
     const descriptionErr = description
       ? validateFormTextInput("Description", description)
@@ -53,14 +58,20 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
       return;
     }
     setFormLoading(true);
+
     const newPlace = {
       title,
       description,
-      imageUrl: image,
+      imageUri: image,
       features: selectedFeatures,
       location,
     };
-    const result = onSubmit(newPlace);
+
+    if (place && place.id) {
+      newPlace.placeId = place.id;
+    }
+
+    const result = await onSubmit(newPlace);
     setFormLoading(false);
     if (result) {
       triggerPlacesRefresh();
@@ -73,7 +84,7 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
       <Container>
         <Spacer position="bottom" size="large">
           <Text variant={"label"} theme={theme}>
-            Share Your Favorite Drinking Spot!
+            {formTitle}
           </Text>
         </Spacer>
 
@@ -87,7 +98,10 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
           error={titleError}
         />
 
-        <ImageUpload onImageUploadSuccess={(img) => setImage(img)} />
+        <ImageUpload
+          imageUri={image}
+          onImageUploadSuccess={(img) => setImage(img)}
+        />
 
         <Spacer position="bottom" size="large">
           <AccordionList
@@ -128,7 +142,7 @@ const PlaceForm = ({ place = null, onSubmit, navigation }) => {
             disabled={!isSubmitable}
             mode="contained"
           >
-            Submit
+            {place ? "Update" : "Submit"}
           </FormButton>
           <FormButton
             onPress={navigation.goBack}

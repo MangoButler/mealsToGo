@@ -3,10 +3,6 @@ import { View, Image, Alert } from "react-native";
 import FormButton from "./form-button.component";
 import * as ImagePicker from "expo-image-picker";
 import styled from "styled-components/native";
-import {
-  CLOUDINARY_URL,
-  UPLOAD_PRESET,
-} from "../../services/places/places-api-url";
 
 const Preview = styled(Image)`
   width: 100%;
@@ -22,46 +18,9 @@ const ImagePickerContainer = styled(View)`
   margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
-const ImageUpload = ({ onImageUploadSuccess }) => {
-  const [imageUri, setImageUri] = useState(null);
+const ImageUpload = ({ onImageUploadSuccess, imageUri }) => {
+  // const [imageUri, setImageUri] = useState(oldImage);
   const [uploading, setUploading] = useState(false);
-
-  // const handlePickImage = async () => {
-  //   try {
-  //     const { status } =
-  //       await ImagePicker.requestMediaLibraryPermissionsAsync();
-  //     if (status !== "granted") {
-  //       Alert.alert(
-  //         "Permission required",
-  //         "Camera roll access is needed to upload an image."
-  //       );
-  //       return;
-  //     }
-
-  //     const result = await ImagePicker.launchImageLibraryAsync({
-  //       mediaTypes: ["images"],
-  //       allowsEditing: true,
-  //       aspect: [4, 3],
-  //       quality: 1,
-  //     });
-
-  //     if (result.canceled) {
-  //       return;
-  //     }
-
-  //     const uri = result.assets?.[0]?.uri;
-  //     if (!uri) {
-  //       Alert.alert("Error", "Failed to get image URI.");
-  //       return;
-  //     }
-
-  //     setImageUri(uri);
-  //     if (onImageUpload) onImageUpload(uri);
-  //   } catch (error) {
-  //     console.error("Image picking failed:", error);
-  //     Alert.alert("Error", "Something went wrong while picking the image.");
-  //   }
-  // };
 
   const handleImageUpload = async (uri) => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -72,7 +31,7 @@ const ImageUpload = ({ onImageUploadSuccess }) => {
       );
       return null;
     }
-
+    setUploading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       quality: 1,
@@ -80,41 +39,84 @@ const ImageUpload = ({ onImageUploadSuccess }) => {
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-      uploadImage(result.assets[0].uri);
+      // setImageUri(result.assets[0].uri);
+      onImageUploadSuccess(result.assets[0].uri);
+      // await uploadImage(result.assets[0].uri, existingUrl);
     }
+    setUploading(false);
   };
 
-  const uploadImage = async (uri) => {
-    setUploading(true);
-    const formData = new FormData();
-    formData.append("file", {
-      uri,
-      name: "photo.jpg",
-      type: "image/jpeg",
-    });
-    formData.append("upload_preset", UPLOAD_PRESET);
+  // const uploadImage = async (uri) => {
+  //   setUploading(true);
+  //   const formData = new FormData();
+  //   formData.append("file", {
+  //     uri,
+  //     name: "photo.jpg",
+  //     type: "image/jpeg",
+  //   });
+  //   formData.append("upload_preset", UPLOAD_PRESET);
 
-    try {
-      const response = await fetch(CLOUDINARY_URL, {
-        method: "POST",
-        body: formData,
-      });
+  //   try {
+  //     const response = await fetch(CLOUDINARY_URL, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (data.secure_url) {
-        onImageUploadSuccess(data.secure_url);
-      } else {
-        Alert.alert("Upload failed", JSON.stringify(data));
-        setImageUri(null);
-      }
-    } catch (err) {
-      Alert.alert("Upload error", err.message);
-    } finally {
-      setUploading(false);
-    }
-  };
+  //     if (data.secure_url) {
+  //       onImageUploadSuccess(data.secure_url);
+  //     } else {
+  //       Alert.alert("Upload failed", JSON.stringify(data));
+  //       setImageUri(null);
+  //     }
+  //   } catch (err) {
+  //     Alert.alert("Upload error", err.message);
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
+
+  // const uploadImage = async (uri, existingSecureUrl = null) => {
+  //   setUploading(true);
+  //   const formData = new FormData();
+
+  //   formData.append("file", {
+  //     uri,
+  //     name: "photo.jpg",
+  //     type: "image/jpeg",
+  //   });
+
+  //   formData.append("upload_preset", UPLOAD_PRESET);
+
+  //   // If there's an existing public_id, set it to overwrite
+  //   if (existingSecureUrl) {
+  //     const publicId = extractPublicId(existingSecureUrl);
+  //     formData.append("public_id", publicId);
+  //     formData.append("overwrite", "true");
+  //   }
+
+  //   try {
+  //     const response = await fetch(CLOUDINARY_URL, {
+  //       method: "POST",
+  //       body: formData,
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (data.secure_url) {
+  //       onImageUploadSuccess(data.secure_url);
+  //       setExistingUrl(data.secure_url);
+  //     } else {
+  //       Alert.alert("Upload failed", JSON.stringify(data));
+  //       setImageUri(null);
+  //     }
+  //   } catch (err) {
+  //     Alert.alert("Upload error", err.message);
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
 
   return (
     <ImagePickerContainer>
