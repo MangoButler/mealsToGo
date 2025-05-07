@@ -22,6 +22,7 @@ import Row from "../../../components/spacer/row.component";
 import { TouchableOpacity } from "react-native";
 import { getFeaturesObjects } from "../../../utils/features-list";
 import { getWalkingTimeInMinutes } from "../../../utils/station.functions";
+import FavoriteButton from "../../../components/favorites/favorite-button.component";
 
 const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
   const theme = useTheme();
@@ -54,6 +55,7 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
 
   return (
     <PlaceCard elevation={5}>
+      <FavoriteButton place={place} />
       <TouchableOpacity onPress={onDetailClick}>
         <PlaceCardCover key={title} source={{ uri: imageUrl }} />
       </TouchableOpacity>

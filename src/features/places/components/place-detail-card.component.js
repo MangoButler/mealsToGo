@@ -17,7 +17,6 @@ import {
 import { DetailCard, DetailCardCover } from "./place-detail-card.styles";
 import Row from "../../../components/spacer/row.component";
 import AccordeonList from "../../../components/utility/accordion-list.component";
-
 import MiniMap from "../../../components/utility/mini-map.component";
 import { getFeaturesObjects } from "../../../utils/features-list";
 import { formatStations } from "../../../utils/station.functions";
@@ -25,6 +24,7 @@ import { deletePlace } from "../../../services/places/places.service";
 import ConfirmationModal from "../../../components/utility/confirmation-modal.component";
 import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
 import { PlacesContext } from "../../../services/places/places.context";
+import FavoriteButton from "../../../components/favorites/favorite-button.component";
 
 const DetailCardContainer = styled.View`
   flex: 1;
@@ -112,6 +112,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     <DetailCardContainer>
       <DetailCardScrollView>
         <DetailCard elevation={0}>
+          <FavoriteButton place={place} />
           <DetailCardCover key={title} source={{ uri: imageUrl }} />
 
           <PlaceCardContent>

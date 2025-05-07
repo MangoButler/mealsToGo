@@ -4,13 +4,27 @@ import { PLACES_URL } from "./places-api-url";
 import { Alert } from "react-native";
 import { uploadImage } from "../../utils/cloudinary-functions";
 
-export const placeRequest = (place) => {
-  return new Promise((resolve, reject) => {
-    const mock = mocks[place];
-    if (!mock) reject("Cannot find this place");
-    resolve(mock);
-  });
-};
+// export const placeRequest = (place) => {
+//   return new Promise((resolve, reject) => {
+//     const mock = mocks[place];
+//     if (!mock) reject("Cannot find this place");
+//     resolve(mock);
+//   });
+// };
+
+// export const placeTransform = ({ results = [] }) => {
+//   const mappedResults = results.map((place) => {
+//     place.photos = [mockImages[Math.floor(Math.random() * mockImages.length)]];
+//     return {
+//       ...place,
+//       isClosedTemporarely: place.business_status === "CLOSED_TEMPORARILY",
+//       isOpenNow: place.opening_hours && place.opening_hours.open_now,
+//       address: place.vicinity,
+//     };
+//   });
+
+//   return camelize(mappedResults);
+// };
 
 export const fetchPlaces = async (searchTerm) => {
   //send the url with the query string and then implement the response
@@ -34,20 +48,6 @@ export const fetchPlaces = async (searchTerm) => {
   const places = await response.json();
 
   return places;
-};
-
-export const placeTransform = ({ results = [] }) => {
-  const mappedResults = results.map((place) => {
-    place.photos = [mockImages[Math.floor(Math.random() * mockImages.length)]];
-    return {
-      ...place,
-      isClosedTemporarely: place.business_status === "CLOSED_TEMPORARILY",
-      isOpenNow: place.opening_hours && place.opening_hours.open_now,
-      address: place.vicinity,
-    };
-  });
-
-  return camelize(mappedResults);
 };
 
 export const submitPlace = async ({
