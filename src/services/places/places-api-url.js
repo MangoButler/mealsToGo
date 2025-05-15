@@ -12,6 +12,9 @@ export const PLACES_URL = BASE_URL + "places";
 
 export const SEARCH_URL = BASE_URL + "search";
 
+export const USER_URL = BASE_URL + "user";
+
 export const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/dg5kd3rfa/image/upload";
-export const UPLOAD_PRESET = "can_and_go"; // the one you created earlier
+export const UPLOAD_PRESET = "can_and_go";
+export const PROFILE_UPLOAD_PRESET = "can_and_go_profile";

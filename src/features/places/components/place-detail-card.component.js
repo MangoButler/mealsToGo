@@ -35,7 +35,7 @@ const DetailCardScrollView = styled.ScrollView.attrs((props) => ({
   },
 }))``;
 
-const CrudActionsContainer = styled.View`
+export const CrudActionsContainer = styled.View`
   position: absolute;
   bottom: 0;
   right: 0;

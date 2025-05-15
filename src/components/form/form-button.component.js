@@ -5,7 +5,7 @@ import React from "react";
 export const FormActionButton = styled(Button)`
   border-radius: ${(props) => props.theme.space[2]};
   /* margin: ${(props) => props.theme.space[2]} 0; */
-  margin-bottom: ${(props) => props.theme.space[2]};
+  /* margin-bottom: ${(props) => props.theme.space[2]}; */
 `;
 
 const FormButton = ({

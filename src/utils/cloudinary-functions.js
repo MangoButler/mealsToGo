@@ -23,18 +23,19 @@ export function extractPublicId(secureUrl) {
 
     return publicId;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
 
-export const uploadImage = async (uri) => {
+export const uploadImage = async (uri, preset = UPLOAD_PRESET) => {
   const formData = new FormData();
   formData.append("file", {
     uri,
     name: "photo.jpg",
     type: "image/jpeg",
   });
-  formData.append("upload_preset", UPLOAD_PRESET);
+  formData.append("upload_preset", preset);
 
   //   try {
   const response = await fetch(CLOUDINARY_URL, {

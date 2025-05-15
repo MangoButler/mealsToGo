@@ -1,5 +1,6 @@
 import { useState, createContext } from "react";
-import { signIn } from "./auth.service";
+import { signIn, signUp } from "./auth.service";
+import { fetchUserProfile } from "./user.service";
 
 export const AuthenticationContext = createContext();
 
@@ -11,8 +12,28 @@ export const AuthenticationContextProvider = ({ children }) => {
   const onLogin = async (email, password) => {
     setIsLoading(true);
     try {
-      const existingUser = await signIn(email, password);
-      setUser(existingUser);
+      const firebaseUser = await signIn(email, password);
+      // const token = await firebaseUser.user.getIdToken();
+      const profile = await fetchUserProfile(firebaseUser.user.uid);
+      setUser({
+        uid: firebaseUser.user.uid,
+        firebaseEmail: firebaseUser.user.email,
+        ...profile,
+      });
+    } catch (error) {
+      setError(error);
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSignUp = async (email, password) => {
+    setIsLoading(true);
+    try {
+      const newUser = await signUp(email, password);
+      setUser(newUser.user);
+      setError(null);
     } catch (error) {
       setError(error);
       console.log(error);
@@ -28,6 +49,8 @@ export const AuthenticationContextProvider = ({ children }) => {
         isLoading,
         error,
         onLogin,
+        onSignUp,
+        setUser,
       }}
     >
       {children}

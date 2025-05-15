@@ -1,7 +1,6 @@
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { ThemeProvider } from "styled-components/native";
 import { theme } from "./src/infrastructure/theme";
-import AppLoading from "expo-app-loading";
 import {
   useFonts,
   Poppins_300Light_Italic,
@@ -16,6 +15,10 @@ import { Navigation } from "./src/infrastructure/navigation";
 import { Provider as PaperProvider } from "react-native-paper";
 import { FavoritesContextProvider } from "./src/services/favorites/favorites.context";
 import { AuthenticationContextProvider } from "./src/services/auth/auth.context";
+import { useCallback } from "react";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   const [poppinsLoaded] = useFonts({
@@ -30,15 +33,23 @@ export default function App() {
     Inconsolata_400Regular,
   });
 
-  if (!inconsolataLoaded || !rubikLoaded || !poppinsLoaded)
-    return <AppLoading />;
+  const onLayoutRootView = useCallback(async () => {
+    if (poppinsLoaded && rubikLoaded && inconsolataLoaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [poppinsLoaded, rubikLoaded, inconsolataLoaded]);
+
+  if (!poppinsLoaded || !rubikLoaded || !inconsolataLoaded) {
+    return null; // show splash until fonts are loaded
+  }
+
   return (
     <ThemeProvider theme={theme}>
       <AuthenticationContextProvider>
         <LocationContextProvider>
           <PlacesContextProvider>
             <FavoritesContextProvider>
-              <SafeArea>
+              <SafeArea onLayout={onLayoutRootView}>
                 <PaperProvider>
                   <Navigation />
                   <ExpoStatusBar style="auto" />

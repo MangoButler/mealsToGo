@@ -17,3 +17,14 @@ export const validateFormTextInput = (fieldName, value) => {
 export const renderError = (error) => {
   return error instanceof Error ? error.message : "Something went wrong";
 };
+
+export function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+export function isStrongPassword(password) {
+  const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  return strongPasswordRegex.test(password);
+}

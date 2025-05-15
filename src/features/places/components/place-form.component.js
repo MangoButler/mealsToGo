@@ -83,7 +83,7 @@ const PlaceForm = ({
     <ScrollView>
       <Container>
         <Spacer position="bottom" size="large">
-          <Text variant={"label"} theme={theme}>
+          <Text variant={"heading"} theme={theme}>
             {formTitle}
           </Text>
         </Spacer>
@@ -135,7 +135,7 @@ const PlaceForm = ({
           }}
           error={descriptionError}
         />
-        <Spacer position="top" size="medium">
+        <Spacer position="vertical" size="medium">
           <FormButton
             loading={formLoading}
             onPress={handleSubmit}
@@ -144,15 +144,16 @@ const PlaceForm = ({
           >
             {place ? "Update" : "Submit"}
           </FormButton>
-          <FormButton
-            onPress={navigation.goBack}
-            mode="outlined"
-            buttonColor={theme.colors.bg.secondary}
-            textColor={theme.colors.text.secondary}
-          >
-            Cancel
-          </FormButton>
         </Spacer>
+
+        <FormButton
+          onPress={navigation.goBack}
+          mode="outlined"
+          buttonColor={theme.colors.bg.secondary}
+          textColor={theme.colors.text.secondary}
+        >
+          Cancel
+        </FormButton>
       </Container>
     </ScrollView>
   );

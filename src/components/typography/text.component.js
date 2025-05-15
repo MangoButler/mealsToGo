@@ -54,6 +54,12 @@ const hint = (theme) => `
   font-size: ${theme.fontSizes.caption};
   color: ${theme.colors.text.secondary};
 `;
+const hintCentered = (theme) => `
+  font-family: ${theme.fonts.info};
+  font-size: ${theme.fontSizes.caption};
+  color: ${theme.colors.text.secondary};
+  text-align: center;
+`;
 
 const variants = {
   body,
@@ -66,6 +72,7 @@ const variants = {
   hint,
   captionCentered,
   centeredInfo,
+  hintCentered,
 };
 
 export const Text = styled.Text`

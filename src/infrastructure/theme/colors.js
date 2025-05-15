@@ -20,6 +20,10 @@ export const colors = {
     primary: "#FFFFFF",
     secondary: "#F6F2F0",
     tertiary: "#CCC5B9",
+    warmBg: "rgba(255, 220, 180, 0.7)",
+    coldBg: "rgba(245, 245, 245, 0.7)",
+    warmCover: "rgba(255, 220, 180, 0.1)",
+    coldCover: "rgba(245, 245, 245, 0.1)",
   },
   text: {
     primary: "#262626",

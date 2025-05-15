@@ -4,25 +4,7 @@ import { Portal, Modal, Button } from "react-native-paper";
 import { Text } from "../typography/text.component";
 import { FormActionButton } from "../form/form-button.component";
 import { Spacer } from "../spacer/spacer.component";
-const ModalContainer = styled.View`
-  background-color: ${(props) => props.theme.colors.bg.secondary};
-  padding: ${(props) => props.theme.space[3]} ${(props) => props.theme.space[4]};
-  margin: ${(props) => props.theme.space[3]};
-  border-radius: ${(props) => props.theme.space[3]};
-  z-index: 100;
-`;
-
-const ButtonRow = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: ${(props) => props.theme.space[4]};
-`;
-
-const Backdrop = styled.View`
-  flex: 1;
-  background-color: rgba(0, 0, 0, 0.5);
-  justify-content: center;
-`;
+import { ButtonRow, Backdrop, ModalContainer } from "./utility.styles";
 
 const ConfirmationModal = ({ visible, onConfirm, onDismiss }) => {
   const theme = useTheme();
