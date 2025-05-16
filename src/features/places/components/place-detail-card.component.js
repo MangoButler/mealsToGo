@@ -14,7 +14,11 @@ import {
   InfoButton,
   InfoContainer,
 } from "./places-info-card.styles";
-import { DetailCard, DetailCardCover } from "./place-detail-card.styles";
+import {
+  DetailCard,
+  DetailCardCover,
+  PlaceCreatorImage,
+} from "./place-detail-card.styles";
 import Row from "../../../components/spacer/row.component";
 import AccordeonList from "../../../components/utility/accordion-list.component";
 import MiniMap from "../../../components/utility/mini-map.component";
@@ -25,6 +29,7 @@ import ConfirmationModal from "../../../components/utility/confirmation-modal.co
 import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
 import { PlacesContext } from "../../../services/places/places.context";
 import FavoriteButton from "../../../components/favorites/favorite-button.component";
+import { AuthenticationContext } from "../../../services/auth/auth.context";
 
 const DetailCardContainer = styled.View`
   flex: 1;
@@ -54,7 +59,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
   const { triggerPlacesRefresh } = useContext(PlacesContext);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const { user: currentUser } = useContext(AuthenticationContext);
   const {
     title = "Test Place",
     id: placeId = "1",
@@ -92,6 +97,8 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     },
     nearbyStations = [],
     city = "Others",
+    user: creator = null,
+    userId: creatorId = 0,
   } = place;
 
   const featuresObjects = getFeaturesObjects(features);
@@ -128,6 +135,16 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                     {area}, {city}
                   </Text>
                 </InfoContainer>
+              </Row>
+              <Row
+                topMargin="small"
+                bottomMargin="small"
+                justifyContent="flex-start"
+              >
+                <PlaceCreatorImage source={{ uri: creator.profilePicture }} />
+                <Text theme={theme} variant="caption">
+                  Created by {creator.username}
+                </Text>
               </Row>
               <Row topMargin="none" bottomMargin="medium">
                 {ratingArray.length ? (
@@ -228,36 +245,39 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
           </PlaceCardActions>
         </DetailCard>
       </DetailCardScrollView>
-      <CrudActionsContainer>
-        <PlaceActionsButtonOutline
-          onPress={() => {
-            navigation.navigate("UpdatePlace", { place });
-          }}
-          textColor={theme.colors.text.inverse}
-          buttonColor={theme.colors.brand.muted}
-          mode="contained"
-        >
-          Update Place
-        </PlaceActionsButtonOutline>
-        <PlaceActionsButton
-          onPress={() => {
-            setModalVisible(true);
-          }}
-          buttonColor={theme.colors.ui.error}
-          textColor={theme.colors.text.inverse}
-          mode="contained"
-        >
-          Delete Place
-        </PlaceActionsButton>
-      </CrudActionsContainer>
-
-      <ConfirmationModal
-        visible={modalVisible}
-        onConfirm={handleDelete}
-        onDismiss={() => {
-          setModalVisible(false);
-        }}
-      />
+      {currentUser && currentUser.id === creatorId && (
+        <>
+          <CrudActionsContainer>
+            <PlaceActionsButtonOutline
+              onPress={() => {
+                navigation.navigate("UpdatePlace", { place });
+              }}
+              textColor={theme.colors.text.inverse}
+              buttonColor={theme.colors.brand.muted}
+              mode="contained"
+            >
+              Update Place
+            </PlaceActionsButtonOutline>
+            <PlaceActionsButton
+              onPress={() => {
+                setModalVisible(true);
+              }}
+              buttonColor={theme.colors.ui.error}
+              textColor={theme.colors.text.inverse}
+              mode="contained"
+            >
+              Delete Place
+            </PlaceActionsButton>
+          </CrudActionsContainer>
+          <ConfirmationModal
+            visible={modalVisible}
+            onConfirm={handleDelete}
+            onDismiss={() => {
+              setModalVisible(false);
+            }}
+          />
+        </>
+      )}
     </DetailCardContainer>
   );
 };

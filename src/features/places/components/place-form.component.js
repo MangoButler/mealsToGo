@@ -13,6 +13,7 @@ import LocationPicker from "../../../components/form/location-picker.component";
 import { validateFormTextInput } from "../../../utils/validation";
 import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
 import { PlacesContext } from "../../../services/places/places.context";
+import { AuthenticationContext } from "../../../services/auth/auth.context";
 const Container = styled(View)`
   flex: 1;
   padding: ${(props) => props.theme.space[4]};
@@ -38,7 +39,7 @@ const PlaceForm = ({
   const [titleError, setTitleError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
-
+  const { user } = useContext(AuthenticationContext);
   const { triggerPlacesRefresh } = useContext(PlacesContext);
   const theme = useTheme();
 
@@ -65,6 +66,7 @@ const PlaceForm = ({
       imageUri: image,
       features: selectedFeatures,
       location,
+      userId: user.id,
     };
 
     if (place && place.id) {

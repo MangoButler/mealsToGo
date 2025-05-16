@@ -14,6 +14,8 @@ import ImageUpload from "../../../components/form/image-upload.component";
 import { updateUserProfile } from "../../../services/auth/user.service";
 import CountrySelector from "../../account/components/country-input.component";
 import { InputWrapper } from "../../../components/utility/utility.styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { USER_STORAGE_KEY } from "../../../services/places/places-api-url";
 
 const UpdateProfileScreen = ({ navigation }) => {
   const { user, setUser } = useContext(AuthenticationContext);
@@ -43,7 +45,8 @@ const UpdateProfileScreen = ({ navigation }) => {
     });
 
     if (result) {
-      setUser({ ...result }); ///Check this part
+      setUser({ ...result });
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(result));
     }
     setIsLoading(false);
     navigation.navigate("Main");

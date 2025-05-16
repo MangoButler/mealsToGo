@@ -1,5 +1,5 @@
-import camelize from "camelize";
-import { mockImages, mocks } from "./mock";
+// import camelize from "camelize";
+// import { mockImages, mocks } from "./mock";
 import { PLACES_URL } from "./places-api-url";
 import { Alert } from "react-native";
 import { uploadImage } from "../../utils/cloudinary-functions";
@@ -56,6 +56,7 @@ export const submitPlace = async ({
   imageUri,
   features,
   location,
+  userId,
 }) => {
   try {
     const secureUrl = await uploadImage(imageUri);
@@ -71,6 +72,7 @@ export const submitPlace = async ({
         imageUrl: secureUrl,
         features,
         location,
+        userId,
       }),
     });
 
@@ -81,6 +83,7 @@ export const submitPlace = async ({
 
     const data = await response.json();
     Alert.alert("Success", "Place submitted successfully!");
+    console.log(data); ///logging
     return data;
   } catch (error) {
     console.error("Submission error:", error);
@@ -96,6 +99,7 @@ export const editPlace = async ({
   features,
   location,
   placeId,
+  userId,
 }) => {
   try {
     const secureUrl = await uploadImage(imageUri);
@@ -112,6 +116,7 @@ export const editPlace = async ({
         features,
         location,
         placeId,
+        userId,
       }),
     });
 

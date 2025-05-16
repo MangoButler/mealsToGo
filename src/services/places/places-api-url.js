@@ -18,3 +18,5 @@ export const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/dg5kd3rfa/image/upload";
 export const UPLOAD_PRESET = "can_and_go";
 export const PROFILE_UPLOAD_PRESET = "can_and_go_profile";
+
+export const USER_STORAGE_KEY = "@authenticated_user";

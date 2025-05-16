@@ -147,7 +147,7 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
           onPress={onDetailClick}
           textColor={theme.colors.ui.primary}
         >
-          Check Menu
+          Check Details
         </PlaceActionsButtonOutline>
         <PlaceActionsButton
           disabled={!isOpenNow}

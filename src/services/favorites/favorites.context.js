@@ -16,6 +16,10 @@ export const FavoritesContextProvider = ({ children }) => {
     setFavorites(newFavorites);
   };
 
+  const removeAllFavorites = () => {
+    setFavorites([]);
+  };
+
   const saveFavorites = async (value) => {
     if (!Array.isArray(value)) {
       console.warn("🚨 Tried to save non-array to favorites:", value);
@@ -69,7 +73,12 @@ export const FavoritesContextProvider = ({ children }) => {
 
   return (
     <FavoritesContext.Provider
-      value={{ favorites, addToFavorites, removeFromFavorites }}
+      value={{
+        favorites,
+        addToFavorites,
+        removeFromFavorites,
+        removeAllFavorites,
+      }}
     >
       {children}
     </FavoritesContext.Provider>

@@ -124,7 +124,7 @@ export const updateUserProfile = async ({
 
 export const fetchUserProfile = async (uid) => {
   try {
-    const response = await fetch(`${USER_URL}/${uid}`);
+    const response = await fetch(`${USER_URL}/${uid}`); //and here bread
     const result = await response.json();
     if (!response.ok) {
       throw new Error(result.error || "Failed to fetch user profile");

@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import styled, { useTheme } from "styled-components/native";
-import { Portal, Modal, Button } from "react-native-paper";
+import { useTheme } from "styled-components/native";
+import { Portal, Modal } from "react-native-paper";
 import { Text } from "../typography/text.component";
 import { FormActionButton } from "../form/form-button.component";
 import { Spacer } from "../spacer/spacer.component";
 import { ButtonRow, Backdrop, ModalContainer } from "./utility.styles";
 
-const ConfirmationModal = ({ visible, onConfirm, onDismiss }) => {
+const ConfirmationModal = ({
+  visible,
+  onConfirm,
+  onDismiss,
+  message = "This action cannot be undone",
+}) => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const handleConfirm = async () => {
@@ -28,7 +33,7 @@ const ConfirmationModal = ({ visible, onConfirm, onDismiss }) => {
             </Text>
             <Spacer position="top" size="large">
               <Text theme={theme} variant="centeredInfo">
-                This action cannot be undone
+                {message}
               </Text>
             </Spacer>
             <ButtonRow>

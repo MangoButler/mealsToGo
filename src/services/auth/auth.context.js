@@ -1,6 +1,9 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { signIn, signUp } from "./auth.service";
 import { fetchUserProfile } from "./user.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { USER_STORAGE_KEY } from "../places/places-api-url";
+import { Alert } from "react-native";
 
 export const AuthenticationContext = createContext();
 
@@ -13,13 +16,12 @@ export const AuthenticationContextProvider = ({ children }) => {
     setIsLoading(true);
     try {
       const firebaseUser = await signIn(email, password);
-      // const token = await firebaseUser.user.getIdToken();
       const profile = await fetchUserProfile(firebaseUser.user.uid);
       setUser({
-        uid: firebaseUser.user.uid,
-        firebaseEmail: firebaseUser.user.email,
         ...profile,
       });
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(profile));
+      setError(null);
     } catch (error) {
       setError(error);
       console.log(error);
@@ -33,6 +35,10 @@ export const AuthenticationContextProvider = ({ children }) => {
     try {
       const newUser = await signUp(email, password);
       setUser(newUser.user);
+      await AsyncStorage.setItem(
+        USER_STORAGE_KEY,
+        JSON.stringify(newUser.user)
+      );
       setError(null);
     } catch (error) {
       setError(error);
@@ -41,6 +47,37 @@ export const AuthenticationContextProvider = ({ children }) => {
       setIsLoading(false);
     }
   };
+
+  const onLogout = async () => {
+    setIsLoading(true);
+    try {
+      await AsyncStorage.removeItem(USER_STORAGE_KEY);
+      setUser(null);
+      Alert.alert("Logout Successfull", "Hope to see you again soon!");
+    } catch (e) {
+      Alert.alert("An Error Occured", "Please try again Later!");
+      console.log("Logout error:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadUserFromStorage = async () => {
+    try {
+      const storedUser = await AsyncStorage.getItem(USER_STORAGE_KEY);
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (e) {
+      console.log("Error loading user from storage:", e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUserFromStorage();
+  }, []);
 
   return (
     <AuthenticationContext.Provider
@@ -51,6 +88,7 @@ export const AuthenticationContextProvider = ({ children }) => {
         onLogin,
         onSignUp,
         setUser,
+        onLogout,
       }}
     >
       {children}

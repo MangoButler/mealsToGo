@@ -8,6 +8,7 @@ import { Spacer } from "../../../components/spacer/spacer.component";
 import { CrudActionsContainer } from "../../../components/utility/utility.styles";
 import { FormActionButton } from "../../../components/form/form-button.component";
 import ConfirmationModal from "../../../components/utility/confirmation-modal.component";
+import { FavoritesContext } from "../../../services/favorites/favorites.context";
 
 const Container = styled.View`
   flex: 1;
@@ -24,15 +25,6 @@ const ProfileContainer = styled.View`
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
-const Message = styled(Text)`
-  margin-top: ${(props) => props.theme.space[3]};
-  font-size: ${(props) => props.theme.fontSizes.body};
-  color: ${(props) => props.theme.colors.text.error};
-  font-family: ${(props) => props.theme.fonts.body};
-  font-weight: ${(props) => props.theme.fontWeights.medium};
-  text-align: center;
-`;
-
 const UserImage = styled(Image)`
   width: 150px;
   height: 150px;
@@ -42,12 +34,26 @@ const UserImage = styled(Image)`
 
 const ProfileScreen = ({ navigation }) => {
   const theme = useTheme();
-  const { user } = useContext(AuthenticationContext);
+  const { user, onLogout, isLoading } = useContext(AuthenticationContext);
+  const { removeAllFavorites } = useContext(FavoritesContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   if (!user) {
     navigation.navigate("Home");
   }
+
+  const onDeleteUser = () => {};
+
+  const logoutUser = async () => {
+    await onLogout();
+    setModalVisible(false);
+  };
+
+  const onRemoveFavorites = () => {
+    removeAllFavorites();
+    setModalVisible(false);
+  };
+
   return (
     <Container>
       <ProfileContainer>
@@ -65,6 +71,32 @@ const ProfileScreen = ({ navigation }) => {
         <Text theme={theme} variant="hint">
           {user.email}
         </Text>
+
+        <Spacer position="vertical" size="large">
+          <FormActionButton
+            onPress={() => {
+              setModalVisible("logout");
+            }}
+            textColor={theme.colors.ui.primary}
+            // buttonColor={theme.colors.brand.muted}
+            mode="outlined"
+            icon="logout"
+            loading={isLoading}
+          >
+            Logout
+          </FormActionButton>
+        </Spacer>
+        <FormActionButton
+          onPress={() => {
+            setModalVisible("favorites");
+          }}
+          textColor={theme.colors.ui.primary}
+          // buttonColor={theme.colors.brand.muted}
+          mode="outlined"
+          icon="heart-off-outline"
+        >
+          Delete Favorites
+        </FormActionButton>
       </ProfileContainer>
       <CrudActionsContainer>
         <FormActionButton
@@ -79,7 +111,7 @@ const ProfileScreen = ({ navigation }) => {
         </FormActionButton>
         <FormActionButton
           onPress={() => {
-            setModalVisible(true);
+            setModalVisible("delete");
           }}
           buttonColor={theme.colors.ui.error}
           textColor={theme.colors.text.inverse}
@@ -90,7 +122,20 @@ const ProfileScreen = ({ navigation }) => {
       </CrudActionsContainer>
       <ConfirmationModal
         visible={modalVisible}
-        onConfirm={() => {}}
+        message={
+          modalVisible === "delete"
+            ? "We hate to see you go..."
+            : "Please confirm"
+        }
+        onConfirm={() => {
+          if (modalVisible === "delete") {
+            onDeleteUser();
+          } else if (modalVisible === "logout") {
+            logoutUser();
+          } else {
+            onRemoveFavorites();
+          }
+        }}
         onDismiss={() => {
           setModalVisible(false);
         }}

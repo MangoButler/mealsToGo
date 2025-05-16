@@ -66,3 +66,15 @@ export const RestaurantActionsButtonOutline = styled(InfoButton)`
 export const Info = styled.View`
   margin: ${(props) => props.theme.space[2]} 0;
 `;
+
+export const PlaceCreatorImage = styled.Image`
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  margin-right: ${(props) => props.theme.space[2]};
+`;
+
+export const CreatorContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;

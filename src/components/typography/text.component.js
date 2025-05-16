@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { theme } from "../../infrastructure/theme";
 
 const defaultTextStyles = (theme) => `
     font-family: ${theme.fonts.body};
@@ -75,7 +76,20 @@ const variants = {
   hintCentered,
 };
 
-export const Text = styled.Text`
+const StyledText = styled.Text`
   ${({ theme }) => defaultTextStyles(theme)}
   ${({ variant = "body", theme }) => variants[variant](theme)}
 `;
+
+export const Text = ({
+  children,
+  variant = "body",
+  theme = theme,
+  ...props
+}) => {
+  return (
+    <StyledText variant={variant} theme={theme} {...props}>
+      {children}
+    </StyledText>
+  );
+};

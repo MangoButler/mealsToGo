@@ -14,6 +14,8 @@ import ImageUpload from "../../../components/form/image-upload.component";
 import CountrySelector from "../components/country-input.component";
 import { createUserProfile } from "../../../services/auth/user.service";
 import { InputWrapper } from "../../../components/utility/utility.styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { USER_STORAGE_KEY } from "../../../services/places/places-api-url";
 
 const CreateProfileScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -49,6 +51,7 @@ const CreateProfileScreen = ({ navigation }) => {
 
     if (result) {
       setUser({ ...result }); ///Check this part
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(result));
     }
     setIsLoading(false);
   };
