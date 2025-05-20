@@ -9,6 +9,7 @@ import { CrudActionsContainer } from "../../../components/utility/utility.styles
 import { FormActionButton } from "../../../components/form/form-button.component";
 import ConfirmationModal from "../../../components/utility/confirmation-modal.component";
 import { FavoritesContext } from "../../../services/favorites/favorites.context";
+import { deleteUserProfile } from "../../../services/auth/user.service";
 
 const Container = styled.View`
   flex: 1;
@@ -34,7 +35,9 @@ const UserImage = styled(Image)`
 
 const ProfileScreen = ({ navigation }) => {
   const theme = useTheme();
-  const { user, onLogout, isLoading } = useContext(AuthenticationContext);
+  const { user, onLogout, isLoading, setUser, setIsLoading } = useContext(
+    AuthenticationContext
+  );
   const { removeAllFavorites } = useContext(FavoritesContext);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -42,7 +45,18 @@ const ProfileScreen = ({ navigation }) => {
     navigation.navigate("Home");
   }
 
-  const onDeleteUser = () => {};
+  const onDeleteUser = async (password) => {
+    setIsLoading(true);
+
+    const result = await deleteUserProfile(setUser, password);
+    if (!result) {
+      setIsLoading(false);
+      return;
+    }
+    setModalVisible(false);
+    setIsLoading(false);
+  };
+  //Implement the delete functionality
 
   const logoutUser = async () => {
     await onLogout();
@@ -124,16 +138,17 @@ const ProfileScreen = ({ navigation }) => {
         visible={modalVisible}
         message={
           modalVisible === "delete"
-            ? "We hate to see you go..."
+            ? `For security reasons please enter your password:`
             : "Please confirm"
         }
-        onConfirm={() => {
+        requiresPassword={modalVisible === "delete"}
+        onConfirm={async (passw = "") => {
           if (modalVisible === "delete") {
-            onDeleteUser();
+            await onDeleteUser(passw);
           } else if (modalVisible === "logout") {
-            logoutUser();
+            await logoutUser();
           } else {
-            onRemoveFavorites();
+            await onRemoveFavorites();
           }
         }}
         onDismiss={() => {

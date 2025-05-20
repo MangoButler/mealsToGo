@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchPlaces } from "../places/places.service";
+import { Alert } from "react-native";
 
 export const FavoritesContext = createContext();
 
@@ -18,6 +19,7 @@ export const FavoritesContextProvider = ({ children }) => {
 
   const removeAllFavorites = () => {
     setFavorites([]);
+    Alert.alert("Success", "Favorites have been removed.");
   };
 
   const saveFavorites = async (value) => {

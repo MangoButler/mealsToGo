@@ -26,7 +26,7 @@
     "expo-location": "~18.0.10",
     "expo-splash-screen": "~0.29.24",
     "expo-status-bar": "~2.0.1",
-    "firebase": "^11.6.1",
+    "firebase": "9.23.0",
     "i18n-iso-countries": "^7.14.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",

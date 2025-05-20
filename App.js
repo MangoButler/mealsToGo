@@ -15,12 +15,13 @@ import { Navigation } from "./src/infrastructure/navigation";
 import { Provider as PaperProvider } from "react-native-paper";
 import { FavoritesContextProvider } from "./src/services/favorites/favorites.context";
 import { AuthenticationContextProvider } from "./src/services/auth/auth.context";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const [authReady, setAuthReady] = useState(false);
   const [poppinsLoaded] = useFonts({
     Poppins_300Light_Italic,
     Poppins_700Bold,
@@ -33,26 +34,34 @@ export default function App() {
     Inconsolata_400Regular,
   });
 
+  const fontsLoaded = poppinsLoaded && rubikLoaded && inconsolataLoaded;
+
   const onLayoutRootView = useCallback(async () => {
-    if (poppinsLoaded && rubikLoaded && inconsolataLoaded) {
+    if (fontsLoaded && authReady) {
       await SplashScreen.hideAsync();
     }
-  }, [poppinsLoaded, rubikLoaded, inconsolataLoaded]);
+  }, [fontsLoaded, authReady]);
 
-  if (!poppinsLoaded || !rubikLoaded || !inconsolataLoaded) {
-    return null; // show splash until fonts are loaded
-  }
+  useEffect(() => {
+    if (fontsLoaded && authReady) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, authReady]);
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthenticationContextProvider>
+      <AuthenticationContextProvider onAuthReady={() => setAuthReady(true)}>
         <LocationContextProvider>
           <PlacesContextProvider>
             <FavoritesContextProvider>
               <SafeArea onLayout={onLayoutRootView}>
                 <PaperProvider>
-                  <Navigation />
-                  <ExpoStatusBar style="auto" />
+                  {fontsLoaded && authReady ? (
+                    <>
+                      <Navigation />
+                      <ExpoStatusBar style="auto" />
+                    </>
+                  ) : null}
                 </PaperProvider>
               </SafeArea>
             </FavoritesContextProvider>

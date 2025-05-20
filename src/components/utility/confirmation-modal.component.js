@@ -5,18 +5,28 @@ import { Text } from "../typography/text.component";
 import { FormActionButton } from "../form/form-button.component";
 import { Spacer } from "../spacer/spacer.component";
 import { ButtonRow, Backdrop, ModalContainer } from "./utility.styles";
+import PasswordInput from "../../features/account/components/password-input.component";
 
 const ConfirmationModal = ({
   visible,
   onConfirm,
   onDismiss,
   message = "This action cannot be undone",
+  title = "Are you sure?",
+  requiresPassword = false,
+  passwordError = null,
 }) => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
+  const [password, setPassword] = useState("");
   const handleConfirm = async () => {
     setIsLoading(true);
-    await onConfirm();
+    if (requiresPassword) {
+      await onConfirm(password);
+      setPassword("");
+    } else {
+      await onConfirm();
+    }
     setIsLoading(false);
   };
   return (
@@ -29,18 +39,32 @@ const ConfirmationModal = ({
         <Backdrop>
           <ModalContainer>
             <Text theme={theme} variant="heading">
-              Are you sure?
+              {title}
             </Text>
             <Spacer position="top" size="large">
               <Text theme={theme} variant="centeredInfo">
                 {message}
               </Text>
             </Spacer>
+            {requiresPassword && (
+              <Spacer position="top" size="large">
+                <PasswordInput
+                  value={password}
+                  label="Password"
+                  onChangeText={(text) => {
+                    setPassword(text);
+                  }}
+                  error={passwordError}
+                  disabled={isLoading}
+                />
+              </Spacer>
+            )}
             <ButtonRow>
               <FormActionButton
                 mode="outlined"
                 onPress={onDismiss}
                 textColor={theme.colors.ui.primary}
+                disabled={isLoading}
               >
                 Cancel
               </FormActionButton>

@@ -1,5 +1,5 @@
-export const returnToPlacesOverview = (navigation) => {
-  navigation.reset({
+export const returnToPlacesOverview = async (navigation) => {
+  await navigation.reset({
     index: 0,
     routes: [{ name: "Overview" }],
   });

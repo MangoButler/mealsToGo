@@ -25,7 +25,7 @@ const LoginScreen = ({ navigation }) => {
     onLogin,
     error: loginError,
     isLoading,
-    user,
+    // user,
   } = useContext(AuthenticationContext);
 
   const handleLogin = async (email, password) => {

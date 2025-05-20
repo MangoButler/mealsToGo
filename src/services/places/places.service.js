@@ -3,6 +3,7 @@
 import { PLACES_URL } from "./places-api-url";
 import { Alert } from "react-native";
 import { uploadImage } from "../../utils/cloudinary-functions";
+import { getIdTokenFromFirebase } from "../auth/auth.service";
 
 // export const placeRequest = (place) => {
 //   return new Promise((resolve, reject) => {
@@ -59,12 +60,15 @@ export const submitPlace = async ({
   userId,
 }) => {
   try {
+    const token = await getIdTokenFromFirebase();
+
     const secureUrl = await uploadImage(imageUri);
 
     const response = await fetch(PLACES_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         title,
@@ -82,9 +86,9 @@ export const submitPlace = async ({
     }
 
     const data = await response.json();
-    Alert.alert("Success", "Place submitted successfully!");
-    console.log(data); ///logging
-    return data;
+    // Alert.alert("Success", "Place submitted successfully!");
+
+    return { data, message: "Place submitted successfully!" };
   } catch (error) {
     console.error("Submission error:", error);
     Alert.alert("Error", error.message);
@@ -102,12 +106,15 @@ export const editPlace = async ({
   userId,
 }) => {
   try {
+    const token = await getIdTokenFromFirebase();
+
     const secureUrl = await uploadImage(imageUri);
 
     const response = await fetch(PLACES_URL, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         title,
@@ -126,8 +133,8 @@ export const editPlace = async ({
     }
 
     const data = await response.json();
-    Alert.alert("Success", "Place edited successfully!");
-    return data;
+    // Alert.alert("Success", "Place edited successfully!");
+    return { data, message: "Place edited successfully!" };
   } catch (error) {
     console.error("Editing error:", error);
     Alert.alert("Error", error.message);
@@ -137,10 +144,13 @@ export const editPlace = async ({
 
 export const deletePlace = async (placeId) => {
   try {
+    const token = await getIdTokenFromFirebase();
+
     const response = await fetch(PLACES_URL, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         placeId,
@@ -153,8 +163,8 @@ export const deletePlace = async (placeId) => {
     }
 
     const data = await response.json();
-    Alert.alert("Success", "Place deleted successfully!");
-    return data;
+    // Alert.alert("Success", "Place deleted successfully!");
+    return { data, message: "Place deleted successfully!" };
   } catch (error) {
     console.error("Deleting error:", error);
     Alert.alert("Error", error.message);

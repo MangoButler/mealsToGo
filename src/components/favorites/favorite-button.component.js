@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import { useContext, useState } from "react";
+import { TouchableOpacity } from "react-native";
+import { useContext } from "react";
 import { FavoritesContext } from "../../services/favorites/favorites.context";
 import React from "react";
 import styled from "styled-components/native";

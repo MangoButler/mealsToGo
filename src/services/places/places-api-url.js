@@ -20,3 +20,5 @@ export const UPLOAD_PRESET = "can_and_go";
 export const PROFILE_UPLOAD_PRESET = "can_and_go_profile";
 
 export const USER_STORAGE_KEY = "@authenticated_user";
+
+export const LAST_SYNC_KEY = "@last_profile_sync";

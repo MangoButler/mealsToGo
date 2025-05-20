@@ -22,3 +22,12 @@ export const updateFirebaseProfile = async (username, imageUrl) => {
   await reload(auth.currentUser);
   return auth.currentUser;
 };
+
+export async function getIdTokenFromFirebase() {
+  const user = auth.currentUser;
+
+  if (!user) throw new Error("User not authenticated");
+
+  const token = await user.getIdToken();
+  return token;
+}

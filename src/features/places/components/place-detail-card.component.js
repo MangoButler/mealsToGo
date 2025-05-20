@@ -30,6 +30,7 @@ import { returnToPlacesOverview } from "../../../utils/places-navigation.functio
 import { PlacesContext } from "../../../services/places/places.context";
 import FavoriteButton from "../../../components/favorites/favorite-button.component";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
+import { Alert } from "react-native";
 
 const DetailCardContainer = styled.View`
   flex: 1;
@@ -109,10 +110,13 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
   const handleDelete = async () => {
-    await deletePlace(placeId);
-    setModalVisible(false);
-    triggerPlacesRefresh();
-    returnToPlacesOverview(navigation);
+    const result = await deletePlace(placeId);
+    if (result) {
+      setModalVisible(false);
+      triggerPlacesRefresh();
+      await returnToPlacesOverview(navigation);
+      Alert.alert("Success", result.message);
+    }
   };
 
   return (

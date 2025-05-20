@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Alert } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 
 import FormButton from "../../../components/form/form-button.component";
@@ -77,7 +77,8 @@ const PlaceForm = ({
     setFormLoading(false);
     if (result) {
       triggerPlacesRefresh();
-      returnToPlacesOverview(navigation);
+      await returnToPlacesOverview(navigation);
+      Alert.alert("Success", result.message);
     }
   };
 
@@ -153,6 +154,7 @@ const PlaceForm = ({
           mode="outlined"
           buttonColor={theme.colors.bg.secondary}
           textColor={theme.colors.text.secondary}
+          disabled={formLoading}
         >
           Cancel
         </FormButton>

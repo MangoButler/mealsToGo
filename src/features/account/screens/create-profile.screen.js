@@ -111,7 +111,7 @@ const CreateProfileScreen = ({ navigation }) => {
             buttonColor={theme.colors.ui.primary}
             textColor={theme.colors.text.inverse}
             loading={isLoading === "create"}
-            disabled={username.length < 3}
+            disabled={username.length < 3 || isLoading === "skip"}
           >
             Create Profile
           </FormActionButton>
@@ -124,6 +124,7 @@ const CreateProfileScreen = ({ navigation }) => {
             }}
             textColor={theme.colors.ui.primary}
             loading={isLoading === "skip"}
+            disabled={isLoading === "create"}
           >
             I will do this later
           </FormActionButton>
