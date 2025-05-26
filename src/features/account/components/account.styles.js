@@ -2,6 +2,9 @@
 import styled from "styled-components/native";
 import { backgroundImages } from "../../../utils/backgroundImages";
 import { useMemo } from "react";
+import { KeyboardAvoidingView } from "react-native-web";
+import { Platform } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export const AccountBackgroundImage = styled.ImageBackground`
   flex: 1;
@@ -18,15 +21,34 @@ export const AccountCover = styled.View`
     props.theme.colors.bg.coldCover}; /*  rgba(246, 234, 209, 0.1); */
 `;
 
-export const AccountContainer = styled.View`
+export const StyledAccountContainer = styled.KeyboardAvoidingView`
   background-color: ${(props) => props.theme.colors.bg.coldBg};
-  padding: ${(props) => props.theme.space[4]};
-  margin-top: ${(props) => props.theme.space[2]};
+  padding: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[4]};
+  padding-bottom: ${(props) => props.theme.space[4]};
+  /* margin-top: ${(props) => props.theme.space[3]};
+  margin-bottom: ${(props) => props.theme.space[3]}; */
+  margin: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[1]};
   border-radius: ${(props) => props.theme.space[2]};
   justify-content: space-between;
   align-items: center;
-  width: 80%;
+  /* width: 90%; */
 `;
+
+export const AccountContainer = ({ children }) => {
+  return (
+    <StyledAccountContainer
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        {children}
+      </ScrollView>
+    </StyledAccountContainer>
+  );
+};
 
 export const AccountBackground = ({ children }) => {
   const randomBackground = useMemo(() => {

@@ -31,6 +31,7 @@ import { PlacesContext } from "../../../services/places/places.context";
 import FavoriteButton from "../../../components/favorites/favorite-button.component";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
 import { Alert } from "react-native";
+import { CrudActionsContainer } from "../../../components/utility/utility.styles";
 
 const DetailCardContainer = styled.View`
   flex: 1;
@@ -40,21 +41,6 @@ const DetailCardScrollView = styled.ScrollView.attrs((props) => ({
     paddingBottom: 120, // adjust to be at least the height of CrudActionsContainer + some spacing
   },
 }))``;
-
-export const CrudActionsContainer = styled.View`
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  padding: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[5]};
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border-top-width: 0.5px;
-  border-top-color: ${(props) => props.theme.colors.ui.primary};
-  background-color: ${(props) => props.theme.colors.bg.secondary};
-`;
 
 const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
@@ -117,6 +103,11 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
       await returnToPlacesOverview(navigation);
       Alert.alert("Success", result.message);
     }
+  };
+
+  const onGoBack = async () => {
+    await returnToPlacesOverview(navigation);
+    // navigation.goBack();
   };
 
   return (
@@ -232,7 +223,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
           </PlaceCardContent>
           <PlaceCardActions>
             <PlaceActionsButtonOutline
-              onPress={navigation.goBack}
+              onPress={onGoBack}
               textColor={theme.colors.ui.primary}
             >
               Go Back
@@ -259,6 +250,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               textColor={theme.colors.text.inverse}
               buttonColor={theme.colors.brand.muted}
               mode="contained"
+              icon="map-marker-question-outline"
             >
               Update Place
             </PlaceActionsButtonOutline>
@@ -269,6 +261,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               buttonColor={theme.colors.ui.error}
               textColor={theme.colors.text.inverse}
               mode="contained"
+              icon="map-marker-remove-outline"
             >
               Delete Place
             </PlaceActionsButton>

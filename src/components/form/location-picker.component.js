@@ -53,7 +53,7 @@ const LocationPicker = ({ onLocationSelected, preSelected }) => {
         Use Current Location
       </FormButton>
       {location && (
-        <Spacer position="bottom" size="medium">
+        <Spacer position="vertical" size="medium">
           <MiniMap geometry={location} />
           <Spacer position="top" size="medium">
             <Text variant="caption" theme={theme}>

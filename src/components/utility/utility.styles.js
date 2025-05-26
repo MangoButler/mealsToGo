@@ -11,7 +11,7 @@ export const ModalContainer = styled.View`
 export const ButtonRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin: ${(props) => props.theme.space[4]};
+  margin: ${(props) => props.theme.space[3]};
   margin-bottom: ${(props) => props.theme.space[1]};
 `;
 
@@ -22,11 +22,11 @@ export const Backdrop = styled.View`
 `;
 
 export const CrudActionsContainer = styled.View`
-  position: absolute;
+  position: relative; /*  changed */
   bottom: 0;
   right: 0;
   left: 0;
-  padding: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[5]};
+  padding: ${(props) => props.theme.space[3]} ${(props) => props.theme.space[4]};
   display: flex;
   flex-direction: row;
   justify-content: space-between;

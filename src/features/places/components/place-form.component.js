@@ -1,5 +1,11 @@
 import React, { useContext, useState } from "react";
-import { View, ScrollView, Alert } from "react-native";
+import {
+  View,
+  ScrollView,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import styled, { useTheme } from "styled-components/native";
 
 import FormButton from "../../../components/form/form-button.component";
@@ -14,8 +20,9 @@ import { validateFormTextInput } from "../../../utils/validation";
 import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
 import { PlacesContext } from "../../../services/places/places.context";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
+import ScrollActionContainer from "../../../components/utility/scroll-action-container.component";
 const Container = styled(View)`
-  flex: 1;
+  /* flex: 1; */
   padding: ${(props) => props.theme.space[4]};
   background-color: ${(props) => props.theme.colors.bg.secondary};
 `;
@@ -39,7 +46,7 @@ const PlaceForm = ({
   const [titleError, setTitleError] = useState(null);
   const [descriptionError, setDescriptionError] = useState(null);
   const [formLoading, setFormLoading] = useState(false);
-  const { user } = useContext(AuthenticationContext);
+  const { user, syncUserProfile } = useContext(AuthenticationContext);
   const { triggerPlacesRefresh } = useContext(PlacesContext);
   const theme = useTheme();
 
@@ -74,6 +81,7 @@ const PlaceForm = ({
     }
 
     const result = await onSubmit(newPlace);
+    await syncUserProfile();
     setFormLoading(false);
     if (result) {
       triggerPlacesRefresh();
@@ -82,84 +90,98 @@ const PlaceForm = ({
     }
   };
 
+  const onGoBack = async () => {
+    await returnToPlacesOverview(navigation);
+    // navigation.goBack();
+  };
+
   return (
-    <ScrollView>
-      <Container>
-        <Spacer position="bottom" size="large">
-          <Text variant={"heading"} theme={theme}>
-            {formTitle}
-          </Text>
-        </Spacer>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <ScrollView>
+        {/* <ScrollActionContainer> */}
+        <Container>
+          <Spacer position="bottom" size="large">
+            <Text variant={"heading"} theme={theme}>
+              {formTitle}
+            </Text>
+          </Spacer>
 
-        <FormTextInput
-          value={title}
-          label="Title"
-          onChangeText={(text) => {
-            setTitle(text);
-            if (titleError) setTitleError(null);
-          }}
-          error={titleError}
-        />
+          <FormTextInput
+            value={title}
+            label="Title"
+            onChangeText={(text) => {
+              setTitle(text);
+              if (titleError) setTitleError(null);
+            }}
+            error={titleError}
+          />
 
-        <ImageUpload
-          imageUri={image}
-          onImageUploadSuccess={(img) => setImage(img)}
-        />
+          <ImageUpload
+            imageUri={image}
+            onImageUploadSuccess={(img) => setImage(img)}
+          />
 
-        <Spacer position="bottom" size="large">
-          <AccordionList
-            title="Select Features"
-            icon={selectedFeatures.length ? "check-circle-outline" : "details"}
-          >
-            <FeaturesSelector
-              onSelectionChange={(features) => setSelectedFeatures(features)}
-              preSelected={selectedFeatures}
-            />
-          </AccordionList>
+          <Spacer position="bottom" size="large">
+            <AccordionList
+              title="Select Features"
+              icon={
+                selectedFeatures.length ? "check-circle-outline" : "details"
+              }
+            >
+              <FeaturesSelector
+                onSelectionChange={(features) => setSelectedFeatures(features)}
+                preSelected={selectedFeatures}
+              />
+            </AccordionList>
 
-          <AccordionList
-            title="Set Location"
-            icon={location ? "map-check-outline" : "map-outline"}
-          >
-            <LocationPicker
-              onLocationSelected={(location) => setLocation(location)}
-              preSelected={location}
-            />
-          </AccordionList>
-        </Spacer>
+            <AccordionList
+              title="Set Location"
+              icon={location ? "map-check-outline" : "map-outline"}
+            >
+              <LocationPicker
+                onLocationSelected={(location) => setLocation(location)}
+                preSelected={location}
+              />
+            </AccordionList>
+          </Spacer>
 
-        <FormTextInput
-          value={description}
-          label="Description (optional)"
-          multiline
-          onChangeText={(text) => {
-            setDescription(text);
-            if (descriptionError) setDescriptionError(null);
-          }}
-          error={descriptionError}
-        />
-        <Spacer position="vertical" size="medium">
+          <FormTextInput
+            value={description}
+            label="Description (optional)"
+            multiline
+            onChangeText={(text) => {
+              setDescription(text);
+              if (descriptionError) setDescriptionError(null);
+            }}
+            error={descriptionError}
+          />
+          <Spacer position="vertical" size="medium">
+            <FormButton
+              loading={formLoading}
+              onPress={handleSubmit}
+              disabled={!isSubmitable}
+              mode="contained"
+            >
+              {place ? "Update" : "Submit"}
+            </FormButton>
+          </Spacer>
+
           <FormButton
-            loading={formLoading}
-            onPress={handleSubmit}
-            disabled={!isSubmitable}
-            mode="contained"
+            onPress={onGoBack}
+            mode="outlined"
+            buttonColor={theme.colors.bg.secondary}
+            textColor={theme.colors.text.secondary}
+            disabled={formLoading}
           >
-            {place ? "Update" : "Submit"}
+            Cancel
           </FormButton>
-        </Spacer>
-
-        <FormButton
-          onPress={navigation.goBack}
-          mode="outlined"
-          buttonColor={theme.colors.bg.secondary}
-          textColor={theme.colors.text.secondary}
-          disabled={formLoading}
-        >
-          Cancel
-        </FormButton>
-      </Container>
-    </ScrollView>
+        </Container>
+        {/* </ScrollActionContainer> */}
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

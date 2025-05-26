@@ -29,11 +29,16 @@ const ConfirmationModal = ({
     }
     setIsLoading(false);
   };
+  const handleDismiss = () => {
+    onDismiss();
+    if (password) setPassword("");
+  };
+
   return (
     <Portal>
       <Modal
         visible={visible}
-        onDismiss={onDismiss}
+        onDismiss={handleDismiss}
         contentContainerStyle={{ flex: 1 }}
       >
         <Backdrop>
@@ -62,7 +67,7 @@ const ConfirmationModal = ({
             <ButtonRow>
               <FormActionButton
                 mode="outlined"
-                onPress={onDismiss}
+                onPress={handleDismiss}
                 textColor={theme.colors.ui.primary}
                 disabled={isLoading}
               >

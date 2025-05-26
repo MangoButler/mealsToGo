@@ -6,7 +6,7 @@ import { theme } from "../../infrastructure/theme";
 export const MenuActionButton = styled(Button)`
   border-radius: ${(props) => props.theme.space[5]};
   /* margin: 0 ${(props) => props.theme.space[3]}; */
-  margin-bottom: ${(props) => props.theme.space[2]};
+  /* margin-bottom: ${(props) => props.theme.space[2]}; */
 `;
 
 const MenuButton = ({
@@ -14,6 +14,7 @@ const MenuButton = ({
   children,
   onPress = () => {},
   disabled = false,
+  textSize = 12,
 
   buttonColor = theme.colors.bg.secondary,
   textColor = theme.colors.text.secondary,
@@ -32,6 +33,7 @@ const MenuButton = ({
       disabled={disabled}
       buttonColor={bgColor}
       textColor={textColor || theme.colors.text.inverse}
+      labelStyle={{ fontSize: textSize }}
       {...props}
     >
       {children}

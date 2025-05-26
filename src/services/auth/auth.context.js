@@ -164,6 +164,7 @@ export const AuthenticationContextProvider = ({ children, onAuthReady }) => {
         setUser,
         onLogout,
         setIsLoading,
+        syncUserProfile,
       }}
     >
       {children}

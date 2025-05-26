@@ -4,7 +4,7 @@ import styled, { useTheme } from "styled-components/native";
 export const RowView = styled.View`
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: ${({ alignItems }) => alignItems};
   justify-content: ${({ justifyContent }) => justifyContent};
   margin: ${({ xMargin }) => xMargin};
   margin-top: ${({ topMargin }) => topMargin};
@@ -26,6 +26,7 @@ const Row = ({
   bottomMargin = "none",
   xMargin = "none",
   justifyContent = "space-between",
+  alignItems = "center",
   children,
 }) => {
   const theme = useTheme();
@@ -38,6 +39,7 @@ const Row = ({
       bottomMargin={bottom}
       xMargin={horizontal}
       justifyContent={justifyContent}
+      alignItems={alignItems}
     >
       {children}
     </RowView>

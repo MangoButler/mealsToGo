@@ -10,19 +10,25 @@ import { FormActionButton } from "../../../components/form/form-button.component
 import ConfirmationModal from "../../../components/utility/confirmation-modal.component";
 import { FavoritesContext } from "../../../services/favorites/favorites.context";
 import { deleteUserProfile } from "../../../services/auth/user.service";
+import HighlightBar from "../../../components/favorites/highlight-places-bar.component";
+import ScrollActionContainer from "../../../components/utility/scroll-action-container.component";
+import Row from "../../../components/spacer/row.component";
+import MenuButton from "../../../components/utility/menu-button.component";
+import { capitalizeEachWord } from "../../../utils/validation";
 
 const Container = styled.View`
   flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding: ${(props) => props.theme.space[3]};
+  /* justify-content: center; */
+  /* align-items: center; */
+  padding: ${(props) => props.theme.space[3]} ${(props) => props.theme.space[1]};
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 const ProfileContainer = styled.View`
-  flex: 1;
-  justify-content: center;
+  /* flex: 1; */
+  display: flex;
+  justify-content: space-evenly;
   align-items: center;
-  padding: ${(props) => props.theme.space[3]};
+  padding: ${(props) => props.theme.space[3]} 0;
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
@@ -33,6 +39,10 @@ const UserImage = styled(Image)`
   border-radius: 75px;
 `;
 
+const MenuToggleButton = styled(MenuButton)`
+  flex: 0.3;
+`;
+
 const ProfileScreen = ({ navigation }) => {
   const theme = useTheme();
   const { user, onLogout, isLoading, setUser, setIsLoading } = useContext(
@@ -40,7 +50,8 @@ const ProfileScreen = ({ navigation }) => {
   );
   const { removeAllFavorites } = useContext(FavoritesContext);
   const [modalVisible, setModalVisible] = useState(false);
-
+  const [activePanel, setActivePanel] = useState(null);
+  const { favorites } = useContext(FavoritesContext);
   if (!user) {
     navigation.navigate("Home");
   }
@@ -56,7 +67,6 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisible(false);
     setIsLoading(false);
   };
-  //Implement the delete functionality
 
   const logoutUser = async () => {
     await onLogout();
@@ -68,50 +78,133 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisible(false);
   };
 
+  const togglePanel = (panel) => {
+    setActivePanel((current) => (current === panel ? null : panel));
+  };
+  const recents = [];
+  const highlightedItems =
+    activePanel === "favorites"
+      ? favorites
+      : activePanel === "my places"
+        ? user.places
+        : activePanel === "recents"
+          ? recents
+          : [];
+
+  const onHighlightCardPress = (item) => {
+    navigation.navigate("Places", {
+      screen: "PlaceDetail",
+      params: { item },
+    });
+  };
+
   return (
-    <Container>
-      <ProfileContainer>
-        <Text theme={theme} variant={"labelCentered"}>
-          {user.username}
-        </Text>
-        <Spacer position="vertical" size="large">
-          <UserImage
-            source={
-              user.profilePicture ? { uri: user.profilePicture } : appImage
-            }
-          />
-        </Spacer>
+    <>
+      <Container>
+        <ScrollActionContainer>
+          <ProfileContainer>
+            <Text theme={theme} variant={"labelCentered"}>
+              {user.username}
+            </Text>
+            <Spacer position="vertical" size="large">
+              <UserImage
+                source={
+                  user.profilePicture ? { uri: user.profilePicture } : appImage
+                }
+              />
+            </Spacer>
 
-        <Text theme={theme} variant="hint">
-          {user.email}
-        </Text>
+            <Text theme={theme} variant="hint">
+              {user.email}
+            </Text>
 
-        <Spacer position="vertical" size="large">
-          <FormActionButton
-            onPress={() => {
-              setModalVisible("logout");
-            }}
-            textColor={theme.colors.ui.primary}
-            // buttonColor={theme.colors.brand.muted}
-            mode="outlined"
-            icon="logout"
-            loading={isLoading}
-          >
-            Logout
-          </FormActionButton>
-        </Spacer>
-        <FormActionButton
-          onPress={() => {
-            setModalVisible("favorites");
-          }}
-          textColor={theme.colors.ui.primary}
-          // buttonColor={theme.colors.brand.muted}
-          mode="outlined"
-          icon="heart-off-outline"
-        >
-          Delete Favorites
-        </FormActionButton>
-      </ProfileContainer>
+            <Spacer position="top" size="large">
+              <FormActionButton
+                onPress={() => {
+                  setModalVisible("logout");
+                }}
+                textColor={theme.colors.ui.primary}
+                // buttonColor={theme.colors.brand.muted}
+                mode="outlined"
+                icon="logout"
+                loading={isLoading}
+              >
+                Logout
+              </FormActionButton>
+            </Spacer>
+          </ProfileContainer>
+
+          <Row xMargin="large">
+            <MenuToggleButton
+              icon={
+                activePanel === "favorites" ? "chevron-up" : "heart-outline"
+              }
+              onPress={() => togglePanel("favorites")}
+            >
+              Favorites
+            </MenuToggleButton>
+            <MenuToggleButton
+              icon={
+                activePanel === "my places" ? "chevron-up" : "account-outline"
+              }
+              onPress={() => togglePanel("my places")}
+            >
+              My Places
+            </MenuToggleButton>
+            <MenuToggleButton
+              icon={activePanel === "recents" ? "chevron-up" : "calendar-clock"}
+              onPress={() => togglePanel("recents")}
+            >
+              Recent
+            </MenuToggleButton>
+          </Row>
+
+          <ProfileContainer>
+            <Text theme={theme} variant={"labelCentered"}>
+              {activePanel ? capitalizeEachWord(activePanel) : ""}
+            </Text>
+
+            <Spacer position="top" size="medium">
+              <HighlightBar
+                visible={activePanel !== null}
+                panelType={activePanel}
+                items={highlightedItems}
+                onCardPress={onHighlightCardPress}
+              />
+            </Spacer>
+            {favorites.length > 0 && activePanel === "favorites" && (
+              <Spacer position="top" size="medium">
+                <FormActionButton
+                  onPress={() => {
+                    setModalVisible("favorites");
+                  }}
+                  textColor={theme.colors.ui.primary}
+                  mode="outlined"
+                  icon="heart-off-outline"
+                >
+                  Delete Favorites
+                </FormActionButton>
+              </Spacer>
+            )}
+            {user.places.length < 3 && activePanel === "my places" && (
+              <Spacer position="top" size="medium">
+                <FormActionButton
+                  onPress={() => {
+                    navigation.navigate("Places", {
+                      screen: "NewPlace",
+                    });
+                  }}
+                  textColor={theme.colors.ui.primary}
+                  mode="outlined"
+                  icon="map-marker-plus-outline"
+                >
+                  Create Place
+                </FormActionButton>
+              </Spacer>
+            )}
+          </ProfileContainer>
+        </ScrollActionContainer>
+      </Container>
       <CrudActionsContainer>
         <FormActionButton
           onPress={() => {
@@ -120,6 +213,7 @@ const ProfileScreen = ({ navigation }) => {
           textColor={theme.colors.text.inverse}
           buttonColor={theme.colors.brand.muted}
           mode="contained"
+          icon="account-edit-outline"
         >
           Update Profile
         </FormActionButton>
@@ -130,6 +224,7 @@ const ProfileScreen = ({ navigation }) => {
           buttonColor={theme.colors.ui.error}
           textColor={theme.colors.text.inverse}
           mode="contained"
+          icon="account-remove-outline"
         >
           Delete Profile
         </FormActionButton>
@@ -155,7 +250,7 @@ const ProfileScreen = ({ navigation }) => {
           setModalVisible(false);
         }}
       />
-    </Container>
+    </>
   );
 };
 

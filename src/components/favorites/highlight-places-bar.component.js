@@ -1,5 +1,10 @@
 import React, { useRef, useEffect } from "react";
-import { Animated, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Text } from "../typography/text.component";
 import { Card } from "react-native-paper";
@@ -9,9 +14,21 @@ import {
   PlaceCardCover,
 } from "../../features/places/components/places-info-card.styles";
 import { getWalkingTimeInMinutes } from "../../utils/station.functions";
+import { theme } from "../../infrastructure/theme";
+
+const screenWidth = Dimensions.get("window").width;
+
+const HighlightScroll = styled.ScrollView.attrs(() => ({
+  horizontal: true,
+  showsHorizontalScrollIndicator: false,
+  contentContainerStyle: {
+    paddingRight: theme.space[2],
+  },
+}))``;
 
 const Container = styled.View`
   padding: ${(props) => props.theme.space[2]};
+  padding-left: ${(props) => props.theme.space[3]};
 `;
 
 const HighlightItem = styled(Card)`
@@ -19,26 +36,26 @@ const HighlightItem = styled(Card)`
   margin-right: ${(props) => props.theme.space[2]};
   border-radius: 12px;
   margin-bottom: ${(props) => props.theme.space[1]};
+  width: ${screenWidth * 0.7}px;
 `;
 
 const AnimatedRow = styled(Animated.View)`
   flex-direction: row;
   align-items: center;
-  padding-left: ${(props) => props.theme.space[2]};
-  padding-right: ${(props) => props.theme.space[0]};
+  /* padding-left: ${(props) => props.theme.space[2]};
+  padding-right: ${(props) => props.theme.space[0]}; */
 `;
 
 const NoHighlight = styled(Text)`
-  justify-self: center;
-  flex: 1;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
 `;
 
-const HighlightBar = ({ items, visible, panelType = "", navigation }) => {
+const HighlightBar = ({ items, visible, panelType = "", onCardPress }) => {
   const theme = useTheme();
   const slideAnim = useRef(new Animated.Value(1)).current;
-  const onCardPress = (item) => {
-    navigation.navigate("PlaceDetail", { item });
-  };
 
   useEffect(() => {
     Animated.timing(slideAnim, {
@@ -69,7 +86,7 @@ const HighlightBar = ({ items, visible, panelType = "", navigation }) => {
         }}
       >
         {items.length ? (
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <HighlightScroll>
             {items.map((item) => (
               <HighlightItem key={item.id}>
                 <TouchableOpacity onPress={() => onCardPress(item)}>
@@ -94,12 +111,12 @@ const HighlightBar = ({ items, visible, panelType = "", navigation }) => {
                 </PlaceCardContent>
               </HighlightItem>
             ))}
-          </ScrollView>
+          </HighlightScroll>
         ) : (
           <NoHighlight theme={theme} variant="captionCentered">
             {panelType === "favorites"
               ? "Add Favorites to display them here."
-              : "Nothing trending at the moment, come back later."}
+              : "Nothing here at the moment..."}
           </NoHighlight>
         )}
       </AnimatedRow>
