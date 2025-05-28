@@ -15,6 +15,7 @@ const MenuButton = ({
   onPress = () => {},
   disabled = false,
   textSize = 12,
+  mode = "contained-tonal",
 
   buttonColor = theme.colors.bg.secondary,
   textColor = theme.colors.text.secondary,
@@ -29,7 +30,7 @@ const MenuButton = ({
     <MenuActionButton
       icon={icon}
       onPress={onPress}
-      mode="contained-tonal"
+      mode={mode}
       disabled={disabled}
       buttonColor={bgColor}
       textColor={textColor || theme.colors.text.inverse}

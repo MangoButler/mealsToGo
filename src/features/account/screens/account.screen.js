@@ -3,6 +3,7 @@ import { Text } from "../../../components/typography/text.component";
 import {
   AccountBackground,
   AccountContainer,
+  AuthActionContainer,
 } from "../components/account.styles";
 // import { ButtonRow } from "../../../components/utility/utility.styles";
 import { useTheme } from "styled-components/native";
@@ -22,7 +23,7 @@ const AccountScreen = ({ navigation }) => {
   const theme = useTheme();
   return (
     <AccountBackground>
-      <AccountContainer>
+      <AuthActionContainer>
         <Text theme={theme} variant="heading">
           Sign up to join the fun!
         </Text>
@@ -65,7 +66,7 @@ const AccountScreen = ({ navigation }) => {
             Sign Up
           </FormActionButton>
         </ButtonRow>
-      </AccountContainer>
+      </AuthActionContainer>
     </AccountBackground>
   );
 };

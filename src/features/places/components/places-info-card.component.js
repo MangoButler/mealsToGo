@@ -23,6 +23,7 @@ import { TouchableOpacity } from "react-native";
 import { getFeaturesObjects } from "../../../utils/features-list";
 import { getWalkingTimeInMinutes } from "../../../utils/station.functions";
 import FavoriteButton from "../../../components/favorites/favorite-button.component";
+import { openInMaps } from "../../../utils/location.functions";
 
 const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
   const theme = useTheme();
@@ -47,11 +48,19 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
     description = "A nice little getaway for any adventurer",
     nearbyStations = [],
     city = "Others",
+    location = {
+      location: { lat: -6.1613083, lng: 106.9049817 },
+      viewport: { northeast: -6.1613083, southwest: 106.9049817 },
+    },
   } = place;
 
   const featuresObjects = getFeaturesObjects(features);
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
+
+  const getDirections = () => {
+    openInMaps(location.location.lat, location.location.lng, title);
+  };
 
   return (
     <PlaceCard elevation={5}>
@@ -110,24 +119,12 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
               </Text>
             )}
             <InfoButton
-              textColor={
-                isClosedTemporarely
-                  ? theme.colors.ui.error
-                  : theme.colors.ui.primary
-              }
               mode="outlined"
               compact
-              icon={
-                isOpenNow && !isClosedTemporarely
-                  ? "door-sliding-open"
-                  : "door-sliding-lock"
-              }
+              icon="directions"
+              onPress={getDirections}
             >
-              {isClosedTemporarely
-                ? "Temporarely Closed"
-                : isOpenNow
-                  ? "Open Now"
-                  : "Closed"}
+              Get directions
             </InfoButton>
           </Row>
           <Spacer position={"top"} size={"medium"}>
@@ -154,8 +151,11 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
           buttonColor={
             isOpenNow ? theme.colors.ui.primary : theme.colors.ui.disabled
           }
+          textColor={
+            !isOpenNow ? theme.colors.ui.primary : theme.colors.text.inverse
+          }
         >
-          Reserve
+          Hang out here
         </PlaceActionsButton>
       </PlaceCardActions>
     </PlaceCard>

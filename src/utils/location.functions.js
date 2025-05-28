@@ -1,4 +1,5 @@
 import * as Location from "expo-location";
+import { Linking, Platform } from "react-native";
 
 export const transformLocationToGeometry = (loc) => {
   const defaultCoordinateDelta = 0.0026979605829993147 / 2;
@@ -96,4 +97,15 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
       Math.sin(dLon / 2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c; // distance in km
+};
+
+export const openInMaps = (lat, lng, label = "Destination") => {
+  const scheme = Platform.select({
+    ios: `maps:0,0?q=${label}@${lat},${lng}`,
+    android: `geo:0,0?q=${lat},${lng}(${label})`,
+  });
+
+  Linking.openURL(scheme).catch((err) =>
+    console.error("An error occurred", err)
+  );
 };

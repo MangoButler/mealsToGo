@@ -35,7 +35,11 @@ export const CategoryIconContainer = styled(IconContainer)`
   flex-wrap: wrap;
 `;
 
-export const InfoButton = styled(Button)`
+export const InfoButton = styled(Button).attrs((props) => ({
+  mode: "outlined",
+
+  textColor: props.theme.colors.ui.primary,
+}))`
   border-radius: ${(props) => props.theme.space[2]};
   border-color: ${(props) => props.theme.colors.ui.primary};
 `;
@@ -72,7 +76,13 @@ export const PlaceCardActions = styled(Card.Actions)`
   margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
-export const PlaceActionsButton = styled(InfoButton)`
+export const PlaceActionsButton = styled(Button).attrs((props) => ({
+  mode: "outlined",
+
+  // textColor: props.theme.colors.ui.primary,
+}))`
+  border-radius: ${(props) => props.theme.space[2]};
+  border-color: ${(props) => props.theme.colors.ui.primary};
   border: none;
 `;
 

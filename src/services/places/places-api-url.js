@@ -2,11 +2,11 @@
 
 //Dev
 
-export const BASE_URL = "http://10.0.2.2:3000/api/";
+// export const BASE_URL = "http://10.0.2.2:3000/api/";
 
 //Production
 
-// export const BASE_URL = "https://cans-and-go-backend.vercel.app/api/";
+export const BASE_URL = "https://cans-and-go-backend.vercel.app/api/";
 
 export const PLACES_URL = BASE_URL + "places";
 

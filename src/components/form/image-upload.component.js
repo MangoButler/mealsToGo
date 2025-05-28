@@ -3,6 +3,7 @@ import { View, Image, Alert } from "react-native";
 import FormButton from "./form-button.component";
 import * as ImagePicker from "expo-image-picker";
 import styled from "styled-components/native";
+import { UserImage } from "../../features/profile/screens/profile.screen";
 
 const Preview = styled(Image)`
   width: 100%;
@@ -18,7 +19,11 @@ const ImagePickerContainer = styled(View)`
   margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
-const ImageUpload = ({ onImageUploadSuccess, imageUri }) => {
+const ImageUpload = ({
+  onImageUploadSuccess,
+  imageUri,
+  imageType = "place",
+}) => {
   // const [imageUri, setImageUri] = useState(oldImage);
   const [uploading, setUploading] = useState(false);
 
@@ -120,7 +125,12 @@ const ImageUpload = ({ onImageUploadSuccess, imageUri }) => {
 
   return (
     <ImagePickerContainer>
-      {imageUri && <Preview source={{ uri: imageUri }} />}
+      {imageUri &&
+        (imageType === "user" ? (
+          <UserImage source={{ uri: imageUri }} />
+        ) : (
+          <Preview source={{ uri: imageUri }} />
+        ))}
       <FormButton
         icon={imageUri ? "image-edit" : "image-plus"}
         onPress={handleImageUpload}

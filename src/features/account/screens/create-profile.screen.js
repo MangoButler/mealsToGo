@@ -69,6 +69,7 @@ const CreateProfileScreen = ({ navigation }) => {
           <ImageUpload
             imageUri={profilePicture}
             onImageUploadSuccess={(uri) => setProfilePicture(uri)}
+            imageType="user"
           />
         </Spacer>
 

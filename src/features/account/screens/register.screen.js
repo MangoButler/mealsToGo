@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import {
   AccountBackground,
   AccountContainer,
+  AuthActionContainer,
 } from "../components/account.styles";
 import FormTextInput from "../../../components/form/form-text-input.component";
 import { useTheme } from "styled-components";
@@ -55,7 +56,7 @@ const RegisterScreen = ({ navigation }) => {
 
   return (
     <AccountBackground>
-      <AccountContainer>
+      <AuthActionContainer>
         <Text variant="heading" theme={theme}>
           Join us!
         </Text>
@@ -104,7 +105,7 @@ const RegisterScreen = ({ navigation }) => {
             Sign Up
           </FormActionButton>
         </Spacer>
-      </AccountContainer>
+      </AuthActionContainer>
     </AccountBackground>
   );
 };

@@ -53,7 +53,7 @@ const NoHighlight = styled(Text)`
   width: 100%;
 `;
 
-const HighlightBar = ({ items, visible, panelType = "", onCardPress }) => {
+const HighlightBar = ({ items = [], visible, panelType = "", onCardPress }) => {
   const theme = useTheme();
   const slideAnim = useRef(new Animated.Value(1)).current;
 

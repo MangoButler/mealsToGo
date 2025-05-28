@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import {
   AccountBackground,
   AccountContainer,
+  AuthActionContainer,
 } from "../components/account.styles";
 import FormTextInput from "../../../components/form/form-text-input.component";
 import { useTheme } from "styled-components";
@@ -42,7 +43,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <AccountBackground>
-      <AccountContainer>
+      <AuthActionContainer>
         <Text variant="heading" theme={theme}>
           Welcome Back!
         </Text>
@@ -90,7 +91,7 @@ const LoginScreen = ({ navigation }) => {
             Login
           </FormActionButton>
         </Spacer>
-      </AccountContainer>
+      </AuthActionContainer>
     </AccountBackground>
   );
 };

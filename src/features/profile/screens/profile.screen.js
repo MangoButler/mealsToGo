@@ -5,7 +5,13 @@ import { Image } from "react-native";
 import appImage from "../../../../assets/adaptive-icon.png";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
 import { Spacer } from "../../../components/spacer/spacer.component";
-import { CrudActionsContainer } from "../../../components/utility/utility.styles";
+import {
+  CrudActionButton,
+  CrudActionContainerScrollView,
+  CrudActionsContainer,
+  MaxSpacer,
+  RelativePositionWrapper,
+} from "../../../components/utility/utility.styles";
 import { FormActionButton } from "../../../components/form/form-button.component";
 import ConfirmationModal from "../../../components/utility/confirmation-modal.component";
 import { FavoritesContext } from "../../../services/favorites/favorites.context";
@@ -18,6 +24,7 @@ import { capitalizeEachWord } from "../../../utils/validation";
 
 const Container = styled.View`
   flex: 1;
+  position: relative;
   /* justify-content: center; */
   /* align-items: center; */
   padding: ${(props) => props.theme.space[3]} ${(props) => props.theme.space[1]};
@@ -32,11 +39,12 @@ const ProfileContainer = styled.View`
   background-color: ${(props) => props.theme.colors.bg.primary};
 `;
 
-const UserImage = styled(Image)`
+export const UserImage = styled(Image)`
   width: 150px;
   height: 150px;
   opacity: 0.8;
   border-radius: 75px;
+  margin-bottom: ${(props) => props.theme.space[2]};
 `;
 
 const MenuToggleButton = styled(MenuButton)`
@@ -86,7 +94,7 @@ const ProfileScreen = ({ navigation }) => {
     activePanel === "favorites"
       ? favorites
       : activePanel === "my places"
-        ? user.places
+        ? user.places || []
         : activePanel === "recents"
           ? recents
           : [];
@@ -98,115 +106,123 @@ const ProfileScreen = ({ navigation }) => {
     });
   };
 
+  let nrPlaces = 0;
+  if (user.places && Array.isArray(user.places)) {
+    nrPlaces = user.places.length;
+  }
+
   return (
-    <>
-      <Container>
-        <ScrollActionContainer>
-          <ProfileContainer>
+    <Container>
+      <ScrollActionContainer
+        contentContainerStyle={{ paddingBottom: 150 }}
+        showsVerticalScrollIndicator={true}
+      >
+        <ProfileContainer>
+          <Spacer position="bottom" size="medium">
             <Text theme={theme} variant={"labelCentered"}>
               {user.username}
             </Text>
-            <Spacer position="vertical" size="large">
-              <UserImage
-                source={
-                  user.profilePicture ? { uri: user.profilePicture } : appImage
-                }
-              />
-            </Spacer>
+          </Spacer>
+          <Spacer position="vertical" size="medium">
+            <UserImage
+              source={
+                user.profilePicture ? { uri: user.profilePicture } : appImage
+              }
+            />
+          </Spacer>
 
-            <Text theme={theme} variant="hint">
-              {user.email}
-            </Text>
+          <Text theme={theme} variant="hint">
+            {user.email}
+          </Text>
 
-            <Spacer position="top" size="large">
+          <Spacer position="top" size="large">
+            <FormActionButton
+              onPress={() => {
+                setModalVisible("logout");
+              }}
+              textColor={theme.colors.ui.primary}
+              // buttonColor={theme.colors.brand.muted}
+              mode="outlined"
+              icon="logout"
+              loading={isLoading}
+            >
+              Logout
+            </FormActionButton>
+          </Spacer>
+        </ProfileContainer>
+
+        <Row xMargin="large">
+          <MenuToggleButton
+            icon={activePanel === "favorites" ? "chevron-up" : "heart-outline"}
+            onPress={() => togglePanel("favorites")}
+          >
+            Favorites
+          </MenuToggleButton>
+          <MenuToggleButton
+            icon={
+              activePanel === "my places" ? "chevron-up" : "account-outline"
+            }
+            onPress={() => togglePanel("my places")}
+          >
+            My Places
+          </MenuToggleButton>
+          <MenuToggleButton
+            icon={activePanel === "recents" ? "chevron-up" : "calendar-clock"}
+            onPress={() => togglePanel("recents")}
+          >
+            Recent
+          </MenuToggleButton>
+        </Row>
+
+        <ProfileContainer>
+          <Text theme={theme} variant={"labelCentered"}>
+            {activePanel ? capitalizeEachWord(activePanel) : ""}
+          </Text>
+
+          <Spacer position="top" size="medium">
+            <HighlightBar
+              visible={activePanel !== null}
+              panelType={activePanel}
+              items={highlightedItems}
+              onCardPress={onHighlightCardPress}
+            />
+          </Spacer>
+          {favorites && favorites.length > 0 && activePanel === "favorites" && (
+            <Spacer position="top" size="medium">
               <FormActionButton
                 onPress={() => {
-                  setModalVisible("logout");
+                  setModalVisible("favorites");
                 }}
                 textColor={theme.colors.ui.primary}
-                // buttonColor={theme.colors.brand.muted}
                 mode="outlined"
-                icon="logout"
-                loading={isLoading}
+                icon="heart-off-outline"
               >
-                Logout
+                Delete Favorites
               </FormActionButton>
             </Spacer>
-          </ProfileContainer>
-
-          <Row xMargin="large">
-            <MenuToggleButton
-              icon={
-                activePanel === "favorites" ? "chevron-up" : "heart-outline"
-              }
-              onPress={() => togglePanel("favorites")}
-            >
-              Favorites
-            </MenuToggleButton>
-            <MenuToggleButton
-              icon={
-                activePanel === "my places" ? "chevron-up" : "account-outline"
-              }
-              onPress={() => togglePanel("my places")}
-            >
-              My Places
-            </MenuToggleButton>
-            <MenuToggleButton
-              icon={activePanel === "recents" ? "chevron-up" : "calendar-clock"}
-              onPress={() => togglePanel("recents")}
-            >
-              Recent
-            </MenuToggleButton>
-          </Row>
-
-          <ProfileContainer>
-            <Text theme={theme} variant={"labelCentered"}>
-              {activePanel ? capitalizeEachWord(activePanel) : ""}
-            </Text>
-
+          )}
+          {nrPlaces < 3 && activePanel === "my places" && (
             <Spacer position="top" size="medium">
-              <HighlightBar
-                visible={activePanel !== null}
-                panelType={activePanel}
-                items={highlightedItems}
-                onCardPress={onHighlightCardPress}
-              />
+              <FormActionButton
+                onPress={() => {
+                  navigation.navigate("Places", {
+                    screen: "NewPlace",
+                  });
+                }}
+                textColor={theme.colors.ui.primary}
+                mode="outlined"
+                icon="map-marker-plus-outline"
+              >
+                Create Place
+              </FormActionButton>
             </Spacer>
-            {favorites.length > 0 && activePanel === "favorites" && (
-              <Spacer position="top" size="medium">
-                <FormActionButton
-                  onPress={() => {
-                    setModalVisible("favorites");
-                  }}
-                  textColor={theme.colors.ui.primary}
-                  mode="outlined"
-                  icon="heart-off-outline"
-                >
-                  Delete Favorites
-                </FormActionButton>
-              </Spacer>
-            )}
-            {user.places.length < 3 && activePanel === "my places" && (
-              <Spacer position="top" size="medium">
-                <FormActionButton
-                  onPress={() => {
-                    navigation.navigate("Places", {
-                      screen: "NewPlace",
-                    });
-                  }}
-                  textColor={theme.colors.ui.primary}
-                  mode="outlined"
-                  icon="map-marker-plus-outline"
-                >
-                  Create Place
-                </FormActionButton>
-              </Spacer>
-            )}
-          </ProfileContainer>
-        </ScrollActionContainer>
-      </Container>
+          )}
+        </ProfileContainer>
+        <MaxSpacer />
+      </ScrollActionContainer>
+
       <CrudActionsContainer>
-        <FormActionButton
+        <CrudActionButton
           onPress={() => {
             navigation.navigate("UpdateProfile");
           }}
@@ -216,8 +232,8 @@ const ProfileScreen = ({ navigation }) => {
           icon="account-edit-outline"
         >
           Update Profile
-        </FormActionButton>
-        <FormActionButton
+        </CrudActionButton>
+        <CrudActionButton
           onPress={() => {
             setModalVisible("delete");
           }}
@@ -227,7 +243,7 @@ const ProfileScreen = ({ navigation }) => {
           icon="account-remove-outline"
         >
           Delete Profile
-        </FormActionButton>
+        </CrudActionButton>
       </CrudActionsContainer>
       <ConfirmationModal
         visible={modalVisible}
@@ -250,7 +266,7 @@ const ProfileScreen = ({ navigation }) => {
           setModalVisible(false);
         }}
       />
-    </>
+    </Container>
   );
 };
 

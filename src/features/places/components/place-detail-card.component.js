@@ -31,16 +31,21 @@ import { PlacesContext } from "../../../services/places/places.context";
 import FavoriteButton from "../../../components/favorites/favorite-button.component";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
 import { Alert } from "react-native";
-import { CrudActionsContainer } from "../../../components/utility/utility.styles";
+import {
+  CrudActionButton,
+  CrudActionContainerScrollView,
+  CrudActionsContainer,
+} from "../../../components/utility/utility.styles";
+import { openInMaps } from "../../../utils/location.functions";
 
 const DetailCardContainer = styled.View`
   flex: 1;
 `;
-const DetailCardScrollView = styled.ScrollView.attrs((props) => ({
-  contentContainerStyle: {
-    paddingBottom: 120, // adjust to be at least the height of CrudActionsContainer + some spacing
-  },
-}))``;
+// const CrudActionContainerScrollView = styled.ScrollView.attrs((props) => ({
+//   contentContainerStyle: {
+//     paddingBottom: 120, // adjust to be at least the height of CrudActionsContainer + some spacing
+//   },
+// }))``;
 
 const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
@@ -110,9 +115,13 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     // navigation.goBack();
   };
 
+  const getDirections = () => {
+    openInMaps(location.location.lat, location.location.lng, title);
+  };
+
   return (
     <DetailCardContainer>
-      <DetailCardScrollView>
+      <CrudActionContainerScrollView>
         <DetailCard elevation={0}>
           <FavoriteButton place={place} />
           <DetailCardCover key={title} source={{ uri: imageUrl }} />
@@ -159,24 +168,13 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   </Text>
                 )}
                 <InfoButton
-                  textColor={
-                    isClosedTemporarely
-                      ? theme.colors.ui.error
-                      : theme.colors.ui.primary
-                  }
+                  textColor={theme.colors.ui.primary}
                   mode="outlined"
                   compact
-                  icon={
-                    isOpenNow && !isClosedTemporarely
-                      ? "door-sliding-open"
-                      : "door-sliding-lock"
-                  }
+                  icon="directions"
+                  onPress={getDirections}
                 >
-                  {isClosedTemporarely
-                    ? "Temporarely Closed"
-                    : isOpenNow
-                      ? "Open Now"
-                      : "Closed"}
+                  Get Directions
                 </InfoButton>
               </Row>
               <Spacer position={"top"} size={"medium"}>
@@ -234,16 +232,17 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               buttonColor={
                 isOpenNow ? theme.colors.ui.primary : theme.colors.ui.disabled
               }
+              textColor={theme.colors.text.inverse}
             >
-              Reserve
+              Hang out Here
             </PlaceActionsButton>
           </PlaceCardActions>
         </DetailCard>
-      </DetailCardScrollView>
+      </CrudActionContainerScrollView>
       {currentUser && currentUser.id === creatorId && (
         <>
           <CrudActionsContainer>
-            <PlaceActionsButtonOutline
+            <CrudActionButton
               onPress={() => {
                 navigation.navigate("UpdatePlace", { place });
               }}
@@ -253,8 +252,8 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               icon="map-marker-question-outline"
             >
               Update Place
-            </PlaceActionsButtonOutline>
-            <PlaceActionsButton
+            </CrudActionButton>
+            <CrudActionButton
               onPress={() => {
                 setModalVisible(true);
               }}
@@ -264,7 +263,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
               icon="map-marker-remove-outline"
             >
               Delete Place
-            </PlaceActionsButton>
+            </CrudActionButton>
           </CrudActionsContainer>
           <ConfirmationModal
             visible={modalVisible}

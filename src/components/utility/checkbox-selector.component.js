@@ -28,11 +28,16 @@ export const Footer = styled.View`
   align-items: center;
   justify-content: flex-end;
   flex-direction: row;
-  gap: ${(props) => props.theme.space[3]};
+  gap: ${(props) => props.theme.space[2]};
 `;
 
-export const SelectorActionButton = styled(FormActionButton)`
-  flex: 0.18;
+export const SelectorActionButton = styled(FormActionButton).attrs((props) => ({
+  mode: "outlined",
+
+  textSize: parseInt(props.theme.fontSizes.small.split("p")[0]),
+}))`
+  flex: 0.25;
+  padding: ${(props) => props.theme.space[0]};
 `;
 
 const CheckboxSelector = ({

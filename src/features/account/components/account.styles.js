@@ -21,7 +21,21 @@ export const AccountCover = styled.View`
     props.theme.colors.bg.coldCover}; /*  rgba(246, 234, 209, 0.1); */
 `;
 
-export const StyledAccountContainer = styled.KeyboardAvoidingView`
+export const StyledAccountContainer = styled.View`
+  background-color: ${(props) => props.theme.colors.bg.coldBg};
+  padding: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[4]};
+  padding-bottom: ${(props) => props.theme.space[4]};
+  /* margin-top: ${(props) => props.theme.space[3]};
+  margin-bottom: ${(props) => props.theme.space[3]}; */
+  margin: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[1]};
+  margin-bottom: ${(props) => props.theme.space[5]};
+  border-radius: ${(props) => props.theme.space[2]};
+  /* justify-content: space-between; */
+  align-items: center;
+  width: 90%;
+`;
+
+export const StyledAuthContainer = styled.View`
   background-color: ${(props) => props.theme.colors.bg.coldBg};
   padding: ${(props) => props.theme.space[4]} ${(props) => props.theme.space[4]};
   padding-bottom: ${(props) => props.theme.space[4]};
@@ -31,7 +45,7 @@ export const StyledAccountContainer = styled.KeyboardAvoidingView`
   border-radius: ${(props) => props.theme.space[2]};
   justify-content: space-between;
   align-items: center;
-  /* width: 90%; */
+  width: 90%;
 `;
 
 export const AccountContainer = ({ children }) => {
@@ -42,11 +56,23 @@ export const AccountContainer = ({ children }) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{
+          alignItems: "center",
+        }}
       >
         {children}
       </ScrollView>
     </StyledAccountContainer>
+  );
+};
+
+export const AuthActionContainer = ({ children }) => {
+  return (
+    <StyledAuthContainer
+    // behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      {children}
+    </StyledAuthContainer>
   );
 };
 

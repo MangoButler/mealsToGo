@@ -51,8 +51,9 @@ const FilterToggleButton = styled(MenuButton).attrs((props) => ({
   textColor: !props.active
     ? props.theme.colors.text.primary
     : props.theme.colors.text.inverse,
+  textSize: parseInt(props.theme.fontSizes.small.split("p")[0]),
 }))`
-  flex: 0.25;
+  flex: 0.3;
   margin-right: ${(props) => props.theme.space[1]};
   background-color: ${(props) =>
     props.active ? props.theme.colors.ui.primary : "transparent"};
@@ -66,7 +67,8 @@ const FilterToggleButton = styled(MenuButton).attrs((props) => ({
       : props.theme.colors.text.inverse};
   border-width: 1px;
   border-radius: 20px;
-  padding: ${(props) => props.theme.space[0]} ${(props) => props.theme.space[1]};
+  font-size: ${(props) => props.theme.fontSizes.caption};
+  padding: ${(props) => props.theme.space[0]} ${(props) => props.theme.space[0]};
 `;
 
 const createRenderPlaceItem = ({ onDetailClick }) => {
@@ -178,7 +180,7 @@ export default function PlacesScreen({ navigation }) {
       ? TOKYO_WARD_NAMES
       : user.city === "Jakarta"
         ? JAKARTA_WARD_NAMES
-        : [];
+        : [...TOKYO_WARD_NAMES, ...JAKARTA_WARD_NAMES];
 
   return (
     <PlacesCardContainer>

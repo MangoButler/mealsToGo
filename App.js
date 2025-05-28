@@ -17,6 +17,7 @@ import { FavoritesContextProvider } from "./src/services/favorites/favorites.con
 import { AuthenticationContextProvider } from "./src/services/auth/auth.context";
 import { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,25 +50,27 @@ export default function App() {
   }, [fontsLoaded, authReady]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <AuthenticationContextProvider onAuthReady={() => setAuthReady(true)}>
-        <LocationContextProvider>
-          <PlacesContextProvider>
-            <FavoritesContextProvider>
-              <SafeArea onLayout={onLayoutRootView}>
-                <PaperProvider>
-                  {fontsLoaded && authReady ? (
-                    <>
-                      <Navigation />
-                      <ExpoStatusBar style="auto" />
-                    </>
-                  ) : null}
-                </PaperProvider>
-              </SafeArea>
-            </FavoritesContextProvider>
-          </PlacesContextProvider>
-        </LocationContextProvider>
-      </AuthenticationContextProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider theme={theme}>
+        <AuthenticationContextProvider onAuthReady={() => setAuthReady(true)}>
+          <LocationContextProvider>
+            <PlacesContextProvider>
+              <FavoritesContextProvider>
+                <SafeArea onLayout={onLayoutRootView}>
+                  <PaperProvider>
+                    {fontsLoaded && authReady ? (
+                      <>
+                        <Navigation />
+                        <ExpoStatusBar style="auto" />
+                      </>
+                    ) : null}
+                  </PaperProvider>
+                </SafeArea>
+              </FavoritesContextProvider>
+            </PlacesContextProvider>
+          </LocationContextProvider>
+        </AuthenticationContextProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
