@@ -15,6 +15,12 @@ import {
 } from "../../features/places/components/places-info-card.styles";
 import { getWalkingTimeInMinutes } from "../../utils/station.functions";
 import { theme } from "../../infrastructure/theme";
+import { formatDate, formatTime } from "../../utils/transformations";
+import LoadingSpinner from "../utility/loading-spinner.component";
+import {
+  Footer,
+  SelectorActionButton,
+} from "../utility/checkbox-selector.component";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -53,7 +59,13 @@ const NoHighlight = styled(Text)`
   width: 100%;
 `;
 
-const HighlightBar = ({ items = [], visible, panelType = "", onCardPress }) => {
+const HighlightBar = ({
+  items = [],
+  visible,
+  panelType = "",
+  onCardPress,
+  renderActions,
+}) => {
   const theme = useTheme();
   const slideAnim = useRef(new Animated.Value(1)).current;
 
@@ -88,7 +100,13 @@ const HighlightBar = ({ items = [], visible, panelType = "", onCardPress }) => {
         {items.length ? (
           <HighlightScroll>
             {items.map((item) => (
-              <HighlightItem key={item.id}>
+              <HighlightItem
+                key={
+                  panelType === "upcoming" && item.startTime
+                    ? item.id + item.startTime
+                    : item.id + panelType
+                }
+              >
                 <TouchableOpacity onPress={() => onCardPress(item)}>
                   <PlaceCardCover src={item.imageUrl} />
                 </TouchableOpacity>
@@ -103,11 +121,14 @@ const HighlightBar = ({ items = [], visible, panelType = "", onCardPress }) => {
                       {item.area}, {item.city}
                     </Text>
                   </Spacer>
+
                   <Text theme={theme} variant={"caption"}>
                     {item.nearbyStations && item.nearbyStations.length
                       ? `${item.nearbyStations[0].name} around ${getWalkingTimeInMinutes(item.nearbyStations[0].distance)} min`
                       : "More than 10 min to closest station."}
                   </Text>
+
+                  {renderActions && renderActions(item)}
                 </PlaceCardContent>
               </HighlightItem>
             ))}
@@ -125,3 +146,25 @@ const HighlightBar = ({ items = [], visible, panelType = "", onCardPress }) => {
 };
 
 export default HighlightBar;
+
+// <Footer>
+//   <SelectorActionButton
+//     mode="contained"
+//     onPress={() => {}}
+//     buttonColor={theme.colors.ui.error}
+//     textColor={theme.colors.text.inverse}
+//     // disabled={isLoading}
+//   >
+//     Cancel
+//   </SelectorActionButton>
+//   <SelectorActionButton
+//     mode="contained"
+//     textColor={theme.colors.text.inverse}
+//     buttonColor={theme.colors.brand.muted}
+//     // disabled={!isSubmitable}
+//     // loading={isLoading}
+//     onPress={() => {}}
+//   >
+//     Edit
+//   </SelectorActionButton>
+// </Footer>;

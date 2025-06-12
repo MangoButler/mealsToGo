@@ -18,6 +18,7 @@ import { AuthenticationContextProvider } from "./src/services/auth/auth.context"
 import { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { paperTheme } from "./src/infrastructure/theme/paper-theme";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -57,7 +58,7 @@ export default function App() {
             <PlacesContextProvider>
               <FavoritesContextProvider>
                 <SafeArea onLayout={onLayoutRootView}>
-                  <PaperProvider>
+                  <PaperProvider theme={paperTheme}>
                     {fontsLoaded && authReady ? (
                       <>
                         <Navigation />

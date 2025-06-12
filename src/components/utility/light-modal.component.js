@@ -64,7 +64,7 @@ import { ModalContainer, Backdrop } from "./utility.styles";
 
 // export default FilterModal;
 
-const FilterModal = ({ visible, onDismiss, children }) => {
+const LightModal = ({ visible, onDismiss, children, zValue = 100 }) => {
   return (
     <Portal>
       <Modal
@@ -75,7 +75,7 @@ const FilterModal = ({ visible, onDismiss, children }) => {
         <TouchableWithoutFeedback onPress={onDismiss}>
           <Backdrop>
             <TouchableWithoutFeedback onPress={() => {}}>
-              <ModalContainer>{children}</ModalContainer>
+              <ModalContainer zValue={zValue}>{children}</ModalContainer>
             </TouchableWithoutFeedback>
           </Backdrop>
         </TouchableWithoutFeedback>
@@ -84,4 +84,4 @@ const FilterModal = ({ visible, onDismiss, children }) => {
   );
 };
 
-export default FilterModal;
+export default LightModal;

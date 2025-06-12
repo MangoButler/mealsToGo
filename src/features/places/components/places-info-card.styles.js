@@ -23,6 +23,7 @@ export const Address = styled.Text`
 
 export const InfoContainer = styled.View`
   flex-shrink: 0.7;
+  margin-bottom: ${(props) => props.theme.space[2]};
 `;
 export const IconContainer = styled.View`
   display: flex;

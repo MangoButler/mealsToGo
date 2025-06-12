@@ -21,7 +21,28 @@ const ItemGrid = styled.View`
 const GridItem = styled(List.Item)`
   width: ${({ columns }) => `${100 / columns - 1}%`};
   margin-bottom: 12px;
+  /* flex: 0.49; */
 `;
+
+// const GridItem = styled.View`
+//   width: ${({ columns }) => `${100 / columns - 1}%`};
+//   margin-bottom: 12px;
+//   flex-direction: column;
+//   align-items: flex-start;
+// `;
+
+// const IconWrapper = styled.View`
+//   margin-right: 8px;
+//   margin-top: 2px; /* Adjust as needed for vertical alignment */
+// `;
+
+// const TextWrapper = styled.Text`
+//   /* flex: 1; */
+//   color: ${(props) => props.theme.colors.text.secondary};
+//   font-family: ${(props) => props.theme.fonts.info};
+//   font-size: ${(props) => props.theme.fontSizes.caption};
+//   flex-wrap: wrap;
+// `;
 
 const AccordionList = ({
   title = "Amenities",
@@ -63,10 +84,12 @@ const AccordionList = ({
             <GridItem
               columns={cols}
               title={item.label}
+              titleNumberOfLines={2} // or more, or `undefined` to allow unlimited
+              multiline
               titleStyle={{
                 color: theme.colors.text.secondary,
                 fontFamily: theme.fonts.info,
-                fontSize: parseInt(theme.fontSizes.caption),
+                fontSize: parseInt(theme.fontSizes.small),
               }}
               key={`accordion-${item.label}-${i}`}
               left={(props) => (
@@ -74,9 +97,19 @@ const AccordionList = ({
                   {...props}
                   icon={item.icon}
                   color={theme.colors.text.secondary}
+                  // style={{ marginBottom: 4 }}
                 />
               )}
             />
+            // <GridItem key={`accordion-${item.label}-${i}`}>
+            //   <IconWrapper>
+            //     <List.Icon
+            //       icon={item.icon}
+            //       color={theme.colors.text.secondary}
+            //     />
+            //   </IconWrapper>
+            //   <TextWrapper numberOfLines={2}>{item.label}</TextWrapper>
+            // </GridItem>
           ))}
         </ItemGrid>
       )}

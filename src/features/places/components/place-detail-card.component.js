@@ -37,6 +37,9 @@ import {
   CrudActionsContainer,
 } from "../../../components/utility/utility.styles";
 import { openInMaps } from "../../../utils/location.functions";
+import CreateHangoutModal from "../../hangouts/components/create-hangout-modal.component";
+import { ActiveBadge } from "../../../components/utility/active-button-badge.component";
+import { HangoutStatsCard } from "../../hangouts/components/hangout-stats-card.component";
 
 const DetailCardContainer = styled.View`
   flex: 1;
@@ -67,7 +70,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     ],
     imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
     area = "100 some street",
-    isOpenNow = true,
+    isActiveNow = true,
     rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
@@ -91,7 +94,9 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     city = "Others",
     user: creator = null,
     userId: creatorId = 0,
+    hangoutStats,
   } = place;
+  const [hangoutModalVisible, setHangoutModalVisible] = useState(false);
 
   const featuresObjects = getFeaturesObjects(features);
   const stationsWithIcon = formatStations(
@@ -118,6 +123,10 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const getDirections = () => {
     openInMaps(location.location.lat, location.location.lng, title);
   };
+
+  const statsText = hangoutStats.completed
+    ? `✅ ${hangoutStats.completed} people visited · 📅 ${hangoutStats.scheduled} scheduled hangouts`
+    : "Be amongst the first to hang out here!";
 
   return (
     <DetailCardContainer>
@@ -177,6 +186,48 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   Get Directions
                 </InfoButton>
               </Row>
+
+              {/* inserting the stats */}
+              {hangoutStats.total > 0 ? (
+                <Row
+                  topMargin="medium"
+                  bottomMargin="medium"
+                  justifyContent="flex-start"
+                >
+                  <ActiveBadge
+                    activeCount={hangoutStats.total}
+                    message="visits"
+                    icon="check-circle-outline"
+                    color={theme.colors.ui.secondary}
+                  />
+                  {hangoutStats.scheduled > 0 && (
+                    <>
+                      <Spacer position="horizontal" size="small">
+                        <Text variant="info"> · </Text>
+                      </Spacer>
+                      <ActiveBadge
+                        activeCount={hangoutStats.scheduled}
+                        message="scheduled"
+                        icon="calendar"
+                        color={theme.colors.brand.muted}
+                      />
+                    </>
+                  )}
+                  {hangoutStats.active > 0 && (
+                    <>
+                      <Spacer position="horizontal" size="small">
+                        <Text variant="info"> · </Text>
+                      </Spacer>
+                      <ActiveBadge activeCount={hangoutStats.active} />
+                    </>
+                  )}
+                </Row>
+              ) : (
+                <Spacer position="vertical" size="medium">
+                  <Text variant="info">{statsText}</Text>
+                </Spacer>
+              )}
+
               <Spacer position={"top"} size={"medium"}>
                 <Text variant={"body"} theme={theme}>
                   {description}
@@ -217,6 +268,12 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   </Spacer>
                 )}
               </AccordeonList>
+
+              {hangoutStats.total > 0 && (
+                <AccordeonList title="Visit Stats" icon="finance">
+                  <HangoutStatsCard stats={hangoutStats} />
+                </AccordeonList>
+              )}
             </Spacer>
           </PlaceCardContent>
           <PlaceCardActions>
@@ -228,16 +285,30 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
             </PlaceActionsButtonOutline>
 
             <PlaceActionsButton
-              disabled={!isOpenNow}
+              disabled={!isActiveNow}
               buttonColor={
-                isOpenNow ? theme.colors.ui.primary : theme.colors.ui.disabled
+                isActiveNow ? theme.colors.ui.primary : theme.colors.ui.disabled
               }
-              textColor={theme.colors.text.inverse}
+              textColor={
+                !isActiveNow
+                  ? theme.colors.ui.primary
+                  : theme.colors.text.inverse
+              }
+              onPress={() => {
+                setHangoutModalVisible(true);
+              }}
             >
-              Hang out Here
+              Hang out here
             </PlaceActionsButton>
           </PlaceCardActions>
         </DetailCard>
+        {hangoutModalVisible && (
+          <CreateHangoutModal
+            onDismiss={() => setHangoutModalVisible(false)}
+            visible={hangoutModalVisible}
+            place={place}
+          />
+        )}
       </CrudActionContainerScrollView>
       {currentUser && currentUser.id === creatorId && (
         <>

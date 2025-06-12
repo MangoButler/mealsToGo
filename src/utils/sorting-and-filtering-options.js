@@ -22,7 +22,7 @@ export const sortPlaces = (places, sortOption, userLocation) => {
     case "popular":
       // Temporarily fallback to `createdAt` for popularity, update later when actual metric exists
       return sorted.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        (a, b) => (b.hangoutStats?.total || 0) - (a.hangoutStats?.total || 0)
       );
 
     case "newest":

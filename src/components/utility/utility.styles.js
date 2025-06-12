@@ -6,7 +6,7 @@ export const ModalContainer = styled.View`
   padding: ${(props) => props.theme.space[3]} ${(props) => props.theme.space[4]};
   margin: ${(props) => props.theme.space[3]};
   border-radius: ${(props) => props.theme.space[3]};
-  z-index: 100;
+  z-index: ${(props) => props.zValue || 100};
 `;
 
 export const ButtonRow = styled.View`

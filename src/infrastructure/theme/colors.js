@@ -15,6 +15,8 @@ export const colors = {
     disabled: "#e5dee3",
     error: "#CC3F0C",
     success: "#33673B",
+    warning: "#EBA83A",
+    warningMuted: "#D9922E",
   },
   bg: {
     primary: "#FFFFFF",

@@ -29,12 +29,10 @@ import { getIdTokenFromFirebase } from "../auth/auth.service";
 
 export const fetchPlaces = async (searchTerm) => {
   //send the url with the query string and then implement the response
-
-  const response = await fetch(
-    searchTerm
-      ? `${PLACES_URL}?query=${encodeURIComponent(searchTerm)}`
-      : PLACES_URL
-  );
+  const fetchUrl = searchTerm
+    ? `${PLACES_URL}?query=${encodeURIComponent(searchTerm)}`
+    : PLACES_URL;
+  const response = await fetch(fetchUrl);
 
   if (!response.ok) {
     if (response.status === 400) {
@@ -49,6 +47,26 @@ export const fetchPlaces = async (searchTerm) => {
   const places = await response.json();
 
   return places;
+};
+
+export const fetchPlaceById = async (placeId) => {
+  //send the url with the query string and then implement the response
+  const fetchUrl = `${PLACES_URL}?placeId=${encodeURIComponent(placeId)}`;
+  const response = await fetch(fetchUrl);
+
+  if (!response.ok) {
+    if (response.status === 400) {
+      return null;
+    }
+    const errorData = await response.json();
+    throw (
+      new Error(errorData.error) ||
+      "Something went wrong, please relod the application"
+    );
+  }
+  const place = await response.json();
+
+  return place;
 };
 
 export const submitPlace = async ({

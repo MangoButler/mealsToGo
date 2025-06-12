@@ -99,6 +99,22 @@ export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   return R * c; // distance in km
 };
 
+export const getDistanceToPlace = async (place) => {
+  if (!place || !place.location) {
+    return 100;
+  }
+  const placeLocation = place?.location?.location;
+  const userLocation = await getUserLocation();
+
+  const distanceToPlace = calculateDistance(
+    userLocation.latitude,
+    userLocation.longitude,
+    placeLocation.lat,
+    placeLocation.lng
+  );
+  return distanceToPlace;
+};
+
 export const openInMaps = (lat, lng, label = "Destination") => {
   const scheme = Platform.select({
     ios: `maps:0,0?q=${label}@${lat},${lng}`,

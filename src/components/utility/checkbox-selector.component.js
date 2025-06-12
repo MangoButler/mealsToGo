@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { useTheme } from "styled-components/native";
 import { Checkbox, Text, Button, Divider, List } from "react-native-paper";
-import FilterModal from "./filter-modal.component";
+import LightModal from "./light-modal.component";
 import { FlatList } from "react-native";
 import { FormActionButton } from "../form/form-button.component";
 import Row from "../spacer/row.component";
@@ -32,11 +32,11 @@ export const Footer = styled.View`
 `;
 
 export const SelectorActionButton = styled(FormActionButton).attrs((props) => ({
-  mode: "outlined",
+  mode: props.mode ?? "outlined",
 
   textSize: parseInt(props.theme.fontSizes.small.split("p")[0]),
 }))`
-  flex: 0.25;
+  flex: 0.3;
   padding: ${(props) => props.theme.space[0]};
 `;
 
@@ -54,7 +54,7 @@ const CheckboxSelector = ({
   );
 
   return (
-    <FilterModal visible={visible} onDismiss={onDismiss}>
+    <LightModal visible={visible} onDismiss={onDismiss}>
       <Container>
         <FlatList
           data={normalizedItems}
@@ -106,7 +106,7 @@ const CheckboxSelector = ({
           </SelectorActionButton>
         </Footer>
       </Container>
-    </FilterModal>
+    </LightModal>
   );
 };
 

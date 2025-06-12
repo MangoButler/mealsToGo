@@ -2,7 +2,7 @@ import React from "react";
 import styled, { useTheme } from "styled-components/native";
 import { List, Divider } from "react-native-paper";
 import { FlatList, View } from "react-native";
-import FilterModal from "./filter-modal.component";
+import LightModal from "./light-modal.component";
 import { FormActionButton } from "../form/form-button.component";
 import { Spacer } from "../spacer/spacer.component";
 import { Footer, SelectorActionButton } from "./checkbox-selector.component";
@@ -57,7 +57,7 @@ const ListSelector = ({
   };
 
   return (
-    <FilterModal visible={visible} onDismiss={onDismiss}>
+    <LightModal visible={visible} onDismiss={onDismiss}>
       <SelectorContainer>
         <FlatList
           data={availableItems}
@@ -90,7 +90,7 @@ const ListSelector = ({
           </SelectorActionButton>
         </Footer>
       </SelectorContainer>
-    </FilterModal>
+    </LightModal>
   );
 };
 

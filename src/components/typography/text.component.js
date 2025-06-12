@@ -18,6 +18,13 @@ const centeredInfo = (theme) => `
     text-align: center;
 
 `;
+const centeredInfoBold = (theme) => `
+    font-size: ${theme.fontSizes.body};
+    font-weigth: ${theme.fontWeights.bold};
+    text-align: center;
+    font-family: ${theme.fonts.info};
+
+`;
 const label = (theme) => `
     font-size: ${theme.fontSizes.title};
     font-family: ${theme.fonts.heading};
@@ -55,6 +62,11 @@ const hint = (theme) => `
   font-size: ${theme.fontSizes.caption};
   color: ${theme.colors.text.secondary};
 `;
+const info = (theme) => `
+  font-family: ${theme.fonts.info};
+  font-size: ${theme.fontSizes.small};
+  color: ${theme.colors.text.highlight};
+`;
 const hintCentered = (theme) => `
   font-family: ${theme.fonts.info};
   font-size: ${theme.fontSizes.caption};
@@ -74,6 +86,8 @@ const variants = {
   captionCentered,
   centeredInfo,
   hintCentered,
+  info,
+  centeredInfoBold,
 };
 
 const StyledText = styled.Text`

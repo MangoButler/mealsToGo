@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components/native";
 import { Text } from "../../../components/typography/text.component";
-import { Image } from "react-native";
+import { Alert, Image } from "react-native";
 import appImage from "../../../../assets/adaptive-icon.png";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
 import { Spacer } from "../../../components/spacer/spacer.component";
@@ -21,6 +21,27 @@ import ScrollActionContainer from "../../../components/utility/scroll-action-con
 import Row from "../../../components/spacer/row.component";
 import MenuButton from "../../../components/utility/menu-button.component";
 import { capitalizeEachWord } from "../../../utils/validation";
+import {
+  fetchPlaceById,
+  fetchPlaces,
+} from "../../../services/places/places.service";
+import LoadingSpinner from "../../../components/utility/loading-spinner.component";
+import {
+  formatDate,
+  formatTime,
+  getClosestPendingHangoutWithinTwoHours,
+} from "../../../utils/transformations";
+import {
+  checkInToHangout,
+  deleteHangout,
+  finishHangout,
+} from "../../../services/hangouts/hangouts.service";
+import { PlacesContext } from "../../../services/places/places.context";
+import {
+  Footer,
+  SelectorActionButton,
+} from "../../../components/utility/checkbox-selector.component";
+import CreateHangoutModal from "../../hangouts/components/create-hangout-modal.component";
 
 const Container = styled.View`
   flex: 1;
@@ -53,16 +74,20 @@ const MenuToggleButton = styled(MenuButton)`
 
 const ProfileScreen = ({ navigation }) => {
   const theme = useTheme();
-  const { user, onLogout, isLoading, setUser, setIsLoading } = useContext(
-    AuthenticationContext
-  );
+  const { user, onLogout, isLoading, setUser, setIsLoading, syncUserProfile } =
+    useContext(AuthenticationContext);
   const { removeAllFavorites } = useContext(FavoritesContext);
+  const { triggerPlacesRefresh } = useContext(PlacesContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
+  const [editHangoutModalVisible, setEditHangoutModalVisible] = useState(false);
+  const [selectedHangout, setSelectedHangout] = useState(null);
   const { favorites } = useContext(FavoritesContext);
   if (!user) {
     navigation.navigate("Home");
   }
+
+  const [actionLoading, setActionLoading] = useState(false);
 
   const onDeleteUser = async (password) => {
     setIsLoading(true);
@@ -81,6 +106,18 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisible(false);
   };
 
+  const onCancelHangout = async (hangout) => {
+    setActionLoading("deleteHangout");
+    const result = await deleteHangout(hangout.hangoutId);
+    if (result) {
+      Alert.alert("Hangout Cancelled", result.message);
+      triggerPlacesRefresh();
+      await syncUserProfile();
+      setModalVisible(false);
+    }
+    setActionLoading(false);
+  };
+
   const onRemoveFavorites = () => {
     removeAllFavorites();
     setModalVisible(false);
@@ -89,27 +126,138 @@ const ProfileScreen = ({ navigation }) => {
   const togglePanel = (panel) => {
     setActivePanel((current) => (current === panel ? null : panel));
   };
-  const recents = [];
+
+  // useEffect(() => {
+  //   const getHighlights = async (placeIds) => {
+  //     const places = await fetchPlaces(null, placeIds);
+  //     setHighlightedPlaces(places);
+  //   };
+  //   const upcoming = user.hangouts
+  //     ? user.hangouts.map((hangout) => {
+  //         return { ...hangout.place, startTime: hangout.startTime };
+  //       })
+  //     : [];
+  //   const highlightedItems =
+  //     activePanel === "favorites" && favorites.length > 0
+  //       ? favorites.map((place) => place.id)
+  //       : activePanel === "my places" && user.places
+  //         ? user.places.map((place) => place.id) || []
+  //         : activePanel === "upcoming"
+  //           ? upcoming || []
+  //           : [];
+
+  //   getHighlights(highlightedItems);
+  // }, [activePanel]);
+
+  const activeHangout = user.hangouts
+    ? user.hangouts.find((hangout) => hangout.status === "ACTIVE")
+    : null;
+
+  const upcoming = user.hangouts
+    ? user.hangouts
+        .filter((hangout) => hangout.status === "PENDING")
+        .map((hangout) => {
+          return {
+            ...hangout.place,
+            startTime: hangout.startTime,
+            hangoutId: hangout.id,
+          };
+        })
+    : [];
   const highlightedItems =
     activePanel === "favorites"
       ? favorites
       : activePanel === "my places"
         ? user.places || []
-        : activePanel === "recents"
-          ? recents
+        : activePanel === "upcoming"
+          ? upcoming || []
           : [];
 
-  const onHighlightCardPress = (item) => {
+  const renderHangoutCrudButtons = (item) => {
+    return (
+      <>
+        <Spacer size="small" position="top">
+          <Text theme={theme} variant={"info"}>
+            Starting: {formatDate(item.startTime)} at{" "}
+            {formatTime(item.startTime)}
+          </Text>
+        </Spacer>
+
+        <Footer>
+          <SelectorActionButton
+            mode="contained"
+            onPress={() => {
+              setSelectedHangout(item);
+              setModalVisible("cancelHangout");
+            }}
+            buttonColor={theme.colors.ui.error}
+            textColor={theme.colors.text.inverse}
+            // disabled={isLoading}
+          >
+            Cancel
+          </SelectorActionButton>
+          <SelectorActionButton
+            mode="contained"
+            textColor={theme.colors.text.inverse}
+            buttonColor={theme.colors.brand.muted}
+            // disabled={!isSubmitable}
+            loading={actionLoading === "deleteHanout"}
+            onPress={() => {
+              setSelectedHangout(item);
+              setEditHangoutModalVisible(true);
+            }}
+          >
+            Edit
+          </SelectorActionButton>
+        </Footer>
+      </>
+    );
+  };
+
+  const onHighlightCardPress = async (item) => {
+    setActionLoading("navigation");
+    const refreshedPlace = await fetchPlaceById(item.id);
+
     navigation.navigate("Places", {
       screen: "PlaceDetail",
-      params: { item },
+      params: { item: refreshedPlace },
     });
+    setActionLoading(false);
+    setActivePanel(null);
   };
 
   let nrPlaces = 0;
   if (user.places && Array.isArray(user.places)) {
     nrPlaces = user.places.length;
   }
+
+  const closestHangout =
+    getClosestPendingHangoutWithinTwoHours(user?.hangouts || []) || null;
+
+  const handleCheckIn = async (hangout) => {
+    setActionLoading("checkIn");
+    const result = await checkInToHangout(hangout);
+    if (result) {
+      await syncUserProfile();
+      triggerPlacesRefresh();
+      Alert.alert("Thanks for Joining", result.message);
+    }
+    setActionLoading(false);
+  };
+  const handleFinishHangout = async (hangout) => {
+    setActionLoading("finishHangout");
+    const result = await finishHangout(hangout);
+    if (result) {
+      triggerPlacesRefresh();
+      await syncUserProfile();
+      Alert.alert("Check Out Successfull!", result.message);
+    }
+    setActionLoading(false);
+  };
+
+  // console.log(activeHangout); ///logging
+
+  if (actionLoading === "navigation") return <LoadingSpinner />;
 
   return (
     <Container>
@@ -134,7 +282,40 @@ const ProfileScreen = ({ navigation }) => {
           <Text theme={theme} variant="hint">
             {user.email}
           </Text>
-
+          {closestHangout && (
+            <Spacer position="top" size="large">
+              <FormActionButton
+                onPress={() => {
+                  handleCheckIn(closestHangout);
+                }}
+                textColor={theme.colors.ui.primary}
+                // buttonColor={theme.colors.brand.muted}
+                mode="outlined"
+                icon="calendar-check-outline"
+                // icon="clock-in"
+                loading={actionLoading === "checkIn"}
+              >
+                Check In
+              </FormActionButton>
+            </Spacer>
+          )}
+          {activeHangout && (
+            <Spacer position="top" size="large">
+              <FormActionButton
+                onPress={async () => {
+                  await handleFinishHangout(activeHangout);
+                }}
+                textColor={theme.colors.ui.primary}
+                // buttonColor={theme.colors.brand.muted}
+                mode="outlined"
+                icon="check-outline"
+                // icon="clock-in"
+                loading={actionLoading === "finishHangout"}
+              >
+                Finish Hangout
+              </FormActionButton>
+            </Spacer>
+          )}
           <Spacer position="top" size="large">
             <FormActionButton
               onPress={() => {
@@ -167,10 +348,10 @@ const ProfileScreen = ({ navigation }) => {
             My Places
           </MenuToggleButton>
           <MenuToggleButton
-            icon={activePanel === "recents" ? "chevron-up" : "calendar-clock"}
-            onPress={() => togglePanel("recents")}
+            icon={activePanel === "upcoming" ? "chevron-up" : "calendar-clock"}
+            onPress={() => togglePanel("upcoming")}
           >
-            Recent
+            Upcoming
           </MenuToggleButton>
         </Row>
 
@@ -185,6 +366,9 @@ const ProfileScreen = ({ navigation }) => {
               panelType={activePanel}
               items={highlightedItems}
               onCardPress={onHighlightCardPress}
+              renderActions={
+                activePanel === "upcoming" ? renderHangoutCrudButtons : null
+              }
             />
           </Spacer>
           {favorites && favorites.length > 0 && activePanel === "favorites" && (
@@ -258,6 +442,8 @@ const ProfileScreen = ({ navigation }) => {
             await onDeleteUser(passw);
           } else if (modalVisible === "logout") {
             await logoutUser();
+          } else if (modalVisible === "cancelHangout") {
+            await onCancelHangout(selectedHangout);
           } else {
             await onRemoveFavorites();
           }
@@ -266,6 +452,14 @@ const ProfileScreen = ({ navigation }) => {
           setModalVisible(false);
         }}
       />
+      {editHangoutModalVisible && (
+        <CreateHangoutModal
+          visible={editHangoutModalVisible}
+          onDismiss={() => setEditHangoutModalVisible(false)}
+          hangout={selectedHangout}
+          mode="edit"
+        />
+      )}
     </Container>
   );
 };

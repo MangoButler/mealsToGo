@@ -120,6 +120,7 @@ export default function PlacesScreen({ navigation }) {
   );
 
   const onFavoriteCardPress = (item) => {
+    console.log(item); ///logging
     navigation.navigate("PlaceDetail", { item });
   };
 

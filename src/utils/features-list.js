@@ -11,6 +11,8 @@ export const FEATURES = [
   { label: "Take-Away", value: "take-away", icon: "food-takeout-box" },
   { label: "Raincover", value: "raincover", icon: "weather-rainy" },
   { label: "Sakura spot", value: "sakura-spot", icon: "flower" },
+  { label: "Smoking Zone", value: "smoking-zone", icon: "smoking" },
+  { label: "Trash Can", value: "thrash-can", icon: "trash-can-outline" },
 ];
 
 export const getFeaturesObjects = (featuresArray) => {
