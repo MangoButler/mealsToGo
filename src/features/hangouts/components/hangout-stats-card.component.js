@@ -79,7 +79,11 @@ const statusColors = {
   noShow: theme.colors.ui.error,
 };
 
-export const HangoutStatsCard = ({ stats }) => {
+export const HangoutStatsCard = ({
+  stats,
+  statsHint = "of scheduled users actually came",
+  title = "Visit Statistics",
+}) => {
   if (!stats) return null;
 
   const pieData = [
@@ -108,7 +112,7 @@ export const HangoutStatsCard = ({ stats }) => {
 
   return (
     <StyledCard>
-      <CardTitle variant="labelCentered">Visit Statistics</CardTitle>
+      <CardTitle variant="labelCentered">{title}</CardTitle>
       <CardContent>
         {Object.keys(stats).map((key) => {
           if (key === "total") return null;
@@ -144,7 +148,7 @@ export const HangoutStatsCard = ({ stats }) => {
                   stats.cancelled,
                   stats.noShow
                 )}
-                % of scheduled users actually came
+                % {statsHint}
               </ChartNote>
             </ChartContainer>
           </>

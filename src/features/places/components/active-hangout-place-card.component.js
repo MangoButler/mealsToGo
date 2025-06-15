@@ -50,7 +50,7 @@ const DetailCardContainer = styled.View`
 //   },
 // }))``;
 
-const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
+const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
   const { triggerPlacesRefresh } = useContext(PlacesContext);
   const [modalVisible, setModalVisible] = useState(false);
@@ -96,6 +96,15 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     userId: creatorId = 0,
     hangoutStats,
   } = place;
+
+  const { user } = useContext(AuthenticationContext);
+  const activeHangout = user.hangouts
+    ? user.hangouts.find((hangout) => hangout.status === "ACTIVE")
+    : null;
+
+  if (!user || !activeHangout || activeHangout.place.id !== placeId) {
+    onGoBack();
+  }
   const [hangoutModalVisible, setHangoutModalVisible] = useState(false);
 
   const featuresObjects = getFeaturesObjects(features);
@@ -128,6 +137,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     ? `✅ ${hangoutStats.completed} people visited · 📅 ${hangoutStats.scheduled} scheduled hangouts`
     : "Be amongst the first to hang out here!";
 
+  console.log(user); //logging
   return (
     <DetailCardContainer>
       <CrudActionContainerScrollView>
@@ -349,6 +359,6 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   );
 };
 
-const PlaceDetailCard = React.memo(PlaceDetailCardComponent);
-PlaceDetailCard.displayName = "PlaceDetailCard";
-export default PlaceDetailCard;
+const ActiveHangoutPlaceCard = React.memo(ActiveHangoutPlaceCardComponent);
+ActiveHangoutPlaceCard.displayName = "ActiveHangoutPlaceCard";
+export default ActiveHangoutPlaceCard;

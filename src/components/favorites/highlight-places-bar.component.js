@@ -21,6 +21,7 @@ import {
   Footer,
   SelectorActionButton,
 } from "../utility/checkbox-selector.component";
+import HighlightItem from "./highlight-item.component";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -37,13 +38,13 @@ const Container = styled.View`
   padding-left: ${(props) => props.theme.space[3]};
 `;
 
-const HighlightItem = styled(Card)`
-  background-color: ${(props) => props.theme.colors.bg.primary};
-  margin-right: ${(props) => props.theme.space[2]};
-  border-radius: 12px;
-  margin-bottom: ${(props) => props.theme.space[1]};
-  width: ${screenWidth * 0.7}px;
-`;
+// const HighlightItem = styled(Card)`
+//   background-color: ${(props) => props.theme.colors.bg.primary};
+//   margin-right: ${(props) => props.theme.space[2]};
+//   border-radius: 12px;
+//   margin-bottom: ${(props) => props.theme.space[1]};
+//   width: ${screenWidth * 0.7}px;
+// `;
 
 const AnimatedRow = styled(Animated.View)`
   flex-direction: row;
@@ -100,37 +101,48 @@ const HighlightBar = ({
         {items.length ? (
           <HighlightScroll>
             {items.map((item) => (
+              // <HighlightItem
+              //   key={
+              //     panelType === "upcoming" && item.startTime
+              //       ? item.id + item.startTime
+              //       : item.id + panelType
+              //   }
+              // >
+              //   <TouchableOpacity onPress={() => onCardPress(item)}>
+              //     <PlaceCardCover src={item.imageUrl} />
+              //   </TouchableOpacity>
+              //   <PlaceCardContent>
+              //     <Spacer size={"small"} position={"bottom"}>
+              //       <Text theme={theme} variant={"label"}>
+              //         {item.title}
+              //       </Text>
+              //     </Spacer>
+              //     <Spacer size="small" position="bottom">
+              //       <Text theme={theme} variant={"hint"}>
+              //         {item.area}, {item.city}
+              //       </Text>
+              //     </Spacer>
+
+              //     <Text theme={theme} variant={"caption"}>
+              //       {item.nearbyStations && item.nearbyStations.length
+              //         ? `${item.nearbyStations[0].name} around ${getWalkingTimeInMinutes(item.nearbyStations[0].distance)} min`
+              //         : "More than 10 min to closest station."}
+              //     </Text>
+
+              //     {renderActions && renderActions(item)}
+              //   </PlaceCardContent>
+              // </HighlightItem>
               <HighlightItem
+                item={item}
+                renderActions={renderActions}
+                onCardPress={onCardPress}
+                panelType={panelType}
                 key={
                   panelType === "upcoming" && item.startTime
                     ? item.id + item.startTime
                     : item.id + panelType
                 }
-              >
-                <TouchableOpacity onPress={() => onCardPress(item)}>
-                  <PlaceCardCover src={item.imageUrl} />
-                </TouchableOpacity>
-                <PlaceCardContent>
-                  <Spacer size={"small"} position={"bottom"}>
-                    <Text theme={theme} variant={"label"}>
-                      {item.title}
-                    </Text>
-                  </Spacer>
-                  <Spacer size="small" position="bottom">
-                    <Text theme={theme} variant={"hint"}>
-                      {item.area}, {item.city}
-                    </Text>
-                  </Spacer>
-
-                  <Text theme={theme} variant={"caption"}>
-                    {item.nearbyStations && item.nearbyStations.length
-                      ? `${item.nearbyStations[0].name} around ${getWalkingTimeInMinutes(item.nearbyStations[0].distance)} min`
-                      : "More than 10 min to closest station."}
-                  </Text>
-
-                  {renderActions && renderActions(item)}
-                </PlaceCardContent>
-              </HighlightItem>
+              />
             ))}
           </HighlightScroll>
         ) : (

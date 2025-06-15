@@ -5,6 +5,7 @@ const sizes = {
   small: 1,
   medium: 2,
   large: 3,
+  xlarge: 4,
 };
 
 const positions = {

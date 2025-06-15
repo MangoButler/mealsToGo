@@ -43,9 +43,9 @@ const ErrorScreen = ({
         <ServerErrorImage source={imageSource} resizeMode="contain" />
       )}
       <Message>
-        {error instanceof Error
-          ? error.message
-          : "That kind of sucks...try reloding the app."}
+        {/* {error instanceof Error */}
+        {/* // ? error.message : "That kind of sucks...try reloding the app." } */}
+        That kind of sucks...try reloding the app.
       </Message>
     </Container>
   );

@@ -51,7 +51,9 @@ export const createHangout = async (
 
     return {
       data,
-      message: `Successfully saved schedule, see you at ${formatDate(startTime)} at around ${formatTime(startTime)}`,
+      message: instantCheckIn
+        ? `Thanks for joining, have a blast!`
+        : `Successfully saved schedule, see you at ${formatDate(startTime)} at around ${formatTime(startTime)}`,
     };
   } catch (error) {
     console.error("Submission error:", error);

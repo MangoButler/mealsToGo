@@ -69,6 +69,7 @@ import { AuthenticationContext } from "../../../services/auth/auth.context";
 import {
   getDistanceToPlace,
   getUserLocation,
+  openInMaps,
 } from "../../../utils/location.functions";
 
 registerTranslation("en", en);

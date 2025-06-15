@@ -15,7 +15,7 @@ const ItemGrid = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-left: -10%;
+  /* margin-left: -10%; */
 `;
 
 const GridItem = styled(List.Item)`
