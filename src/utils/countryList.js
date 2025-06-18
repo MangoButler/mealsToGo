@@ -16,4 +16,10 @@ const countryList = Object.entries(countryNames).map(([code, name]) => ({
   value: code,
 }));
 
+export const getCountryLabel = (code) => {
+  const name = countries.getName(code, "en", { select: "official" });
+  if (!name) return "🌍 Not Set";
+  return `${getFlagEmoji(code)} ${name}`;
+};
+
 export default countryList;

@@ -16,6 +16,8 @@ export const USER_URL = BASE_URL + "user";
 
 export const HANGOUT_URL = BASE_URL + "hangouts";
 
+export const ACTIVE_HANGOUT_URL = HANGOUT_URL + "/active-users";
+
 export const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/dg5kd3rfa/image/upload";
 export const UPLOAD_PRESET = "can_and_go";

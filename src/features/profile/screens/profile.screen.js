@@ -46,6 +46,7 @@ import { HangoutStatsCard } from "../../hangouts/components/hangout-stats-card.c
 import AccordionList from "../../../components/utility/accordion-list.component";
 import HighlightItem from "../../../components/favorites/highlight-item.component";
 import { openInMaps } from "../../../utils/location.functions";
+import SharePlaceButton from "../../../components/places/share-place-button.component";
 
 const Container = styled.View`
   flex: 1;
@@ -137,26 +138,11 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   // useEffect(() => {
-  //   const getHighlights = async (placeIds) => {
-  //     const places = await fetchPlaces(null, placeIds);
-  //     setHighlightedPlaces(places);
+  //   const syncUser = async () => {
+  //     await syncUserProfile();
   //   };
-  //   const upcoming = user.hangouts
-  //     ? user.hangouts.map((hangout) => {
-  //         return { ...hangout.place, startTime: hangout.startTime };
-  //       })
-  //     : [];
-  //   const highlightedItems =
-  //     activePanel === "favorites" && favorites.length > 0
-  //       ? favorites.map((place) => place.id)
-  //       : activePanel === "my places" && user.places
-  //         ? user.places.map((place) => place.id) || []
-  //         : activePanel === "upcoming"
-  //           ? upcoming || []
-  //           : [];
-
-  //   getHighlights(highlightedItems);
-  // }, [activePanel]);
+  //   syncUser();
+  // }, []);
 
   const activeHangout = user.hangouts
     ? user.hangouts.find((hangout) => hangout.status === "ACTIVE")
@@ -190,6 +176,9 @@ const ProfileScreen = ({ navigation }) => {
             Starting: {formatDate(item.startTime)} at{" "}
             {formatTime(item.startTime)}
           </Text>
+        </Spacer>
+        <Spacer size="large" position="top">
+          <SharePlaceButton place={item} current={false} />
         </Spacer>
 
         <Footer>
@@ -240,10 +229,16 @@ const ProfileScreen = ({ navigation }) => {
   ) => {
     setActionLoading("navigation");
     const refreshedPlace = await fetchPlaceById(item.id);
+    const refreshedPlaceWithExtraParams = {
+      ...refreshedPlace,
+      startTime: item.startTime,
+      endTime: item.endTime,
+      hangoutId: item.hangoutId,
+    };
 
     navigation.navigate("Places", {
       screen: screen,
-      params: { item: refreshedPlace },
+      params: { item: refreshedPlaceWithExtraParams },
     });
     setActionLoading(false);
     setActivePanel(null);
@@ -276,6 +271,7 @@ const ProfileScreen = ({ navigation }) => {
       Alert.alert("Check Out Successfull!", result.message);
     }
     setActionLoading(false);
+    setModalVisible(false);
   };
 
   const userDetails = [
@@ -290,7 +286,6 @@ const ProfileScreen = ({ navigation }) => {
       value: "totalHangouts",
     },
   ];
-  // console.log(user.hangoutStats); ///logging
 
   if (actionLoading === "navigation") return <LoadingSpinner />;
 
@@ -331,37 +326,49 @@ const ProfileScreen = ({ navigation }) => {
                 onCardPress={onHighlightCardPress}
                 renderActions={() => {
                   return (
-                    <Footer>
-                      <SelectorActionButton
-                        mode="contained"
-                        onPress={() => {
-                          const { lat, lng } =
-                            closestHangout.place?.location.location || {};
-                          if (lat && lng) {
-                            openInMaps(lat, lng, closestHangout.place?.title);
-                          }
-                        }}
-                        buttonColor={theme.colors.ui.secondary}
-                        textColor={theme.colors.text.inverse}
-                        // disabled={isLoading}
-                        icon="directions"
-                      >
-                        Get Directions
-                      </SelectorActionButton>
-                      <SelectorActionButton
-                        mode="contained"
-                        onPress={async () => {
-                          await handleCheckIn(closestHangout);
-                        }}
-                        buttonColor={theme.colors.ui.success}
-                        textColor={theme.colors.text.inverse}
-                        // disabled={isLoading}
-                        icon="calendar-check-outline"
-                        loading={actionLoading === "checkIn"}
-                      >
-                        Check In
-                      </SelectorActionButton>
-                    </Footer>
+                    <>
+                      <Spacer size="large" position="top">
+                        <SharePlaceButton
+                          place={{
+                            ...closestHangout.place,
+                            startTime: closestHangout.startTime,
+                            hangoutId: closestHangout.id,
+                          }}
+                          current={false}
+                        />
+                      </Spacer>
+                      <Footer>
+                        <SelectorActionButton
+                          mode="contained"
+                          onPress={() => {
+                            const { lat, lng } =
+                              closestHangout.place?.location.location || {};
+                            if (lat && lng) {
+                              openInMaps(lat, lng, closestHangout.place?.title);
+                            }
+                          }}
+                          buttonColor={theme.colors.ui.secondary}
+                          textColor={theme.colors.text.inverse}
+                          // disabled={isLoading}
+                          icon="directions"
+                        >
+                          Get Directions
+                        </SelectorActionButton>
+                        <SelectorActionButton
+                          mode="contained"
+                          onPress={async () => {
+                            await handleCheckIn(closestHangout);
+                          }}
+                          buttonColor={theme.colors.ui.success}
+                          textColor={theme.colors.text.inverse}
+                          // disabled={isLoading}
+                          icon="calendar-check-outline"
+                          loading={actionLoading === "checkIn"}
+                        >
+                          Check In
+                        </SelectorActionButton>
+                      </Footer>
+                    </>
                   );
                 }}
               />
@@ -370,45 +377,53 @@ const ProfileScreen = ({ navigation }) => {
           {activeHangout && (
             <>
               <Spacer position="top" size="large">
-                <Spacer position="bottom" size="medium">
-                  <Text variant="labelCentered">Currently at:</Text>
-                </Spacer>
                 <HighlightItem
                   onCardPress={onActiveHangoutCardPress}
                   item={{
                     ...activeHangout.place,
                     startTime: activeHangout.startTime,
+                    endTime: activeHangout.endTime,
                     hangoutId: activeHangout.id,
                   }}
                   renderActions={() => {
                     return (
-                      <Footer>
-                        <SelectorActionButton
-                          mode="contained"
-                          onPress={() => {
-                            onActiveHangoutCardPress(activeHangout.place);
-                          }}
-                          buttonColor={theme.colors.ui.secondary}
-                          textColor={theme.colors.text.inverse}
-                          // disabled={isLoading}
-                          icon="map-marker-circle"
-                        >
-                          Check Details
-                        </SelectorActionButton>
-                        <SelectorActionButton
-                          mode="contained"
-                          onPress={async () => {
-                            await handleFinishHangout(activeHangout);
-                          }}
-                          buttonColor={theme.colors.ui.primary}
-                          textColor={theme.colors.text.inverse}
-                          // disabled={isLoading}
-                          icon="check-outline"
-                          loading={actionLoading === "finishHangout"}
-                        >
-                          Finish Hangout
-                        </SelectorActionButton>
-                      </Footer>
+                      <>
+                        <Spacer size="large" position="top">
+                          <SharePlaceButton place={activeHangout.place} />
+                        </Spacer>
+                        <Footer>
+                          <SelectorActionButton
+                            mode="contained"
+                            onPress={() => {
+                              onActiveHangoutCardPress({
+                                ...activeHangout.place,
+                                startTime: activeHangout.startTime,
+                                endTime: activeHangout.endTime,
+                                hangoutId: activeHangout.id,
+                              });
+                            }}
+                            buttonColor={theme.colors.ui.secondary}
+                            textColor={theme.colors.text.inverse}
+                            disabled={actionLoading === "finishHangout"}
+                            icon="map-marker-circle"
+                          >
+                            Details
+                          </SelectorActionButton>
+                          <SelectorActionButton
+                            mode="contained"
+                            onPress={() => {
+                              setModalVisible("finishHangout");
+                            }}
+                            buttonColor={theme.colors.ui.primary}
+                            textColor={theme.colors.text.inverse}
+                            disabled={actionLoading === "finishHangout"}
+                            icon="check-outline"
+                            loading={actionLoading === "finishHangout"}
+                          >
+                            Finish
+                          </SelectorActionButton>
+                        </Footer>
+                      </>
                     );
                   }}
                 />
@@ -568,6 +583,8 @@ const ProfileScreen = ({ navigation }) => {
             await logoutUser();
           } else if (modalVisible === "cancelHangout") {
             await onCancelHangout(selectedHangout);
+          } else if (modalVisible === "finishHangout") {
+            await handleFinishHangout(activeHangout);
           } else {
             await onRemoveFavorites();
           }

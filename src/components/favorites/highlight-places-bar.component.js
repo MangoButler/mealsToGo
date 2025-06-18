@@ -46,6 +46,11 @@ const Container = styled.View`
 //   width: ${screenWidth * 0.7}px;
 // `;
 
+const HighlightContainer = styled.View`
+  gap: ${(props) => props.theme.space[2]};
+  flex-direction: row;
+`;
+
 const AnimatedRow = styled(Animated.View)`
   flex-direction: row;
   align-items: center;
@@ -100,50 +105,52 @@ const HighlightBar = ({
       >
         {items.length ? (
           <HighlightScroll>
-            {items.map((item) => (
-              // <HighlightItem
-              //   key={
-              //     panelType === "upcoming" && item.startTime
-              //       ? item.id + item.startTime
-              //       : item.id + panelType
-              //   }
-              // >
-              //   <TouchableOpacity onPress={() => onCardPress(item)}>
-              //     <PlaceCardCover src={item.imageUrl} />
-              //   </TouchableOpacity>
-              //   <PlaceCardContent>
-              //     <Spacer size={"small"} position={"bottom"}>
-              //       <Text theme={theme} variant={"label"}>
-              //         {item.title}
-              //       </Text>
-              //     </Spacer>
-              //     <Spacer size="small" position="bottom">
-              //       <Text theme={theme} variant={"hint"}>
-              //         {item.area}, {item.city}
-              //       </Text>
-              //     </Spacer>
+            <HighlightContainer>
+              {items.map((item) => (
+                // <HighlightItem
+                //   key={
+                //     panelType === "upcoming" && item.startTime
+                //       ? item.id + item.startTime
+                //       : item.id + panelType
+                //   }
+                // >
+                //   <TouchableOpacity onPress={() => onCardPress(item)}>
+                //     <PlaceCardCover src={item.imageUrl} />
+                //   </TouchableOpacity>
+                //   <PlaceCardContent>
+                //     <Spacer size={"small"} position={"bottom"}>
+                //       <Text theme={theme} variant={"label"}>
+                //         {item.title}
+                //       </Text>
+                //     </Spacer>
+                //     <Spacer size="small" position="bottom">
+                //       <Text theme={theme} variant={"hint"}>
+                //         {item.area}, {item.city}
+                //       </Text>
+                //     </Spacer>
 
-              //     <Text theme={theme} variant={"caption"}>
-              //       {item.nearbyStations && item.nearbyStations.length
-              //         ? `${item.nearbyStations[0].name} around ${getWalkingTimeInMinutes(item.nearbyStations[0].distance)} min`
-              //         : "More than 10 min to closest station."}
-              //     </Text>
+                //     <Text theme={theme} variant={"caption"}>
+                //       {item.nearbyStations && item.nearbyStations.length
+                //         ? `${item.nearbyStations[0].name} around ${getWalkingTimeInMinutes(item.nearbyStations[0].distance)} min`
+                //         : "More than 10 min to closest station."}
+                //     </Text>
 
-              //     {renderActions && renderActions(item)}
-              //   </PlaceCardContent>
-              // </HighlightItem>
-              <HighlightItem
-                item={item}
-                renderActions={renderActions}
-                onCardPress={onCardPress}
-                panelType={panelType}
-                key={
-                  panelType === "upcoming" && item.startTime
-                    ? item.id + item.startTime
-                    : item.id + panelType
-                }
-              />
-            ))}
+                //     {renderActions && renderActions(item)}
+                //   </PlaceCardContent>
+                // </HighlightItem>
+                <HighlightItem
+                  item={item}
+                  renderActions={renderActions}
+                  onCardPress={onCardPress}
+                  panelType={panelType}
+                  key={
+                    panelType === "upcoming" && item.startTime
+                      ? item.id + item.startTime
+                      : item.id + panelType
+                  }
+                />
+              ))}
+            </HighlightContainer>
           </HighlightScroll>
         ) : (
           <NoHighlight theme={theme} variant="captionCentered">

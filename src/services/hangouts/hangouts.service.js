@@ -1,6 +1,6 @@
 import { Alert } from "react-native";
 import { getIdTokenFromFirebase } from "../auth/auth.service";
-import { HANGOUT_URL } from "../places/places-api-url";
+import { ACTIVE_HANGOUT_URL, HANGOUT_URL } from "../places/places-api-url";
 import {
   formatDate,
   formatTime,
@@ -136,7 +136,7 @@ export const checkInToHangout = async (hangout) => {
 /// finishingHangout
 export const finishHangout = async (hangout) => {
   if (hangout.status !== "ACTIVE") {
-    Alert.alert("Cannout finish a non-active schedule. Check in first.");
+    Alert.alert("Cannot finish a non-active schedule. Check in first.");
     return null;
   }
 
@@ -256,6 +256,22 @@ export const deleteHangout = async (hangoutId) => {
   } catch (error) {
     console.error("Error cancelling schedule:", error);
     Alert.alert("Error cancelling schedule:", error.message);
+    return null;
+  }
+};
+
+export const getActiveUsersForPlace = async (placeId) => {
+  try {
+    const activeUsersUrl = `${ACTIVE_HANGOUT_URL}?placeId=${placeId}`;
+    const response = await fetch(activeUsersUrl);
+    if (!response.ok) {
+      throw new Error("Failed to fetch active users...try again!");
+    }
+    const activeUsers = await response.json();
+    return activeUsers;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    Alert.alert("An error occured.", error.message);
     return null;
   }
 };

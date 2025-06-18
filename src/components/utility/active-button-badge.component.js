@@ -1,6 +1,11 @@
 import styled, { useTheme } from "styled-components/native";
 import { Badge, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
+
+const bigScreen = screenWidth < 400 ? false : true;
 
 const ActiveBadgeContainer = styled.View`
   flex-direction: row;
@@ -18,7 +23,9 @@ const BadgeText = styled(Text)`
     props.textColor ? props.textColor : props.theme.colors.text.inverse};
   font-weight: bold;
   margin-left: ${(props) => props.theme.space[1]};
-  font-size: ${(props) => props.theme.fontSizes.button};
+  font-size: ${bigScreen
+    ? (props) => props.theme.fontSizes.button
+    : (props) => props.theme.fontSizes.caption};
   text-align: center;
 `;
 

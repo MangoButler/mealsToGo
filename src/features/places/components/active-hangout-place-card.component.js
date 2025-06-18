@@ -1,5 +1,5 @@
 import styled, { useTheme } from "styled-components/native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SvgXml } from "react-native-svg";
 import star from "../../../../assets/star";
 import { Spacer } from "../../../components/spacer/spacer.component";
@@ -40,21 +40,33 @@ import { openInMaps } from "../../../utils/location.functions";
 import CreateHangoutModal from "../../hangouts/components/create-hangout-modal.component";
 import { ActiveBadge } from "../../../components/utility/active-button-badge.component";
 import { HangoutStatsCard } from "../../hangouts/components/hangout-stats-card.component";
+import SharePlaceButton from "../../../components/places/share-place-button.component";
+import { SelectorActionButton } from "../../../components/utility/checkbox-selector.component";
+import {
+  formatTime,
+  getApproximateTimeDifference,
+  getDrinkIcon,
+  isInPast,
+  parseNumber,
+} from "../../../utils/transformations";
+import {
+  finishHangout,
+  getActiveUsersForPlace,
+} from "../../../services/hangouts/hangouts.service";
+import LoadingSpinner from "../../../components/utility/loading-spinner.component";
+import { Icon } from "react-native-paper";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { getCountryLabel } from "../../../utils/countryList";
+import ActiveUsersGrid from "../../../components/hangouts/active-users-grid.component";
 
 const DetailCardContainer = styled.View`
   flex: 1;
 `;
-// const CrudActionContainerScrollView = styled.ScrollView.attrs((props) => ({
-//   contentContainerStyle: {
-//     paddingBottom: 120, // adjust to be at least the height of CrudActionsContainer + some spacing
-//   },
-// }))``;
 
 const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
   const { triggerPlacesRefresh } = useContext(PlacesContext);
   const [modalVisible, setModalVisible] = useState(false);
-  const { user: currentUser } = useContext(AuthenticationContext);
   const {
     title = "Test Place",
     id: placeId = "1",
@@ -95,17 +107,49 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
     user: creator = null,
     userId: creatorId = 0,
     hangoutStats,
+    endTime,
+    startTime,
+    hangoutId,
   } = place;
 
-  const { user } = useContext(AuthenticationContext);
+  const { user, syncUserProfile } = useContext(AuthenticationContext);
   const activeHangout = user.hangouts
     ? user.hangouts.find((hangout) => hangout.status === "ACTIVE")
     : null;
 
+  const onGoBack = async () => {
+    await returnToPlacesOverview(navigation);
+    // navigation.goBack();
+  };
+
   if (!user || !activeHangout || activeHangout.place.id !== placeId) {
     onGoBack();
   }
-  const [hangoutModalVisible, setHangoutModalVisible] = useState(false);
+  const [activeUsers, setActiveUsers] = useState([]);
+  const [actionLoading, setActionLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchActiveUsers = async () => {
+      setActionLoading("users");
+      const users = await getActiveUsersForPlace(placeId);
+      setActiveUsers(users.filter((u) => u.id !== user.id));
+      setActionLoading(false);
+    };
+
+    fetchActiveUsers();
+  }, [placeId]);
+
+  const handleFinishHangout = async (hangout) => {
+    setActionLoading("finishHangout");
+    const result = await finishHangout(hangout);
+    if (result) {
+      triggerPlacesRefresh();
+      await syncUserProfile();
+      Alert.alert("Check Out Successfull!", result.message);
+    } else {
+      setActionLoading(false);
+    }
+  };
 
   const featuresObjects = getFeaturesObjects(features);
   const stationsWithIcon = formatStations(
@@ -114,30 +158,15 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
   );
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
-  const handleDelete = async () => {
-    const result = await deletePlace(placeId);
-    if (result) {
-      setModalVisible(false);
-      triggerPlacesRefresh();
-      await returnToPlacesOverview(navigation);
-      Alert.alert("Success", result.message);
-    }
-  };
-
-  const onGoBack = async () => {
-    await returnToPlacesOverview(navigation);
-    // navigation.goBack();
-  };
-
   const getDirections = () => {
     openInMaps(location.location.lat, location.location.lng, title);
   };
 
-  const statsText = hangoutStats.completed
-    ? `✅ ${hangoutStats.completed} people visited · 📅 ${hangoutStats.scheduled} scheduled hangouts`
-    : "Be amongst the first to hang out here!";
+  const statsText = "Be amongst the first to hang out here!";
 
-  console.log(user); //logging
+  if (actionLoading === "users") {
+    return <LoadingSpinner />;
+  }
   return (
     <DetailCardContainer>
       <CrudActionContainerScrollView>
@@ -154,11 +183,19 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
                       {title}
                     </Text>
                   </Spacer>
-                  <Text theme={theme} variant={"hint"}>
-                    {area}, {city}
+                  <Spacer size={"small"} position={"bottom"}>
+                    <Text theme={theme} variant={"hint"}>
+                      {area}, {city}
+                    </Text>
+                  </Spacer>
+                  <Text variant="caption" theme={theme}>
+                    {!isInPast(endTime)
+                      ? `Hanging out until: ${formatTime(endTime)} (${getApproximateTimeDifference(endTime)} longer)`
+                      : "Officially ended (but stay as long as you like)"}
                   </Text>
                 </InfoContainer>
               </Row>
+
               <Row
                 topMargin="small"
                 bottomMargin="small"
@@ -169,6 +206,7 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
                   Created by {creator.username}
                 </Text>
               </Row>
+
               <Row topMargin="none" bottomMargin="medium">
                 {ratingArray.length ? (
                   <IconContainer>
@@ -186,15 +224,7 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
                     No ratings yet
                   </Text>
                 )}
-                <InfoButton
-                  textColor={theme.colors.ui.primary}
-                  mode="outlined"
-                  compact
-                  icon="directions"
-                  onPress={getDirections}
-                >
-                  Get Directions
-                </InfoButton>
+                <SharePlaceButton place={place} />
               </Row>
 
               {/* inserting the stats */}
@@ -246,6 +276,42 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
             </Info>
 
             <Spacer position={"top"} size={"medium"}>
+              {activeUsers.length > 0 && (
+                <AccordeonList icon="account-group" title="Who's here now?">
+                  {/* {activeUsers.map((u) => (
+                    <Row
+                      key={u.id}
+                      topMargin="medium"
+                      bottomMargin="medium"
+                      xMargin="large"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
+                      <Row>
+                        <PlaceCreatorImage source={{ uri: u.profilePicture }} />
+                        <Spacer position="right" size="small" />
+                        <Text variant="hint">{u.username}</Text>
+                      </Row>
+
+                      <Row>
+                        <FontAwesome5
+                          name={getDrinkIcon(u.favoriteDrink)}
+                          color={theme.colors.text.secondary}
+                          size={parseNumber(theme.fontSizes.button)}
+                        />
+                        <Spacer position="right" size="small" />
+                        <Text variant="hint">{u.favoriteDrink}</Text>
+                      </Row>
+                      <Row>
+                        <Text variant="hint">{getCountryLabel(u.country)}</Text>
+                      </Row>
+                    </Row>
+                  ))} */}
+
+                  <ActiveUsersGrid users={activeUsers} />
+                </AccordeonList>
+              )}
+
               <AccordeonList title="Location" icon="map-marker">
                 <MiniMap geometry={location} />
               </AccordeonList>
@@ -294,67 +360,29 @@ const ActiveHangoutPlaceCardComponent = ({ place = {}, navigation }) => {
               Go Back
             </PlaceActionsButtonOutline>
 
-            <PlaceActionsButton
-              disabled={!isActiveNow}
-              buttonColor={
-                isActiveNow ? theme.colors.ui.primary : theme.colors.ui.disabled
-              }
-              textColor={
-                !isActiveNow
-                  ? theme.colors.ui.primary
-                  : theme.colors.text.inverse
-              }
-              onPress={() => {
-                setHangoutModalVisible(true);
-              }}
+            <SelectorActionButton
+              mode="contained"
+              onPress={() => setModalVisible(true)}
+              buttonColor={theme.colors.ui.primary}
+              textColor={theme.colors.text.inverse}
+              disabled={actionLoading === "finishHangout"}
+              icon="check-outline"
+              loading={actionLoading === "finishHangout"}
             >
-              Hang out here
-            </PlaceActionsButton>
+              Finish
+            </SelectorActionButton>
           </PlaceCardActions>
         </DetailCard>
-        {hangoutModalVisible && (
-          <CreateHangoutModal
-            onDismiss={() => setHangoutModalVisible(false)}
-            visible={hangoutModalVisible}
-            place={place}
-          />
-        )}
       </CrudActionContainerScrollView>
-      {currentUser && currentUser.id === creatorId && (
-        <>
-          <CrudActionsContainer>
-            <CrudActionButton
-              onPress={() => {
-                navigation.navigate("UpdatePlace", { place });
-              }}
-              textColor={theme.colors.text.inverse}
-              buttonColor={theme.colors.brand.muted}
-              mode="contained"
-              icon="map-marker-question-outline"
-            >
-              Update Place
-            </CrudActionButton>
-            <CrudActionButton
-              onPress={() => {
-                setModalVisible(true);
-              }}
-              buttonColor={theme.colors.ui.error}
-              textColor={theme.colors.text.inverse}
-              mode="contained"
-              icon="map-marker-remove-outline"
-            >
-              Delete Place
-            </CrudActionButton>
-          </CrudActionsContainer>
-          <ConfirmationModal
-            visible={modalVisible}
-            onConfirm={handleDelete}
-            onDismiss={() => {
-              setModalVisible(false);
-            }}
-          />
-        </>
-      )}
+      <ConfirmationModal
+        visible={modalVisible}
+        onConfirm={async () => {
+          await handleFinishHangout(activeHangout);
+        }}
+        onDismiss={() => {
+          setModalVisible(false);
+        }}
+      />
     </DetailCardContainer>
   );
 };

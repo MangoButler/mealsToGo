@@ -17,8 +17,29 @@ const positions = {
   vertical: ["margin-top", "margin-bottom"],
 };
 
+const Line = styled.View`
+  background-color: ${({ color, theme }) =>
+    color || theme.colors.text.secondary};
+  height: 1px;
+  width: 100%;
+`;
+
+// const Line = styled.View`
+//   ${({ color, theme }) => `
+//     background-color: ${color || theme.colors.text.secondary};
+//   `}
+//   height: 1px;
+//   width: 100%;
+
+//   ${({ position }) =>
+//     position === "left" || position === "right"
+//       ? "width: 1px; height: 100%;"
+//       : "height: 1px; width: 100%;"}
+// `;
+
 const SpacerView = styled.View`
-  ${({ variant }) => variant}
+  ${({ variant }) => variant};
+  flex-shrink: 0;
 `;
 
 const getVariant = (position, size, theme) => {
@@ -32,9 +53,22 @@ const getVariant = (position, size, theme) => {
   return `${pos}: ${value};`;
 };
 
-export const Spacer = ({ position = "top", size = "small", children }) => {
+export const Spacer = ({
+  position = "top",
+  size = "small",
+  children,
+  showLine = false,
+  lineColor,
+}) => {
   const theme = useTheme();
   const variant = getVariant(position, size, theme);
-
-  return <SpacerView variant={variant}>{children}</SpacerView>;
+  const color = lineColor ? lineColor : theme.colors.ui.secondary;
+  if (children) {
+    return <SpacerView variant={variant}>{children}</SpacerView>;
+  }
+  return (
+    <SpacerView variant={variant}>
+      {showLine && <Line theme={theme} position={position} color={color} />}
+    </SpacerView>
+  );
 };

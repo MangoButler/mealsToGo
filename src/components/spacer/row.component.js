@@ -4,6 +4,7 @@ import styled, { useTheme } from "styled-components/native";
 export const RowView = styled.View`
   display: flex;
   flex-direction: row;
+  /* flex-wrap: nowrap; */
   align-items: ${({ alignItems }) => alignItems};
   justify-content: ${({ justifyContent }) => justifyContent};
   margin: ${({ xMargin }) => xMargin};

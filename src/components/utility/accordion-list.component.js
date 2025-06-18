@@ -1,6 +1,10 @@
 import * as React from "react";
+import { Dimensions } from "react-native";
 import { List } from "react-native-paper";
 import styled, { useTheme } from "styled-components";
+
+const screenWidth = Dimensions.get("window").width;
+const bigScreen = screenWidth < 500 ? false : true;
 
 const Accordion = styled(List.Accordion)`
   font-family: ${(props) => props.theme.fonts.info};
@@ -15,7 +19,7 @@ const ItemGrid = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
-  /* margin-left: -10%; */
+  margin-left: ${!bigScreen ? -10 : 0}%;
 `;
 
 const GridItem = styled(List.Item)`

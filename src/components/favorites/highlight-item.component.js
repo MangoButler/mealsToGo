@@ -10,13 +10,14 @@ import { getWalkingTimeInMinutes } from "../../utils/station.functions";
 import { Card } from "react-native-paper";
 
 const screenWidth = Dimensions.get("window").width;
+const bigScreen = screenWidth < 380 ? false : true;
 
 const HighlightPlace = styled(Card)`
   background-color: ${(props) => props.theme.colors.bg.primary};
-  margin-right: ${(props) => props.theme.space[2]};
+  /* margin-right: ${(props) => props.theme.space[2]}; */
   border-radius: 12px;
   margin-bottom: ${(props) => props.theme.space[1]};
-  width: ${screenWidth * 0.7}px;
+  width: ${bigScreen ? screenWidth * 0.7 : screenWidth * 0.9}px;
 `;
 
 const HighlightItem = ({ item, onCardPress, renderActions = null }) => {
