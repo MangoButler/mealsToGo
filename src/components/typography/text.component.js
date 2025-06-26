@@ -3,8 +3,8 @@ import { theme } from "../../infrastructure/theme";
 
 const defaultTextStyles = (theme) => `
     font-family: ${theme.fonts.body};
-    font-weigth: ${theme.fontWeights.regular};
     color: ${theme.colors.text.primary};
+    font-weigth: ${theme.fontWeights.regular};
     flex-wrap: wrap;
     margin-top: ${theme.space[0]};
     margin-bottom: ${theme.space[0]};
@@ -13,10 +13,13 @@ const defaultTextStyles = (theme) => `
 const body = (theme) => `
     font-size: ${theme.fontSizes.body};
 `;
+const bodyCentered = (theme) => `
+    font-size: ${theme.fontSizes.body};
+    text-align: center;
+`;
 const centeredInfo = (theme) => `
     font-size: ${theme.fontSizes.body};
     text-align: center;
-
 `;
 const centeredInfoBold = (theme) => `
     font-size: ${theme.fontSizes.body};
@@ -52,6 +55,10 @@ const captionCentered = (theme) => `
 const error = (theme) => `
     color: ${theme.colors.text.error};
 `;
+const errorCentered = (theme) => `
+    color: ${theme.colors.text.error};
+    text-align: center;
+`;
 const errorTitle = (theme) => `
     color: ${theme.colors.text.error};
     font-size: ${theme.fontSizes.title};
@@ -76,11 +83,13 @@ const hintCentered = (theme) => `
 
 const variants = {
   body,
+  bodyCentered,
   heading,
   label,
   labelCentered,
   caption,
   error,
+  errorCentered,
   errorTitle,
   hint,
   captionCentered,

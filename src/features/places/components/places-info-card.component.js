@@ -1,7 +1,5 @@
 import { useTheme } from "styled-components/native";
 import React, { useState } from "react";
-import { SvgXml } from "react-native-svg";
-import star from "../../../../assets/star";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import {
@@ -12,7 +10,6 @@ import {
   PlaceCardContent,
   PlaceCardCover,
   Info,
-  IconContainer,
   CategoryIconContainer,
   InfoButton,
   InfoContainer,
@@ -26,8 +23,13 @@ import FavoriteButton from "../../../components/favorites/favorite-button.compon
 import { openInMaps } from "../../../utils/location.functions";
 import CreateHangoutModal from "../../hangouts/components/create-hangout-modal.component";
 import { ActiveBadge } from "../../../components/utility/active-button-badge.component";
+import RatingDisplay from "../../../components/places/rating-display.component";
 
-const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
+const PlaceInfoCardComponent = ({
+  place = {},
+  onDetailClick = () => {},
+  navigation,
+}) => {
   const theme = useTheme();
   const {
     title = "Test Place",
@@ -45,7 +47,6 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
     imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
     area = "100 some street",
     isActiveNow = true,
-    rating = 3,
     isClosedTemporarely = false,
     description = "A nice little getaway for any adventurer",
     nearbyStations = [],
@@ -55,16 +56,22 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
       viewport: { northeast: -6.1613083, southwest: 106.9049817 },
     },
     hangoutStats,
+    averageRating = 0,
+    reviewCount = 0,
   } = place;
 
   const [hangoutModalVisible, setHangoutModalVisible] = useState(false);
 
   const featuresObjects = getFeaturesObjects(features);
 
-  const ratingArray = Array.from(new Array(Math.floor(rating)));
-
   const getDirections = () => {
     openInMaps(location.location.lat, location.location.lng, title);
+  };
+
+  const onConfirmHangout = () => {
+    navigation.navigate("Profile", {
+      screen: "Main",
+    });
   };
 
   const statsText = hangoutStats.completed
@@ -111,30 +118,22 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
                 </CategoryIconContainer>
               </Spacer>
             </Row>
-            <Row topMargin="none" bottomMargin="medium">
-              {ratingArray.length ? (
-                <IconContainer>
-                  {ratingArray.map((_, i) => (
-                    <SvgXml
-                      xml={star}
-                      width={20}
-                      height={20}
-                      key={`star-${placeId}-${i}`}
-                    />
-                  ))}
-                </IconContainer>
-              ) : (
-                <Text variant={"captionCentered"} theme={theme}>
-                  No ratings yet...
-                </Text>
-              )}
+
+            <Row topMargin="medium" bottomMargin="medium">
+              <RatingDisplay
+                placeId={placeId}
+                averageRating={averageRating}
+                reviewCount={reviewCount}
+              />
+
               <InfoButton
+                textColor={theme.colors.ui.primary}
                 mode="outlined"
                 compact
                 icon="directions"
                 onPress={getDirections}
               >
-                Get directions
+                Get Directions
               </InfoButton>
             </Row>
 
@@ -221,6 +220,7 @@ const PlaceInfoCardComponent = ({ place = {}, onDetailClick = () => {} }) => {
           onDismiss={() => setHangoutModalVisible(false)}
           visible={hangoutModalVisible}
           place={place}
+          onConfirm={onConfirmHangout}
         />
       )}
     </>

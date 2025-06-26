@@ -78,3 +78,13 @@ export const CreatorContainer = styled.View`
   flex-direction: row;
   align-items: center;
 `;
+
+export const ReviewContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  /* margin-top: ${(props) => props.theme.space[2]}; */
+`;
+
+export const LoadMoreButton = styled(InfoButton)`
+  max-width: 50%;
+`;

@@ -40,7 +40,9 @@ export const sortPlaces = (places, sortOption, userLocation) => {
 
     case "rating":
       // Placeholder logic — assumes future `rating` field (e.g., a.rating = 4.5)
-      return sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      return sorted.sort(
+        (a, b) => (b.averageRating || 0) - (a.averageRating || 0)
+      );
 
     case "distance":
       if (!userLocation) return places;

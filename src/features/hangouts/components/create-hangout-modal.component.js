@@ -69,6 +69,7 @@ import { AuthenticationContext } from "../../../services/auth/auth.context";
 import {
   getDistanceToPlace,
   getUserLocation,
+  MIN_DISTANCE_TO_CHECKIN,
   openInMaps,
 } from "../../../utils/location.functions";
 
@@ -130,11 +131,11 @@ const CreateHangoutModal = ({
 
     const result = await createHangout(placeId, startTime, endTime);
     if (result) {
-      onConfirm(); // Optional: can replace with just onDismiss()
       await syncUserProfile();
       await triggerPlacesRefresh();
       setIsLoading(false);
       onDismiss();
+      onConfirm(); // Optional: can replace with just onDismiss()
       Alert.alert("See you there!", result.message);
     }
     setIsLoading(false);
@@ -154,26 +155,21 @@ const CreateHangoutModal = ({
 
     const result = await editHangout(hangout?.hangoutId, startTime, endTime);
     if (result) {
-      onConfirm(); // Optional: can replace with just onDismiss()
       await syncUserProfile();
       await triggerPlacesRefresh();
       setIsLoading(false);
       onDismiss();
+      onConfirm(); // Optional: can replace with just onDismiss()
       Alert.alert("Schedule Updated!", result.message);
     }
     setIsLoading(false);
   };
 
   const handleInstantCheckIn = async () => {
-    //still updating
     setIsLoading(true);
     const distanceToPlace = await getDistanceToPlace(place);
 
-    if (distanceToPlace > 2) {
-      //   Alert.alert(
-      //     "Too fare away",
-      //     `Please move to ${place.title} and try again!`
-      //   );
+    if (distanceToPlace > MIN_DISTANCE_TO_CHECKIN) {
       Alert.alert(
         "Too far away to check in!",
         `Please move to ${place?.title}, and try again!`,
@@ -204,11 +200,11 @@ const CreateHangoutModal = ({
 
     const result = await createHangout(placeId, startTime, endTime, true);
     if (result) {
-      onConfirm(); // Optional: can replace with just onDismiss()
       await syncUserProfile();
       await triggerPlacesRefresh();
       setIsLoading(false);
       onDismiss();
+      onConfirm(); // Optional: can replace with just onDismiss()
       Alert.alert("Enjoy your time!", result.message);
     }
     setIsLoading(false);

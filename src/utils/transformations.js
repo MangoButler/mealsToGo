@@ -189,15 +189,63 @@ export const getDrinkEmoji = (drink) => {
   return "🍻";
 };
 
+// export const getShareSentence = (place, current) => {
+//   const { lat, lng } = place.location.location;
+//   const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+//   const scheduleDate = current ? null : formatDate(new Date(place.startTime));
+//   const scheduleTime = current ? null : formatTime(new Date(place.startTime));
+
+//   const message = current
+//     ? `Join me at ${place.title} for some fun! Get directions: ${mapsUrl}. Shared via: Cans&Go.co`
+//     : `Planning to visit ${place.title} on ${scheduleDate} at ${scheduleTime}, wanna join? Get Directions: ${mapsUrl}. Shared via: Cans&Go.co`;
+
+//   return message;
+// };
 export const getShareSentence = (place, current) => {
   const { lat, lng } = place.location.location;
   const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+  const title = place.title;
   const scheduleDate = current ? null : formatDate(new Date(place.startTime));
   const scheduleTime = current ? null : formatTime(new Date(place.startTime));
 
-  const message = current
-    ? `Join me at ${place.title} for some fun! Get directions: ${mapsUrl}. Shared via: Cans&Go.co`
-    : `Planning to visit ${place.title} on ${scheduleDate} at ${scheduleTime}, wanna join? Get Directions: ${mapsUrl}. Shared via: Cans&Go.co`;
+  const currentMessages = [
+    `I'm chilling at ${title} right now! Come join me at 👉 ${mapsUrl}`,
+    `Hey! I'm at ${title} 🍻 Grab a drink and join in: ${mapsUrl}`,
+    `Spontaneous hangout alert 🚨 Meet me at ${title}: ${mapsUrl}`,
+    `Come hang out at ${title}, it’s a vibe! 🧃 Location: ${mapsUrl}`,
+    `No plans? I'm at ${title} right now – check the spot 📍${mapsUrl}`,
+  ];
 
-  return message;
+  const scheduledMessages = [
+    `Heading to ${title} on ${scheduleDate} at ${scheduleTime} – join me? Details: ${mapsUrl}`,
+    `I've got a hangout planned at ${title} on ${scheduleDate} at ${scheduleTime}. Wanna come? ${mapsUrl}`,
+    `Save the date! 🗓 ${scheduleDate} at ${scheduleTime}, at ${title}. Be there 👉 ${mapsUrl}`,
+    `Looking for company at ${title} on ${scheduleDate} @ ${scheduleTime}. Interested? ${mapsUrl}`,
+    `Hangout plans at ${title} soon on ${scheduleDate} ${scheduleTime}. Tap for directions: ${mapsUrl}`,
+  ];
+
+  const randomIndex = Math.floor(Math.random() * 5);
+  const message = current
+    ? currentMessages[randomIndex]
+    : scheduledMessages[randomIndex];
+
+  return message + " (Via Cans&Go.co)";
 };
+
+// export const getWelcomeMessage = () => {
+//   const messages = [
+//     "Welcome to:",
+//     "You made it to:",
+//     "You're now hanging out at:",
+//     "Glad you're here – welcome to:",
+//     "Chill mode activated at:",
+//     "Ready to vibe at:",
+//     "Good choice! You're at:",
+//     "Great spot! Say hello to:",
+//     "Your hangout destination is:",
+//     "Currently soaking in the vibes at:",
+//   ];
+
+//   const randomIndex = Math.floor(Math.random() * messages.length);
+//   return messages[randomIndex];
+// };

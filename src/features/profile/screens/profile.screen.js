@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import styled, { useTheme } from "styled-components/native";
 import { Text } from "../../../components/typography/text.component";
 import { Alert, Image } from "react-native";
@@ -47,6 +47,13 @@ import AccordionList from "../../../components/utility/accordion-list.component"
 import HighlightItem from "../../../components/favorites/highlight-item.component";
 import { openInMaps } from "../../../utils/location.functions";
 import SharePlaceButton from "../../../components/places/share-place-button.component";
+import { useReviews } from "../../../services/reviews/useReviews";
+import { SkeletonPlaceholder } from "../../../components/reviews/skeleton-placeholder.component";
+import { ReviewCard } from "../../../components/reviews/review-card.component";
+import { LoadMoreButton } from "../../places/components/place-detail-card.styles";
+import { Button } from "react-native-paper";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { deleteReview } from "../../../services/reviews/reviews.service";
 
 const Container = styled.View`
   flex: 1;
@@ -92,6 +99,7 @@ const ProfileScreen = ({ navigation }) => {
   const [activePanel, setActivePanel] = useState(null);
   const [editHangoutModalVisible, setEditHangoutModalVisible] = useState(false);
   const [selectedHangout, setSelectedHangout] = useState(null);
+  const [selectedReview, setSelectedReview] = useState(null);
   const { favorites } = useContext(FavoritesContext);
   if (!user) {
     navigation.navigate("Home");
@@ -120,9 +128,9 @@ const ProfileScreen = ({ navigation }) => {
     setActionLoading("deleteHangout");
     const result = await deleteHangout(hangout.hangoutId);
     if (result) {
-      Alert.alert("Hangout Cancelled", result.message);
       triggerPlacesRefresh();
       await syncUserProfile();
+      Alert.alert("Hangout Cancelled", result.message);
       setModalVisible(false);
     }
     setActionLoading(false);
@@ -137,12 +145,45 @@ const ProfileScreen = ({ navigation }) => {
     setActivePanel((current) => (current === panel ? null : panel));
   };
 
+  const route = useRoute();
+  const refreshKey = route.params?.refreshKey;
+  const {
+    reviews,
+    loading: reviewsLoading,
+    hasMore,
+    loadReviews,
+    error: reviewLoadingError,
+    resetReviews,
+    removeReviewById,
+  } = useReviews(user.id, false, refreshKey);
+
   // useEffect(() => {
   //   const syncUser = async () => {
   //     await syncUserProfile();
   //   };
   //   syncUser();
   // }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      resetReviews();
+    }, [])
+  );
+
+  const onDeleteReview = async (review) => {
+    setActionLoading("deleteReview");
+    const result = await deleteReview(review.id);
+    if (result.success) {
+      // await syncUserProfile();
+      removeReviewById(review.id);
+      triggerPlacesRefresh();
+      Alert.alert("Review Deleted", result.message);
+      setModalVisible(false);
+    } else {
+      Alert.alert("Error", result.error || "Something went wrong.");
+    }
+    setActionLoading(false);
+  };
 
   const activeHangout = user.hangouts
     ? user.hangouts.find((hangout) => hangout.status === "ACTIVE")
@@ -212,6 +253,38 @@ const ProfileScreen = ({ navigation }) => {
     );
   };
 
+  const renderReviewCrudButtons = (review) => {
+    return (
+      <Row xMargin="small" justifyContent="space-around" bottomMargin="medium">
+        <MenuButton
+          mode="text"
+          textColor={theme.colors.brand.muted}
+          onPress={() => {
+            navigation.navigate("Places", {
+              screen: "UpdateReviewScreen",
+              params: {
+                review: review,
+              },
+            });
+          }}
+        >
+          Edit
+        </MenuButton>
+        <MenuButton
+          mode="text"
+          onPress={() => {
+            setSelectedReview(review);
+            setModalVisible("deleteReview");
+          }}
+          textColor={theme.colors.ui.error}
+          loading={actionLoading === "deleteReview"}
+        >
+          Delete
+        </MenuButton>
+      </Row>
+    );
+  };
+
   const onHighlightCardPress = async (item) => {
     setActionLoading("navigation");
     const refreshedPlace = await fetchPlaceById(item.id);
@@ -265,13 +338,26 @@ const ProfileScreen = ({ navigation }) => {
   const handleFinishHangout = async (hangout) => {
     setActionLoading("finishHangout");
     const result = await finishHangout(hangout);
+
     if (result) {
       triggerPlacesRefresh();
       await syncUserProfile();
-      Alert.alert("Check Out Successfull!", result.message);
+
+      setModalVisible(false);
+      setActionLoading(false);
+
+      navigation.navigate("Places", {
+        screen: "ReviewScreen",
+        params: {
+          hangout: hangout,
+        },
+      });
+
+      Alert.alert("Check Out Successful!", result.message);
+    } else {
+      setActionLoading(false);
+      Alert.alert("Something went wrong", "Unable to check out");
     }
-    setActionLoading(false);
-    setModalVisible(false);
   };
 
   const userDetails = [
@@ -315,7 +401,7 @@ const ProfileScreen = ({ navigation }) => {
           {closestHangout && (
             <Spacer position="top" size="large">
               <Spacer position="bottom" size="medium">
-                <Text variant="labelCentered">Starting soon:</Text>
+                <Text variant="labelCentered">Starting Soon:</Text>
               </Spacer>
               <HighlightItem
                 item={{
@@ -377,6 +463,9 @@ const ProfileScreen = ({ navigation }) => {
           {activeHangout && (
             <>
               <Spacer position="top" size="large">
+                <Spacer position="bottom" size="medium">
+                  <Text variant="labelCentered">Hanging Out At:</Text>
+                </Spacer>
                 <HighlightItem
                   onCardPress={onActiveHangoutCardPress}
                   item={{
@@ -523,6 +612,66 @@ const ProfileScreen = ({ navigation }) => {
                   statsHint="of scheduled visits completed."
                 />
               </AccordionList>
+              {/* Displaying users reviews */}
+
+              <AccordionList
+                title="My Reviews"
+                icon="comment-text-outline"
+                onToggle={(expanded) => {
+                  if (expanded && reviews.length === 0) {
+                    loadReviews(true);
+                  }
+                }}
+              >
+                {reviewLoadingError ? (
+                  <Spacer position="top" size="medium">
+                    <Text variant="errorCentered">
+                      An error occured, try again!
+                    </Text>
+                    <Row topMargin="large" justifyContent="center">
+                      <LoadMoreButton
+                        textColor={theme.colors.ui.primary}
+                        mode="outlined"
+                        compact
+                        icon="comment-processing-outline"
+                        onPress={() => {
+                          loadReviews(true);
+                        }}
+                      >
+                        Reload
+                      </LoadMoreButton>
+                    </Row>
+                  </Spacer>
+                ) : reviewsLoading ? (
+                  <SkeletonPlaceholder count={3 + reviews.length} />
+                ) : (
+                  <Spacer position="top" size="medium">
+                    {reviews.map((review) => (
+                      <ReviewCard
+                        key={review.id}
+                        review={review}
+                        renderActions={renderReviewCrudButtons}
+                        secondaryBg={true}
+                      />
+                    ))}
+                    {hasMore && (
+                      <Row topMargin="medium" justifyContent="center">
+                        <LoadMoreButton
+                          textColor={theme.colors.ui.primary}
+                          mode="outlined"
+                          compact
+                          icon="comment-processing-outline"
+                          onPress={() => {
+                            loadReviews(false);
+                          }}
+                        >
+                          {reviews.length > 0 ? "Load More" : "Load"}
+                        </LoadMoreButton>
+                      </Row>
+                    )}
+                  </Spacer>
+                )}
+              </AccordionList>
             </UserOverviewContainer>
           </Spacer>
         )}
@@ -570,10 +719,17 @@ const ProfileScreen = ({ navigation }) => {
       </CrudActionsContainer>
       <ConfirmationModal
         visible={modalVisible}
+        title={
+          modalVisible === "finishHangout"
+            ? "Leaving already?"
+            : "Are you sure?"
+        }
         message={
           modalVisible === "delete"
             ? `For security reasons please enter your password:`
-            : "Please confirm"
+            : modalVisible === "finishHangout"
+              ? "Confirm below to check out."
+              : "Please confirm"
         }
         requiresPassword={modalVisible === "delete"}
         onConfirm={async (passw = "") => {
@@ -585,6 +741,8 @@ const ProfileScreen = ({ navigation }) => {
             await onCancelHangout(selectedHangout);
           } else if (modalVisible === "finishHangout") {
             await handleFinishHangout(activeHangout);
+          } else if (modalVisible === "deleteReview") {
+            await onDeleteReview(selectedReview);
           } else {
             await onRemoveFavorites();
           }

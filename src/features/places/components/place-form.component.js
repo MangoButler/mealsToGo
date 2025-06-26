@@ -20,8 +20,7 @@ import { validateFormTextInput } from "../../../utils/validation";
 import { returnToPlacesOverview } from "../../../utils/places-navigation.functions";
 import { PlacesContext } from "../../../services/places/places.context";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
-import ScrollActionContainer from "../../../components/utility/scroll-action-container.component";
-const Container = styled(View)`
+export const FormContainer = styled(View)`
   /* flex: 1; */
   padding: ${(props) => props.theme.space[4]};
   background-color: ${(props) => props.theme.colors.bg.secondary};
@@ -101,8 +100,8 @@ const PlaceForm = ({
       style={{ flex: 1 }}
     >
       <ScrollView>
-        {/* <ScrollActionContainer> */}
-        <Container>
+        {/* <ScrollActionFormContainer> */}
+        <FormContainer>
           <Spacer position="bottom" size="large">
             <Text variant={"heading"} theme={theme}>
               {formTitle}
@@ -178,8 +177,8 @@ const PlaceForm = ({
           >
             Cancel
           </FormButton>
-        </Container>
-        {/* </ScrollActionContainer> */}
+        </FormContainer>
+        {/* </ScrollActionFormContainer> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );

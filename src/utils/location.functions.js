@@ -116,12 +116,16 @@ export const getDistanceToPlace = async (place) => {
 };
 
 export const openInMaps = (lat, lng, label = "Destination") => {
+  const encodedLabel = encodeURIComponent(label);
+
   const scheme = Platform.select({
-    ios: `maps:0,0?q=${label}@${lat},${lng}`,
-    android: `geo:0,0?q=${lat},${lng}(${label})`,
+    ios: `maps:0,0?q=${encodedLabel}@${lat},${lng}`,
+    android: `geo:0,0?q=${lat},${lng}(${encodedLabel})`,
   });
 
   Linking.openURL(scheme).catch((err) =>
     console.error("An error occurred", err)
   );
 };
+
+export const MIN_DISTANCE_TO_CHECKIN = 2;

@@ -1,7 +1,5 @@
 import styled, { useTheme } from "styled-components/native";
 import React, { useContext, useState } from "react";
-import { SvgXml } from "react-native-svg";
-import star from "../../../../assets/star";
 import { Spacer } from "../../../components/spacer/spacer.component";
 import { Text } from "../../../components/typography/text.component";
 import {
@@ -10,14 +8,15 @@ import {
   PlaceCardActions,
   PlaceCardContent,
   Info,
-  IconContainer,
   InfoButton,
   InfoContainer,
 } from "./places-info-card.styles";
 import {
   DetailCard,
   DetailCardCover,
+  LoadMoreButton,
   PlaceCreatorImage,
+  ReviewContainer,
 } from "./place-detail-card.styles";
 import Row from "../../../components/spacer/row.component";
 import AccordeonList from "../../../components/utility/accordion-list.component";
@@ -30,7 +29,7 @@ import { returnToPlacesOverview } from "../../../utils/places-navigation.functio
 import { PlacesContext } from "../../../services/places/places.context";
 import FavoriteButton from "../../../components/favorites/favorite-button.component";
 import { AuthenticationContext } from "../../../services/auth/auth.context";
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import {
   CrudActionButton,
   CrudActionContainerScrollView,
@@ -40,15 +39,14 @@ import { openInMaps } from "../../../utils/location.functions";
 import CreateHangoutModal from "../../hangouts/components/create-hangout-modal.component";
 import { ActiveBadge } from "../../../components/utility/active-button-badge.component";
 import { HangoutStatsCard } from "../../hangouts/components/hangout-stats-card.component";
+import RatingDisplay from "../../../components/places/rating-display.component";
+import { useReviews } from "../../../services/reviews/useReviews";
+import { SkeletonPlaceholder } from "../../../components/reviews/skeleton-placeholder.component";
+import { ReviewCard } from "../../../components/reviews/review-card.component";
 
 const DetailCardContainer = styled.View`
   flex: 1;
 `;
-// const CrudActionContainerScrollView = styled.ScrollView.attrs((props) => ({
-//   contentContainerStyle: {
-//     paddingBottom: 120, // adjust to be at least the height of CrudActionsContainer + some spacing
-//   },
-// }))``;
 
 const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
   const theme = useTheme();
@@ -71,7 +69,6 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     imageUrl = "https://res.cloudinary.com/dg5kd3rfa/image/upload/v1745046201/place_images/ng7gi6asdeb9kvweusu7.jpg",
     area = "100 some street",
     isActiveNow = true,
-    rating = 3,
 
     description = "A nice little getaway for any adventurer",
     location = {
@@ -95,15 +92,23 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     user: creator = null,
     userId: creatorId = 0,
     hangoutStats,
+    reviewCount = 0,
+    averageRating = 0,
   } = place;
   const [hangoutModalVisible, setHangoutModalVisible] = useState(false);
+  const {
+    reviews,
+    loading: reviewsLoading,
+    hasMore,
+    loadReviews,
+    error: reviewLoadingError,
+  } = useReviews(placeId);
 
   const featuresObjects = getFeaturesObjects(features);
   const stationsWithIcon = formatStations(
     nearbyStations,
     city === "Jakarta" ? "bus" : "train"
   );
-  const ratingArray = Array.from(new Array(Math.floor(rating)));
 
   const handleDelete = async () => {
     const result = await deletePlace(placeId);
@@ -128,6 +133,13 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
     ? `✅ ${hangoutStats.completed} people visited · 📅 ${hangoutStats.scheduled} scheduled hangouts`
     : "Be amongst the first to hang out here!";
 
+  const onConfirmHangout = () => {
+    navigation.navigate("Profile", {
+      screen: "Main",
+    });
+  };
+
+  // console.log(reviews); //logging
   return (
     <DetailCardContainer>
       <CrudActionContainerScrollView>
@@ -159,23 +171,13 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   Created by {creator.username}
                 </Text>
               </Row>
-              <Row topMargin="none" bottomMargin="medium">
-                {ratingArray.length ? (
-                  <IconContainer>
-                    {ratingArray.map((_, i) => (
-                      <SvgXml
-                        xml={star}
-                        width={20}
-                        height={20}
-                        key={`star-${placeId}-${i}`}
-                      />
-                    ))}
-                  </IconContainer>
-                ) : (
-                  <Text variant={"caption"} theme={theme}>
-                    No ratings yet
-                  </Text>
-                )}
+              <Row topMargin="medium" bottomMargin="medium">
+                <RatingDisplay
+                  placeId={placeId}
+                  averageRating={averageRating}
+                  reviewCount={reviewCount}
+                />
+
                 <InfoButton
                   textColor={theme.colors.ui.primary}
                   mode="outlined"
@@ -274,6 +276,61 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
                   <HangoutStatsCard stats={hangoutStats} />
                 </AccordeonList>
               )}
+              {reviewCount > 0 && (
+                <AccordeonList
+                  title="Reviews/Comments"
+                  icon="comment-text-outline"
+                  onToggle={(expanded) => {
+                    if (expanded && reviews.length === 0) {
+                      loadReviews(true);
+                    }
+                  }}
+                >
+                  {reviewLoadingError ? (
+                    <Spacer position="top" size="medium">
+                      <Text variant="errorCentered">
+                        An error occured, try again!
+                      </Text>
+                      <Row topMargin="large" justifyContent="center">
+                        <LoadMoreButton
+                          textColor={theme.colors.ui.primary}
+                          mode="outlined"
+                          compact
+                          icon="comment-processing-outline"
+                          onPress={() => {
+                            loadReviews(true);
+                          }}
+                        >
+                          Reload
+                        </LoadMoreButton>
+                      </Row>
+                    </Spacer>
+                  ) : reviewsLoading ? (
+                    <SkeletonPlaceholder count={3 + reviews.length} />
+                  ) : (
+                    <Spacer position="top" size="medium">
+                      {reviews.map((review) => (
+                        <ReviewCard key={review.id} review={review} />
+                      ))}
+                      {hasMore && (
+                        <Row topMargin="medium" justifyContent="center">
+                          <LoadMoreButton
+                            textColor={theme.colors.ui.primary}
+                            mode="outlined"
+                            compact
+                            icon="comment-processing-outline"
+                            onPress={() => {
+                              loadReviews(false);
+                            }}
+                          >
+                            Load More
+                          </LoadMoreButton>
+                        </Row>
+                      )}
+                    </Spacer>
+                  )}
+                </AccordeonList>
+              )}
             </Spacer>
           </PlaceCardContent>
           <PlaceCardActions>
@@ -307,6 +364,7 @@ const PlaceDetailCardComponent = ({ place = {}, navigation }) => {
             onDismiss={() => setHangoutModalVisible(false)}
             visible={hangoutModalVisible}
             place={place}
+            onConfirm={onConfirmHangout}
           />
         )}
       </CrudActionContainerScrollView>

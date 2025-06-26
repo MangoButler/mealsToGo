@@ -8,6 +8,8 @@ import PlacesDetailScreen from "../../features/places/screens/places/places-deta
 import NewPlaceScreen from "../../features/places/screens/places/new-place.screen";
 import UpdatePlaceScreen from "../../features/places/screens/places/update-place.screen";
 import ActiveHangoutPlaceScreen from "../../features/places/screens/places/active-hangout-place.screen";
+import ReviewScreen from "../../features/places/screens/places/create-review.screen";
+import UpdateReviewScreen from "../../features/places/screens/places/update-review.screen";
 
 const PlacesStack = createStackNavigator();
 
@@ -23,6 +25,11 @@ const PlacesNavigator = () => {
       <PlacesStack.Screen name="PlaceDetail" component={PlacesDetailScreen} />
       <PlacesStack.Screen name="NewPlace" component={NewPlaceScreen} />
       <PlacesStack.Screen name="UpdatePlace" component={UpdatePlaceScreen} />
+      <PlacesStack.Screen name="ReviewScreen" component={ReviewScreen} />
+      <PlacesStack.Screen
+        name="UpdateReviewScreen"
+        component={UpdateReviewScreen}
+      />
       <PlacesStack.Screen
         name="ActiveHangoutPlace"
         component={ActiveHangoutPlaceScreen}

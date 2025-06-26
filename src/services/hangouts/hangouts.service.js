@@ -10,6 +10,7 @@ import {
   calculateDistance,
   getDistanceToPlace,
   getUserLocation,
+  MIN_DISTANCE_TO_CHECKIN,
   openInMaps,
 } from "../../utils/location.functions";
 
@@ -70,7 +71,7 @@ export const checkInToHangout = async (hangout) => {
 
   const distanceToPlace = await getDistanceToPlace(hangout.place);
 
-  if (distanceToPlace > 1) {
+  if (distanceToPlace > MIN_DISTANCE_TO_CHECKIN) {
     Alert.alert(
       "Too far away to check in!",
       `Please move to ${hangout.place?.title}, and try again!`,

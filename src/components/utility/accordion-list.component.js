@@ -54,11 +54,17 @@ const AccordionList = ({
   items = ["food"],
   cols = 2,
   children,
+  onToggle,
 }) => {
   const [expanded, setExpanded] = React.useState(false);
   const theme = useTheme();
 
-  const handlePress = () => setExpanded(!expanded);
+  // const handlePress = () => setExpanded(!expanded);
+  const handleToggle = () => {
+    const newExpanded = !expanded;
+    setExpanded(newExpanded);
+    onToggle?.(newExpanded); // Call the prop function!
+  };
 
   return (
     <Accordion
@@ -77,7 +83,7 @@ const AccordionList = ({
           }
         />
       )}
-      onPress={handlePress}
+      onPress={handleToggle}
       rippleColor={theme.colors.bg.secondary}
     >
       {children ? (

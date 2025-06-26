@@ -71,9 +71,13 @@ const FilterToggleButton = styled(MenuButton).attrs((props) => ({
   padding: ${(props) => props.theme.space[0]} ${(props) => props.theme.space[0]};
 `;
 
-const createRenderPlaceItem = ({ onDetailClick }) => {
+const createRenderPlaceItem = ({ onDetailClick, navigation }) => {
   const RenderItem = ({ item }) => (
-    <PlaceInfoCard place={item} onDetailClick={() => onDetailClick(item)} />
+    <PlaceInfoCard
+      navigation={navigation}
+      place={item}
+      onDetailClick={() => onDetailClick(item)}
+    />
   );
 
   RenderItem.displayName = "RenderPlaceItem";
@@ -115,7 +119,7 @@ export default function PlacesScreen({ navigation }) {
   };
 
   const renderItem = useMemo(
-    () => createRenderPlaceItem({ onDetailClick }),
+    () => createRenderPlaceItem({ onDetailClick, navigation }),
     [onDetailClick]
   );
 
