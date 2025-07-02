@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { USER_STORAGE_KEY } from "../../../services/places/places-api-url";
 
 const UpdateProfileScreen = ({ navigation }) => {
-  const { user, setUser } = useContext(AuthenticationContext);
+  const { user, setUser, syncUserProfile } = useContext(AuthenticationContext);
 
   const theme = useTheme();
   const [username, setUsername] = useState("");
@@ -29,7 +29,7 @@ const UpdateProfileScreen = ({ navigation }) => {
 
   useEffect(() => {
     setUsername(user.username || user.email.split("@")[0]);
-    setFavDrink(user.favoriteDrink || "");
+    setFavDrink(user.favoriteDrink || null);
     setCountry(user.country || "");
     setProfilePicture(user.profilePicture || "");
   }, [user, navigation]);
@@ -45,8 +45,9 @@ const UpdateProfileScreen = ({ navigation }) => {
     });
 
     if (result) {
-      setUser({ ...result });
-      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(result));
+      // setUser({ ...result });
+      // await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(result));
+      await syncUserProfile();
     }
     setIsLoading(false);
     navigation.navigate("Main");

@@ -7,6 +7,7 @@ import { FormActionButton } from "../form/form-button.component";
 import Row from "../spacer/row.component";
 
 const Container = styled.View`
+  height: 300px;
   width: 100%;
 `;
 

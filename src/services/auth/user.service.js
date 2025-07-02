@@ -63,7 +63,7 @@ export const createUserProfile = async ({
       console.error("Backend error:", result);
       Alert.alert(
         "Profile Creation Failed",
-        result.message || "Something went wrong."
+        result.error || "Something went wrong."
       );
       return null;
     }
@@ -101,6 +101,8 @@ export const updateUserProfile = async ({
     let secure_url = user.profilePicture;
     if (newProfilePicture && newProfilePicture !== user.profilePicture) {
       secure_url = await uploadImage(newProfilePicture, PROFILE_UPLOAD_PRESET);
+    } else if (newProfilePicture === null) {
+      secure_url = null;
     }
 
     const payload = {

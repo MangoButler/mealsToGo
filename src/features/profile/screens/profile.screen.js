@@ -285,7 +285,7 @@ const ProfileScreen = ({ navigation }) => {
     );
   };
 
-  const onHighlightCardPress = async (item) => {
+  const onHighlightCardPress = async (item, screen = "PlaceDetail") => {
     setActionLoading("navigation");
     const refreshedPlace = await fetchPlaceById(item.id);
 

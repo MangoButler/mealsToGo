@@ -20,7 +20,7 @@ import { USER_STORAGE_KEY } from "../../../services/places/places-api-url";
 const CreateProfileScreen = ({ navigation }) => {
   const theme = useTheme();
   const [username, setUsername] = useState("");
-  const [favDrink, setFavDrink] = useState("");
+  const [favDrink, setFavDrink] = useState(null);
   const [profilePicture, setProfilePicture] = useState("");
   const [country, setCountry] = useState("");
   const [isLoading, setIsLoading] = useState(false);

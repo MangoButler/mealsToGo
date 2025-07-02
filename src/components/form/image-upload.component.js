@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { View, Image, Alert } from "react-native";
+import { View, Image, Alert, TouchableOpacity } from "react-native";
 import FormButton from "./form-button.component";
 import * as ImagePicker from "expo-image-picker";
 import styled from "styled-components/native";
 import { UserImage } from "../../features/profile/screens/profile.screen";
+import { Text } from "react-native";
 
 const Preview = styled(Image)`
   width: 100%;
@@ -17,6 +18,34 @@ const ImagePickerContainer = styled(View)`
   border-radius: ${(props) => props.theme.space[2]};
   margin: ${(props) => props.theme.space[2]} 0;
   margin-bottom: ${(props) => props.theme.space[2]};
+`;
+
+const ImageWrapper = styled(View)`
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: ${(props) => props.theme.space[2]};
+`;
+
+const DeleteButton = styled(TouchableOpacity)`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.6);
+  width: 24px;
+  height: 24px;
+  border-radius: 12px; /* half of width/height for perfect circle */
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+`;
+
+const DeleteIcon = styled(Text)`
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 16px;
 `;
 
 const ImageUpload = ({
@@ -51,86 +80,20 @@ const ImageUpload = ({
     setUploading(false);
   };
 
-  // const uploadImage = async (uri) => {
-  //   setUploading(true);
-  //   const formData = new FormData();
-  //   formData.append("file", {
-  //     uri,
-  //     name: "photo.jpg",
-  //     type: "image/jpeg",
-  //   });
-  //   formData.append("upload_preset", UPLOAD_PRESET);
-
-  //   try {
-  //     const response = await fetch(CLOUDINARY_URL, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (data.secure_url) {
-  //       onImageUploadSuccess(data.secure_url);
-  //     } else {
-  //       Alert.alert("Upload failed", JSON.stringify(data));
-  //       setImageUri(null);
-  //     }
-  //   } catch (err) {
-  //     Alert.alert("Upload error", err.message);
-  //   } finally {
-  //     setUploading(false);
-  //   }
-  // };
-
-  // const uploadImage = async (uri, existingSecureUrl = null) => {
-  //   setUploading(true);
-  //   const formData = new FormData();
-
-  //   formData.append("file", {
-  //     uri,
-  //     name: "photo.jpg",
-  //     type: "image/jpeg",
-  //   });
-
-  //   formData.append("upload_preset", UPLOAD_PRESET);
-
-  //   // If there's an existing public_id, set it to overwrite
-  //   if (existingSecureUrl) {
-  //     const publicId = extractPublicId(existingSecureUrl);
-  //     formData.append("public_id", publicId);
-  //     formData.append("overwrite", "true");
-  //   }
-
-  //   try {
-  //     const response = await fetch(CLOUDINARY_URL, {
-  //       method: "POST",
-  //       body: formData,
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (data.secure_url) {
-  //       onImageUploadSuccess(data.secure_url);
-  //       setExistingUrl(data.secure_url);
-  //     } else {
-  //       Alert.alert("Upload failed", JSON.stringify(data));
-  //       setImageUri(null);
-  //     }
-  //   } catch (err) {
-  //     Alert.alert("Upload error", err.message);
-  //   } finally {
-  //     setUploading(false);
-  //   }
-  // };
-
   return (
     <ImagePickerContainer>
-      {imageUri &&
-        (imageType === "user" ? (
-          <UserImage source={{ uri: imageUri }} />
-        ) : (
-          <Preview source={{ uri: imageUri }} />
-        ))}
+      {imageUri && (
+        <ImageWrapper>
+          <DeleteButton onPress={() => onImageUploadSuccess(null)}>
+            <DeleteIcon>✕</DeleteIcon>
+          </DeleteButton>
+          {imageType === "user" ? (
+            <UserImage source={{ uri: imageUri }} />
+          ) : (
+            <Preview source={{ uri: imageUri }} />
+          )}
+        </ImageWrapper>
+      )}
       <FormButton
         icon={imageUri ? "image-edit" : "image-plus"}
         onPress={handleImageUpload}
@@ -143,3 +106,75 @@ const ImageUpload = ({
 };
 
 export default ImageUpload;
+
+// const uploadImage = async (uri) => {
+//   setUploading(true);
+//   const formData = new FormData();
+//   formData.append("file", {
+//     uri,
+//     name: "photo.jpg",
+//     type: "image/jpeg",
+//   });
+//   formData.append("upload_preset", UPLOAD_PRESET);
+
+//   try {
+//     const response = await fetch(CLOUDINARY_URL, {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     const data = await response.json();
+
+//     if (data.secure_url) {
+//       onImageUploadSuccess(data.secure_url);
+//     } else {
+//       Alert.alert("Upload failed", JSON.stringify(data));
+//       setImageUri(null);
+//     }
+//   } catch (err) {
+//     Alert.alert("Upload error", err.message);
+//   } finally {
+//     setUploading(false);
+//   }
+// };
+
+// const uploadImage = async (uri, existingSecureUrl = null) => {
+//   setUploading(true);
+//   const formData = new FormData();
+
+//   formData.append("file", {
+//     uri,
+//     name: "photo.jpg",
+//     type: "image/jpeg",
+//   });
+
+//   formData.append("upload_preset", UPLOAD_PRESET);
+
+//   // If there's an existing public_id, set it to overwrite
+//   if (existingSecureUrl) {
+//     const publicId = extractPublicId(existingSecureUrl);
+//     formData.append("public_id", publicId);
+//     formData.append("overwrite", "true");
+//   }
+
+//   try {
+//     const response = await fetch(CLOUDINARY_URL, {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     const data = await response.json();
+
+//     if (data.secure_url) {
+//       onImageUploadSuccess(data.secure_url);
+//       setExistingUrl(data.secure_url);
+//     } else {
+//       Alert.alert("Upload failed", JSON.stringify(data));
+//       setImageUri(null);
+//     }
+//   } catch (err) {
+//     Alert.alert("Upload error", err.message);
+//   } finally {
+//     setUploading(false);
+//   }
+// };

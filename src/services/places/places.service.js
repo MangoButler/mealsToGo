@@ -64,6 +64,7 @@ export const fetchPlaceById = async (placeId) => {
       "Something went wrong, please relod the application"
     );
   }
+
   const place = await response.json();
 
   return place;
